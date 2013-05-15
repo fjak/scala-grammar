@@ -21,3 +21,4 @@ syntax/Scala*.generated.pp
 utils
 lib/*.generated.str
 lib-refactoring/*.generated.str
+doc
