@@ -1,0 +1,16 @@
+module Scala.main
+
+imports Scala-Builders Scala-Refactorings Scala-Colorer Scala-Completions Scala-Folding Scala-Outliner Scala-References Scala-Syntax
+
+language General properties
+                  
+  name          : Scala
+  id            : de.fjak.spoofax.scala
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the Scala language"
+  url           : http://strategoxt.org
+                  
+  extensions    : scala
+  table         : include/Scala.tbl
+  start symbols : Start
