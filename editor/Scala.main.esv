@@ -13,4 +13,4 @@ language General properties
                   
   extensions    : scala
   table         : include/Scala.tbl
-  start symbols : Start
+  start symbols : CompilationUnit
