@@ -11,310 +11,301 @@ exports
 
   context-free syntax
   	
-  	"-"? IntegerLiteral       -> Literal
-  	"-"? FloatingPointLiteral -> Literal
-  	BooleanLiteral            -> Literal
-  	CharacterLiteral          -> Literal
-  	StringLiteral             -> Literal
-  	SymbolLiteral             -> Literal
-  	"null"                    -> Literal
+  	"-"? IntegerLiteral       -> Literal {"Int"}
+  	"-"? FloatingPointLiteral -> Literal {"Float"}
+  	BooleanLiteral            -> Literal {"Bool"}
+  	CharacterLiteral          -> Literal {"Char"}
+  	StringLiteral             -> Literal {"String"}
+  	SymbolLiteral             -> Literal {"Symbol"}
+  	"null"                    -> Literal {"Null"}
   
-  	{Id "."}+ -> QualId
+  	{Id "."}+ -> QualId {"QualId"}
   	
-  	{Id ","}+ -> Ids
+  	{Id ","}+ -> Ids {"Ids"}
   	
   	StableId         -> Path
-  	(Id ".")? "this" -> Path
+  	(Id ".")? "this" -> Path {"ThisPath"}
   	
   	Id          							 -> StableId
-  	Path "." Id 							 -> StableId
-  	(Id ".")? "super" ClassQualifier? "." Id -> StableId
+  	Path "." Id 							 -> StableId {"PathId"}
+  	(Id ".")? "super" ClassQualifier? "." Id -> StableId {"SuperId"}
   	
-  	"[" Id "]" -> ClassQualifier
+  	"[" Id "]" -> ClassQualifier {"ClassQualifier"}
   	
-  	FunctionArgTypes "=>" Type -> Type
-  	InfixType ExistentialClause? -> Type
+  	FunctionArgTypes "=>" Type -> Type {"FunctionType"}
+  	InfixType ExistentialClause? -> Type {"Type"}
   	
   	InfixType                -> FunctionArgTypes
-  	"(" {ParamType ","}* ")" -> FunctionArgTypes
+  	"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgTypes"}
   	
-  	"forSome" "{" {ExistentialDcl Semi}+ "}" -> ExistentialClause
+  	"forSome" "{" {ExistentialDcl Semi}+ "}" -> ExistentialClause {"ForSome"}
   	
-  	"type" TypeDcl -> ExistentialDcl
-  	"val" ValDcl   -> ExistentialDcl
+  	"type" TypeDcl -> ExistentialDcl {"TypeDecl"}
+  	"val" ValDcl   -> ExistentialDcl {"ValDecl"}
   	
-  	CompoundType (Id Nl? CompoundType)* -> InfixType
+  	CompoundType (Id Nl? CompoundType)* -> InfixType {"InfixType"}
   	
-  	{AnnotType "with"}+ Refinement? -> CompoundType
+  	{AnnotType "with"}+ Refinement? -> CompoundType {"CompoundType"}
   	Refinement                      -> CompoundType
   	
-  	SimpleType Annotation* -> AnnotType
+  	SimpleType Annotation* -> AnnotType {"AnnotType"}
   	
-  	SimpleType TypeArgs -> SimpleType
-  	SimpleType "#" Id   -> SimpleType
-  	StableId            -> SimpleType
-  	Path "." "type"     -> SimpleType
-  	"(" Types ")"       -> SimpleType
+  	SimpleType TypeArgs -> SimpleType {"TypeWithArgs"}
+  	SimpleType "#" Id   -> SimpleType {"HashType"}
+  	StableId            -> SimpleType 
+  	Path "." "type"     -> SimpleType {"TypeSuffix"}
+  	"(" {Type ","}+ ")" -> SimpleType {"Types"}
   	
-  	"[" Types "]" -> TypeArgs
+  	"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
   	
-  	{Type ","}+ -> Types
-  	
-  	Nl? "{" {RefineStat Semi}+ "}" -> Refinement
+  	Nl? "{" {RefineStat Semi}+ "}" -> Refinement {"Refinement"}
   	
   	Dcl            -> RefineStat
-  	"type" TypeDef -> RefineStat
+  	"type" TypeDef -> RefineStat {"RefineStat"}
   	
   	Type -> TypePat
   	
-  	":" InfixType   -> Ascription
-  	":" Annotation+ -> Ascription
-  	":" "_" "*"     -> Ascription
+  	":" InfixType   -> Ascription {"InfixAscription"}
+  	":" Annotation+ -> Ascription {"AnnotationsAscription"}
+  	":" "_" "*"     -> Ascription {"UnderStarAscription"}
   	
-  	(Bindings | "implicit"? Id | "_") "=>" Expr -> Expr
+  	(Bindings | "implicit"? Id | "_") "=>" Expr -> Expr {"Expr"}
   	Expr1                                       -> Expr
   	
-	"if" "(" Expr ")" Nl* Expr (Semi? "else" Expr)?                         -> Expr1
-	"while" "(" Expr ")" Nl* Expr                                           -> Expr1
-	"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)?    -> Expr1
-	"do" Expr Semi? "while" "(" Expr ")"                                    -> Expr1
-	"for" (("(" Enumerators ")") | ("{" Enumerators "}")) Nl* "yield"? Expr -> Expr1
-	"throw" Expr                                                            -> Expr1
-	"return" Expr?                                                          -> Expr1
-	(SimpleExpr ".")? Id "=" Expr                                           -> Expr1
-	SimpleExpr1 ArgumentExprs "=" Expr                                      -> Expr1
+	"if" "(" Expr ")" Nl* Expr (Semi? "else" Expr)?                         -> Expr1 {"If"}
+	"while" "(" Expr ")" Nl* Expr                                           -> Expr1 {"While"}
+	"try" "{" Block "}" ("catch" "{" CaseClause+ "}")? ("finally" Expr)?    -> Expr1 {"Try"}
+	"do" Expr Semi? "while" "(" Expr ")"                                    -> Expr1 {"DoWhile"}
+	"for" (("(" Enumerators ")") | ("{" Enumerators "}")) Nl* "yield"? Expr -> Expr1 {"For"}
+	"throw" Expr                                                            -> Expr1 {"Throw"}
+	"return" Expr?                                                          -> Expr1 {"Return"}
+	(SimpleExpr ".")? Id "=" Expr                                           -> Expr1 {"Assign"}
+	SimpleExpr1 ArgumentExprs "=" Expr                                      -> Expr1 {"ArgAssign"}
 	PostfixExpr                                                             -> Expr1
-	PostfixExpr Ascription                                                  -> Expr1
-	PostfixExpr "match" "{" CaseClauses "}"                                 -> Expr1
+	PostfixExpr Ascription                                                  -> Expr1 {"PostfixAscription"}
+	PostfixExpr "match" "{" CaseClause+ "}"                                 -> Expr1 {"Match"}
 
-  	InfixExpr (Id Nl?)? -> PostfixExpr
+  	InfixExpr (Id Nl?)? -> PostfixExpr {"PostfixExpr"}
   	
   	PrefixExpr 				   -> InfixExpr
-  	InfixExpr Id Nl? InfixExpr -> InfixExpr
+  	InfixExpr Id Nl? InfixExpr -> InfixExpr {"InfixExpr"}
   	
-  	("-" | "+" | "~" | "!") SimpleExpr -> PrefixExpr
+  	("-" | "+" | "~" | "!") SimpleExpr -> PrefixExpr {"PrefixExpr"}
   	
-  	"new" (ClassTemplate | TemplateBody) -> SimpleExpr
+  	"new" (ClassTemplate | TemplateBody) -> SimpleExpr {"New"}
   	BlockExpr                            -> SimpleExpr
-  	SimpleExpr1 "_"?                     -> SimpleExpr
+  	SimpleExpr1 "_"?                     -> SimpleExpr {"SimpleBlank"}
   	
 	Literal                   -> SimpleExpr1
 	Path                      -> SimpleExpr1
-	"_"                       -> SimpleExpr1
-	"(" Exprs? ")"            -> SimpleExpr1
-	SimpleExpr "." Id         -> SimpleExpr1
-	SimpleExpr TypeArgs       -> SimpleExpr1
-	SimpleExpr1 ArgumentExprs -> SimpleExpr1
+	"_"                       -> SimpleExpr1 {"Wildcard"}
+	"(" {Expr ","}* ")"       -> SimpleExpr1 {"Exprs"}
+	SimpleExpr "." Id         -> SimpleExpr1 {"QualExpr"}
+	SimpleExpr TypeArgs       -> SimpleExpr1 {"TypeArgExpr"}
+	SimpleExpr1 ArgumentExprs -> SimpleExpr1 {"ArgExpr"}
   	
-  	{Expr ","}+ -> Exprs
   	
-  	"(" Exprs? ")" 								 -> ArgumentExprs
-  	"(" (Exprs ",")? PostfixExpr ":" "_" "*" ")" -> ArgumentExprs
-  	Nl? BlockExpr 								 -> ArgumentExprs
+  	"(" {Expr ","}* ")" 							   -> ArgumentExprs {"ArgExprs"}
+  	"(" ({Expr ","}+ ",")? PostfixExpr ":" "_" "*" ")" -> ArgumentExprs {"PostfixArgs"}
+  	Nl? BlockExpr 								       -> ArgumentExprs {"BlockArg"}
   	
-  	"{" CaseClauses "}" -> BlockExpr
-  	"{" Block "}"       -> BlockExpr
+  	"{" CaseClause+ "}" -> BlockExpr {"BracesClauses"}
+  	"{" Block "}"       -> BlockExpr {"BracesBlock"}
   	
-  	(BlockStat Semi)* ResultExpr? -> Block
+  	(BlockStat Semi)* ResultExpr? -> Block {"Block"}
   	
 	Import                                 -> BlockStat
-	Annotation* ("implicit" | "lazy")? Def -> BlockStat
-	Annotation* LocalModifier* TmplDef     -> BlockStat
+	Annotation* ("implicit" | "lazy")? Def -> BlockStat {"DefBlock"}
+	Annotation* LocalModifier* TmplDef     -> BlockStat {"TmplBlock"}
 	Expr1                                  -> BlockStat
 	
 	Expr1                                                           -> ResultExpr
-	(Bindings | ("implicit"? Id | "_") ":" CompoundType) "=>" Block -> ResultExpr
+	(Bindings | ("implicit"? Id | "_") ":" CompoundType) "=>" Block -> ResultExpr {"ResultExpr"}
   	
-  	Generator (Semi Enumerator)* -> Enumerators
+  	Generator (Semi Enumerator)* -> Enumerators {"Enumerators"}
   	
 	Generator               -> Enumerator
 	Guard                   -> Enumerator
-	"val" Pattern1 "=" Expr -> Enumerator
+	"val" Pattern1 "=" Expr -> Enumerator {"ValEnum"}
 	
-	Pattern1 "<-" Expr Guard? -> Generator
+	Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
 	
-	CaseClause+ -> CaseClauses
+	"case" Pattern Guard? "=>" Block -> CaseClause {"CaseClause"}
 	
-	"case" Pattern Guard? "=>" Block -> CaseClause
+	"if" PostfixExpr -> Guard {"Guard"}
 	
-	"if" PostfixExpr -> Guard
+	{Pattern1 "|"}+ -> Pattern {"Pattern"}
 	
-	{Pattern1 "|"}+ -> Pattern
-	
-	VarId ":" TypePat -> Pattern1
-	"_" ":" TypePat   -> Pattern1
+	VarId ":" TypePat -> Pattern1 {"VarPattern"}
+	"_" ":" TypePat   -> Pattern1 {"WildcardPattern"}
 	Pattern2          -> Pattern1
 	
-	VarId ("@" Pattern3)? -> Pattern2
+	VarId ("@" Pattern3)? -> Pattern2 {"VarAtPattern"}
 	Pattern3              -> Pattern2
 	
 	SimplePattern                         -> Pattern3
-	SimplePattern (Id Nl? SimplePattern)* -> Pattern3
+	SimplePattern (Id Nl? SimplePattern)* -> Pattern3 {"Pattern3"}
 	
-	"_"                                                   -> SimplePattern
+	"_"                                                   -> SimplePattern {"WildcardPattern"}
 	VarId                                                 -> SimplePattern
 	Literal                                               -> SimplePattern
 	StableId                                              -> SimplePattern
-	StableId "(" Patterns? ")"                            -> SimplePattern
-	StableId "(" (Patterns ",")? (VarId "@")? "_" "*" ")" -> SimplePattern
-	"(" Patterns? ")"                                     -> SimplePattern
+	StableId "(" Patterns? ")"                            -> SimplePattern {"SimplePattern"}
+	StableId "(" (Patterns ",")? (VarId "@")? "_" "*" ")" -> SimplePattern {"WildStarPattern"}
+	"(" Patterns? ")"                                     -> SimplePattern {"BracePatterns"}
 	
-	Pattern ("," Patterns)? -> Patterns
-	"_"*                    -> Patterns
+	{Pattern ","}+ -> Patterns {"Patterns"}
+	"_"*           -> Patterns {"WildcardsPattern"}
 	
-	"[" {VariantTypeParam ","}+ "]" -> TypeParamClause
+	"[" {VariantTypeParam ","}+ "]" -> TypeParamClause {"TypeParamClause"}
 	
-	"[" {TypeParam ","}+ "]" -> FunTypeParamClause
+	"[" {TypeParam ","}+ "]" -> FunTypeParamClause {"FunTypeParamClause"}
 	
-	Annotation* ("+" | "-")? TypeParam -> VariantTypeParam
+	Annotation* ("+" | "-")? TypeParam -> VariantTypeParam {"VariantTypeParam"}
 	
-	(Id | "_") TypeParamClause? (">:" Type)? ("<:" Type)? -> TypeParam
-	("<%" Type)* (":" Type)*                              -> TypeParam
+	(Id | "_") TypeParamClause? (">:" Type)? ("<:" Type)? -> TypeParam {"TypeParam"}
+	("<%" Type)* (":" Type)*                              -> TypeParam {"PercentTypeParam"}
 	
-	ParamClause* (Nl? "(" "implicit" Params ")")? -> ParamClauses
+	ParamClause* (Nl? "(" "implicit" {Param ","}+ ")")? -> ParamClauses {"ParamClauses"}
 	
-	Nl? "(" Params? ")" -> ParamClause 
-
-	{Param ","}+ -> Params
+	Nl? "(" {Param ","}* ")" -> ParamClause {"ParamClause"}
 	
-	Annotation* Id (":" ParamType)? ("=" Expr)? -> Param
+	Annotation* Id (":" ParamType)? ("=" Expr)? -> Param {"Param"}
 	
 	Type      -> ParamType
-	"=>" Type -> ParamType
-	Type "*"  -> ParamType
+	"=>" Type -> ParamType {"ArrowParam"}
+	Type "*"  -> ParamType {"StarParam"}
 	
-	ClassParamClause* (Nl? "(" "implicit" ClassParams ")")? -> ClassParamClauses
+	ClassParamClause* (Nl? "(" "implicit" {ClassParam ","}+ ")")? -> ClassParamClauses {"ClassParamClauses"}
 	
-	Nl? "(" ClassParams? ")" -> ClassParamClause
+	Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
 	
-	{ClassParam ","}+ -> ClassParams
+	Annotation* (Modifier* ("val" | "var"))? Id ":" ParamType ("=" Expr)? -> ClassParam {"ClassParam"}
 	
-	Annotation* (Modifier* ("val" | "var"))? Id ":" ParamType ("=" Expr)? -> ClassParam
+	"(" {Binding ","}+ ")" -> Bindings {"Bindings"}
 	
-	"(" {Binding ","}+ ")" -> Bindings
-	
-	(Id | "_") (":" Type)? -> Binding
+	(Id | "_") (":" Type)? -> Binding {"Binding"}
 	
 	LocalModifier  -> Modifier
 	AccessModifier -> Modifier
-	"override"     -> Modifier
+	"override"     -> Modifier {"OverrideModifier"}
 	
-	"abstract" -> LocalModifier
-	"final"    -> LocalModifier
-	"sealed"   -> LocalModifier
-	"implicit" -> LocalModifier
-	"lazy"     -> LocalModifier
+	"abstract" -> LocalModifier {"AbstractModifier"}
+	"final"    -> LocalModifier {"FinalModifier"}
+	"sealed"   -> LocalModifier {"SealedModifier"}
+	"implicit" -> LocalModifier {"ImplicitModifier"}
+	"lazy"     -> LocalModifier {"LazyModifier"}
 
-	("private" | "protected") AccessQualifier? -> AccessModifier
+	("private" | "protected") AccessQualifier? -> AccessModifier {"AccessModifier"}
 	
-	"[" (Id | "this") "]" -> AccessQualifier
+	"[" (Id | "this") "]" -> AccessQualifier {"AccessQualifier"}
 	
-	"@" SimpleType ArgumentExprs* -> Annotation
+	"@" SimpleType ArgumentExprs* -> Annotation {"Annotation"}
 	
-	"@" SimpleType ArgumentExprs -> ConstrAnnotation
+	"@" SimpleType ArgumentExprs -> ConstrAnnotation {"ConstrAnnotation"}
 	
-	"val" Id "=" PrefixExpr -> NameValuePair
+	"val" Id "=" PrefixExpr -> NameValuePair {"NameValuePair"}
   
-  	Nl? "{" SelfType? {TemplateStat Semi}+ "}" -> TemplateBody
+  	Nl? "{" SelfType? {TemplateStat Semi}+ "}" -> TemplateBody {"TemplateBody"}
   	
 	Import                          -> TemplateStat
-	(Annotation Nl?)* Modifier* Def -> TemplateStat
-	(Annotation Nl?)* Modifier* Dcl -> TemplateStat
+	(Annotation Nl?)* Modifier* Def -> TemplateStat {"DefTemplate"}
+	(Annotation Nl?)* Modifier* Dcl -> TemplateStat {"DclTemplate"}
 	Expr                            -> TemplateStat
 	
-	Id (":" Type)? "=>"  -> SelfType
-	"this" ":" Type "=>" -> SelfType
+	Id (":" Type)? "=>"  -> SelfType {"IdSelfType"}
+	"this" ":" Type "=>" -> SelfType {"ThisSelfType"}
 
- 	"import" {ImportExpr ","}+ -> Import
+ 	"import" {ImportExpr ","}+ -> Import {"Import"}
  	
- 	StableId "." (Id | "_" | ImportSelectors) -> ImportExpr
+ 	StableId "." (Id | "_" | ImportSelectors) -> ImportExpr {"ImportExpr"}
  	
- 	"{" (ImportSelector ",")* (ImportSelector | "_") "}" -> ImportSelectors
+ 	"{" (ImportSelector ",")* (ImportSelector | "_") "}" -> ImportSelectors {"ImportSelectors"}
  	
- 	Id ("=>" Id | "=>" "_")? -> ImportSelector
+ 	Id ("=>" Id | "=>" "_")? -> ImportSelector {"ImportSelector"}
  	
-	"val" ValDcl       -> Dcl
-	"var" VarDcl       -> Dcl
-	"def" FunDcl       -> Dcl
-	"type" Nl* TypeDcl -> Dcl
+	"val" ValDcl       -> Dcl {"ValDcl"}
+	"var" VarDcl       -> Dcl {"VarDcl"}
+	"def" FunDcl       -> Dcl {"DefDcl"}
+	"type" Nl* TypeDcl -> Dcl {"TypeDcl"}
  	
- 	Ids ":" Type -> ValDcl
+ 	Ids ":" Type -> ValDcl {"ValDcl"}
  	
- 	Ids ":" Type -> VarDcl
+ 	Ids ":" Type -> VarDcl {"VarDcl"}
  	
- 	FunSig (":" Type)? -> FunDcl
+ 	FunSig (":" Type)? -> FunDcl {"FunDcl"}
  	
- 	Id FunTypeParamClause? ParamClauses -> FunSig
+ 	Id FunTypeParamClause? ParamClauses -> FunSig {"FunSig"}
  	
- 	Id TypeParamClause? (">:" Type)? ("<:" Type)? -> TypeDcl
+ 	Id TypeParamClause? (">:" Type)? ("<:" Type)? -> TypeDcl {"TypeDcl"}
  	
-	"val" PatDef -> PatVarDef
-	"var" VarDef -> PatVarDef
+	"val" PatDef -> PatVarDef {"ValDef"}
+	"var" VarDef -> PatVarDef {"VarDef"}
 	
 	PatVarDef          -> Def
-	"def" FunDef       -> Def
-	"type" Nl* TypeDef -> Def
+	"def" FunDef       -> Def {"FunDef"}
+	"type" Nl* TypeDef -> Def {"TypeDef"}
 	TmplDef            -> Def
 	
-	{Pattern2 ","}+ (":" Type)? "=" Expr -> PatDef 
+	{Pattern2 ","}+ (":" Type)? "=" Expr -> PatDef {"PatDef"}
 	
 	PatDef               -> VarDef
-	Ids ":" Type "=" "_" -> VarDef
+	Ids ":" Type "=" "_" -> VarDef {"VarDef"}
 
-	FunSig (":" Type)? "=" Expr                                        -> FunDef
-	FunSig Nl? "{" Block "}"                                           -> FunDef
-	"this" ParamClause ParamClauses ("=" ConstrExpr | Nl? ConstrBlock) -> FunDef
+	FunSig (":" Type)? "=" Expr                                        -> FunDef {"ExprFunDef"}
+	FunSig Nl? "{" Block "}"                                           -> FunDef {"BlockFunDef"}
+	"this" ParamClause ParamClauses ("=" ConstrExpr | Nl? ConstrBlock) -> FunDef {"ThisFunDef"}
 
-	Id TypeParamClause? "=" Type -> TypeDef
+	Id TypeParamClause? "=" Type -> TypeDef {"TypeDef"}
 	
-	"case"? "class" ClassDef -> TmplDef
-    "case"? "object" ObjectDef -> TmplDef
-    "trait" TraitDef -> TmplDef
+	"case"? "class" ClassDef -> TmplDef {"ClassDef"}
+    "case"? "object" ObjectDef -> TmplDef {"ObjectDef"}
+    "trait" TraitDef -> TmplDef {"TraitDef"}
     
-    Id TypeParamClause? ConstrAnnotation* AccessModifier? ClassParamClauses ClassTemplateOpt -> ClassDef
+    Id TypeParamClause? ConstrAnnotation* AccessModifier? ClassParamClauses ClassTemplateOpt -> ClassDef {"ClassDef"}
     
-    Id TypeParamClause? TraitTemplateOpt -> TraitDef
+    Id TypeParamClause? TraitTemplateOpt -> TraitDef {"TraitDef"}
     
-    Id ClassTemplateOpt -> ObjectDef
+    Id ClassTemplateOpt -> ObjectDef {"ObjectDef"}
   
-  	"extends" ClassTemplate    -> ClassTemplateOpt
-    ("extends"? TemplateBody)? -> ClassTemplateOpt
+  	"extends" ClassTemplate    -> ClassTemplateOpt {"ExtendsClassTemplateOpt"}
+    ("extends"? TemplateBody)? -> ClassTemplateOpt {"ClassTemplateOpt"}
     
-    "extends" TraitTemplate    -> TraitTemplateOpt
-    ("extends"? TemplateBody)? -> TraitTemplateOpt
+    "extends" TraitTemplate    -> TraitTemplateOpt {"ExtendsTraitTemplateOpt"}
+    ("extends"? TemplateBody)? -> TraitTemplateOpt {"TraitTemplateOpt"}
     
-    EarlyDefs? ClassParents TemplateBody? -> ClassTemplate
+    EarlyDefs? ClassParents TemplateBody? -> ClassTemplate {"ClassTemplate"}
     
-    EarlyDefs? TraitParents TemplateBody? -> TraitTemplate
+    EarlyDefs? TraitParents TemplateBody? -> TraitTemplate {"TraitTemplate"}
     
-    Constr ("with" AnnotType)* -> ClassParents
+    Constr ("with" AnnotType)* -> ClassParents {"ClassParents"}
     
-    {AnnotType "with"}+ -> TraitParents
+    {AnnotType "with"}+ -> TraitParents {"TraitParents"}
     
-    AnnotType ArgumentExprs* -> Constr
+    AnnotType ArgumentExprs* -> Constr {"Constr"}
     
-    "{" {EarlyDef Semi}* "}" "with" -> EarlyDefs
+    "{" {EarlyDef Semi}* "}" "with" -> EarlyDefs {"EarlyDefs"}
     
-    (Annotation Nl?)* Modifier* PatVarDef -> EarlyDef
+    (Annotation Nl?)* Modifier* PatVarDef -> EarlyDef {"EarlyDef"}
   
   	SelfInvocation -> ConstrExpr
   	ConstrBlock    -> ConstrExpr
   	
-  	"{" SelfInvocation (Semi BlockStat)* "}" -> ConstrBlock
+  	"{" SelfInvocation (Semi BlockStat)* "}" -> ConstrBlock {"ConstrBlock"}
   	
-  	"this" ArgumentExprs+ -> SelfInvocation
+  	"this" ArgumentExprs+ -> SelfInvocation {"SelfInvocation"}
   	
-  	{TopStat Semi}+ -> TopStatSeq
+  	{TopStat Semi}+ -> TopStatSeq {"TopStats"}
   	
-	(Annotation Nl?)* Modifier* TmplDef -> TopStat
+	(Annotation Nl?)* Modifier* TmplDef -> TopStat {"TopStat"}
 	Import                              -> TopStat
 	Packaging                           -> TopStat
 	PackageObject                       -> TopStat
     
-    "package" QualId Nl? "{" TopStatSeq "}" -> Packaging
+    "package" QualId Nl? "{" TopStatSeq "}" -> Packaging {"Packaging"}
     
-    "package" "object" ObjectDef -> PackageObject
+    "package" "object" ObjectDef -> PackageObject {"PackageObject"}
     
-    ("package" QualId Semi)* TopStatSeq -> CompilationUnit
+    ("package" QualId Semi)* TopStatSeq -> CompilationUnit {"CompilationUnit"}
     
     
