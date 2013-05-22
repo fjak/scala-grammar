@@ -1,4 +1,5 @@
 package test
-object HelloWorld extends App {
-	println("hello world")
-}
+
+import
+  bar._
+import foo._
