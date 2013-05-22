@@ -26,10 +26,10 @@ exports
   	{Id ","}+ -> Ids {"Ids"}
   	
   	StableId         -> Path
-  	(Id ".")? "this" -> Path {"ThisPath"}
+  	(Id ".")? "this" -> Path {"This"}
   	
   	Id          							 -> StableId
-  	Path "." Id 							 -> StableId {"PathId"}
+  	Path "." Id 							 -> StableId {"Path"}
   	(Id ".")? "super" ClassQualifier? "." Id -> StableId {"SuperId"}
   	
   	"[" Id "]" -> ClassQualifier {"ClassQualifier"}
@@ -52,11 +52,11 @@ exports
   	
   	SimpleType Annotation* -> AnnotType {"AnnotType"}
   	
-  	SimpleType TypeArgs -> SimpleType {"TypeWithArgs"}
-  	SimpleType "#" Id   -> SimpleType {"HashType"}
-  	StableId            -> SimpleType 
-  	Path "." "type"     -> SimpleType {"TypeSuffix"}
-  	"(" {Type ","}+ ")" -> SimpleType {"Types"}
+  	SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
+  	SimpleType "#" Id   -> SimpleType {"TypeProjection"}
+  	StableId            -> SimpleType {"TypeDesignator"}
+  	Path "." "type"     -> SimpleType {"SingletonType"}
+  	"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
   	
   	"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
   	
