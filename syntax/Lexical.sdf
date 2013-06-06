@@ -24,6 +24,8 @@ exports
 	[\r][\n] -> NL
 	[\n] -> NL
 	[\ \t]+ -> SPACE
+	
+	NL | ";" -> Semi
 
 	[\ \t\n\r] -> LAYOUT
 	
