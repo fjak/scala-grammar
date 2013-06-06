@@ -24,17 +24,25 @@ exports
 	StableId "." "_"             -> ImportExpr {"WildcardImportExpr"}
 	StableId "." Id              -> ImportExpr {"IdImportExpr"}
 	
-	TopStat (Semi TopStat)* -> TopStatSeq {"TopStats"}
-	
+	TopStat -> TopStatSeq {"SingleTopStatSeq"}
+	TopStat ";" TopStatSeq -> TopStatSeq {"SemiTopStatSeq"}
+			
 	%% (Annotation Nl?)* Modifier* TmplDef -> TopStat {"TopStat"}
 	Import                                 -> TopStat
 	Packaging                              -> TopStat
 	%% PackageObject                       -> TopStat
+			
+	"{" TopStatSeq? "}" -> TopStat {"Block"}
 	
-	"package" QualId Nl? "{" TopStatSeq "}" -> Packaging {"Packaging"}
+	"package" QualId ";" -> PackageDeclaration {"SemiPackageDeclaration"}
 	
-	"package" QualId Semi -> PackageDeclaration {"PackageDeclaration"}
 	PackageDeclaration* TopStatSeq -> CompilationUnit {"CompilationUnit"}
+	
+  syntax
+	<TopStat-CF> <SPACE?-LEX> <NL+-LEX> <SPACE?-LEX> <TopStatSeq-CF> -> <TopStatSeq-CF> {"NlTopStatSeq"}	
+	"package" <LAYOUT?-CF> <QualId-CF> <SPACE?-LEX> <NL-LEX> <SPACE?-LEX> "{" <LAYOUT?-CF> <TopStatSeq-CF> <LAYOUT?-CF> "}" -> <Packaging-CF> {cons("NlPackaging")}
+	"package" <LAYOUT?-CF> <QualId-CF> <SPACE?-LEX> "{" <LAYOUT?-CF> <TopStatSeq-CF> <LAYOUT?-CF> "}" -> <Packaging-CF> {cons("SameLinePackaging")}
+	"package" <LAYOUT?-CF> <QualId-CF> <SPACE?-LEX> <NL-LEX> -> <PackageDeclaration-CF> {"NlPackageDeclaration"}
 
 
 

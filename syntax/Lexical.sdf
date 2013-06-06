@@ -1,7 +1,7 @@
 module Lexical
 
 exports
-
+	
   lexical syntax
 	[A-Z] | "$" | "_" -> Upper
 	[a-z] -> Lower
@@ -21,14 +21,20 @@ exports
 
 	(Letter | Digit)* ("_" Op)? -> IdRest
 
-	[\n\r]   -> Nl
-	Nl+ | ";" -> Semi
+	[\r][\n] -> NL
+	[\n] -> NL
+	[\ \t]+ -> SPACE
 
-	[\ \t\r\n] -> LAYOUT
+	[\ \t\n\r] -> LAYOUT
 	
-	"_" -> Id {reject}
+	"_"       -> Id {reject}
+	"package" -> Id {reject}
+	"import"  -> Id {reject}
 
   lexical restrictions
 
   context-free restrictions
-	LAYOUT? -/- [\ \t]
+  	Id -/- [a-zA-Z]
+	LAYOUT? -/- [\ \t\n\r]
+	SPACE -/- [\ \t]
+	
