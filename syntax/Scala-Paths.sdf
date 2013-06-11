@@ -1,0 +1,16 @@
+module Scala-Paths
+
+imports
+	Scala-Identifiers
+
+exports
+	context-free syntax
+		StableId         -> Path
+		(Id ".")? "this" -> Path{"This"}
+		
+		Id          -> StableId
+		Path "." Id -> StableId {"StableId"}
+		(Id ".") "super" ClassQualifier? "." Id -> StableId{"Super"}
+		
+		"[" Id "]" -> ClassQualifier{"ClassQualifier"}
+		

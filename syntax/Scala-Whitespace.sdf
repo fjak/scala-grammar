@@ -1,0 +1,16 @@
+%% Part of the definitions and restrictions are taken from bobd91's JavaScript syntax
+%% (https://github.com/bobd91/sugarjs/blob/master/language-libraries/javascript/src/org/sugarj/languages/JavaScript.def)
+
+module Scala-Whitespace
+
+exports
+	lexical syntax
+		[\ \t\n\r] -> LAYOUT
+		-> EOL
+		-> EOF
+		-> EOB
+	
+	context-free restrictions
+    	LAYOUT? -/- [\ \t\n\r]
+    	EOF -/- ~[]
+		EOB -/- ~[\}]

@@ -1,0 +1,12 @@
+module Scala-Imports
+
+imports
+	Scala-Identifiers
+	Scala-Paths
+
+exports
+	context-free syntax
+		"import" {ImportExpr ","}+ -> Import{"Import"}
+		
+		StableId "." Id -> ImportExpr {"ImportExpr"}
+		

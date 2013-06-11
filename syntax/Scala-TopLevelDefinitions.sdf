@@ -1,0 +1,35 @@
+%% Chapter 9 - Top-Level Definitions
+module Scala-TopLevelDefinitions
+
+imports
+	Scala-Identifiers
+	Scala-Imports
+	Scala-Whitespace
+
+exports	
+	context-free syntax
+		PackageDeclaration* TopStatSeq+ -> CompilationUnit{"CompilationUnit"}
+		
+		%%TopStat                -> TopStatSeq{"SingleTopStatSeq"}
+		%%TopStat ";" TopStatSeq -> TopStatSeq{"SemiTopStatSeq"}
+		%%TopStat TopStatSeq     -> TopStatSeq{"TopStatSeq", layout("2.first.line > 1.last.line")}
+		
+		TopStat ";" -> TopStatSeq{"SemiTopStatSeq"}
+		TopStat EOL -> TopStatSeq{"TopStatSeq", enforce-newline, prefer}
+		TopStat EOF -> TopStatSeq{"EOFTopStatSeq"}
+		TopStat EOB -> TopStatSeq{"EOBTopStatSeq", avoid}
+		
+		Import        -> TopStat
+		Packaging     -> TopStat
+		%% PackageObject -> TopStat
+		
+		"package" QualId EOL -> PackageDeclaration{"PackageDeclaration", enforce-newline}
+		"package" QualId ";" -> PackageDeclaration{"SemiPackageDeclaration"}
+		
+		{Id "."}+ -> QualId {"QualId"}
+		
+		"package" QualId "{" TopStatSeq+ "}" -> Packaging {"Packaging", layout("3.first.line - 2.last.line < num(2)")}
+		
+		%% "package" "object" ObjectDef -> PackageObject
+		
+		
