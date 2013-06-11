@@ -24,8 +24,9 @@ exports
 	StableId "." "_"             -> ImportExpr {"WildcardImportExpr"}
 	StableId "." Id              -> ImportExpr {"IdImportExpr"}
 	
-	TopStat -> TopStatSeq {"SingleTopStatSeq"}
-	
+	TopStat                 -> TopStatSeq {"SingleTopStatSeq"}
+	TopStat Semi TopStatSeq -> TopStatSeq {"SemiTopStatSeq"}
+	TopStat TopStatSeq      -> TopStatSeq {"TopStatSeq", layout("1.last.line < 2.first.line")}
 			
 	%% (Annotation Nl?)* Modifier* TmplDef -> TopStat {"TopStat"}
 	Import                                 -> TopStat
@@ -36,12 +37,10 @@ exports
 	
 	PackageDeclaration* TopStatSeq -> CompilationUnit {"CompilationUnit"}
 	
-  syntax
-  	"package" <LAYOUT?-CF> <QualId-CF> <SPACE?-LEX> <Semi-LEX> -> <PackageDeclaration-CF> {"PackageDeclaration"}
-  	<TopStat-CF> <SPACE?-LEX> <Semi-LEX> <LAYOUT?-CF> <TopStatSeq-CF> -> <TopStatSeq-CF> {"TopStatSeqs"}
-	"package" <LAYOUT?-CF> <QualId-CF> <SPACE?-LEX> <NL-LEX> <SPACE?-LEX> "{" <LAYOUT?-CF> <TopStatSeq-CF> <LAYOUT?-CF> "}" -> <Packaging-CF> {cons("NlPackaging")}
-	"package" <LAYOUT?-CF> <QualId-CF> <SPACE?-LEX> "{" <LAYOUT?-CF> <TopStatSeq-CF> <LAYOUT?-CF> "}" -> <Packaging-CF> {cons("SameLinePackaging")}
+	"package" QualId ";" -> PackageDeclaration {"SemiPackageDeclaration"}
+	"package" QualId EOL -> PackageDeclaration {"PackageDeclaration", enforce-newline}
 	
-
+	"package" QualId "{" TopStatSeq "}" -> Packaging {"Packaging", layout("3.first.line - 2.last.line <= num(1)")}
+	
 
 

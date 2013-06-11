@@ -25,7 +25,8 @@ exports
 	[\n] -> NL
 	[\ \t]+ -> SPACE
 	
-	NL | ";" -> Semi
+	";" -> Semi
+	-> EOL
 
 	[\ \t\n\r] -> LAYOUT
 	
