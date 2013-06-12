@@ -1,0 +1,138 @@
+module Scala-Expressions
+
+imports
+	Scala-Whitespace
+	Scala-Literals
+	Scala-Paths
+	Scala-Types
+	Scala-Annotations
+	Scala-PatternMatching
+	Scala-Modifiers
+	Scala-Imports
+	Scala-Templates
+	
+exports
+	lexical syntax
+		";" -> Semi
+		"\n" -> Nl
+		"+" -> Prefix
+		"-" -> Prefix
+		"~" -> Prefix
+		"!" -> Prefix
+	
+	context-free syntax
+		Expr1                   -> Expr
+		Bindings "=>" Expr      -> Expr {"FunExpr"}
+		Id "=>" Expr            -> Expr {"IdFunExpr"}
+		"implicit" Id "=>" Expr -> Expr {"ImplicitFunExpr"}
+		"_" "=>" Expr           -> Expr {"WildcardFunExpr"}
+		
+		"new" ClassTemplate -> SimpleExpr {"NewClassExpr"}
+		"new" TemplateBody  -> SimpleExpr {"TemplateExpr"}
+		BlockExpr           -> SimpleExpr
+		SimpleExpr1         -> SimpleExpr
+		SimpleExpr1 "_"     -> SimpleExpr {"WildcardSuffixExpr"}
+			
+		Literal                   -> SimpleExpr1
+		Path                      -> SimpleExpr1
+		"_"                       -> SimpleExpr1 {"WildcardExpr"}
+		"(" Exprs? ")"            -> SimpleExpr1 {"TupleExpr"}
+		SimpleExpr "." Id         -> SimpleExpr1 {"DesignatorExpr"}
+		SimpleExpr TypeArgs       -> SimpleExpr1 {"TypeArgsExpr"}
+		SimpleExpr1 ArgumentExprs -> SimpleExpr1 {"AppExpr"}
+			
+		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
+		"(" (Exprs ",")? PostfixExpr ":" "_" "*" ")" -> ArgumentExprs {"PostfixArgumentExprs"}
+		
+		%% TODO: Need to inline this because of optional nl in the beginning
+		Nl? BlockExpr                                -> ArgumentExprs {"BlockArgumentExprs"}
+		
+		{Expr ","}+ -> Exprs {"Exprs"}
+		
+		"if" "(" Expr ")" Expr                   -> Expr1 {"IfExpr"}
+		"if" "(" Expr ")" Expr Semi? "else" Expr -> Expr1 {"IfElseExpr"}
+		
+		"while" "(" Expr ")" Expr -> Expr1 {"WhileExpr"}
+		
+		"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)? -> Expr1 {"TryExpr"}
+		
+		"do" Expr Semi? "while" "(" Expr ")" -> Expr1 {"DoWhileExpr"}
+		
+		"for" "(" Enumerators ")" Expr         -> Expr1 {"BraceForExpr"}
+		"for" "{" Enumerators "}" Expr         -> Expr1 {"CurlyBraceForExpr"}
+		"for" "(" Enumerators ")" "yield" Expr -> Expr1 {"BraceYieldForExpr"}
+		"for" "{" Enumerators "}" "yield" Expr -> Expr1 {"CurlyBraceYieldForExpr"}
+		
+		"throw" Expr -> Expr1 {"ThrowExpr"}
+		
+		"return" Expr -> Expr1 {"ReturnExpr"}
+		
+		(SimpleExpr ".")? Id "=" Expr           -> Expr1 {"AssignmentExpr"}
+		SimpleExpr1 ArgumentExprs "=" Expr      -> Expr1 {"AccessAssignmentExpr"}
+		PostfixExpr                             -> Expr1
+		PostfixExpr Ascription                  -> Expr1 {"AscriptionExpr"}
+		PostfixExpr "match" "{" CaseClauses "}" -> Expr1 {"MatchExpr"}
+		
+		Prefix? SimpleExpr -> PrefixExpr{"PrefixExpr"}
+		
+		":" InfixType   -> Ascription {"TypeAscription"}
+		":" Annotation+ -> Ascription {"AnnotationAscription"}
+		":" "_" "*"     -> Ascription {"SequenceAscription"}
+		
+		Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
+		"if" PostfixExpr -> Guard {"Guard"}
+		
+		%% TODO: Inline this to express the optional newline
+		InfixExpr (Id Nl?)? -> PostfixExpr {"PostfixExpr"}
+		
+		PrefixExpr             -> InfixExpr
+		InfixExpr Id InfixExpr -> InfixExpr {"InfixExpr", layout("3.first.line - 2.last.line < num(2)")}
+		
+		Generator                   -> Enumerators 
+		Generator ";" EnumeratorSeq -> Enumerators {"SemiEnumerators"}
+		Generator EnumeratorSeq     -> Enumerators {"Enumerators", layout("2.first.line > 1.last.line")}
+		
+		Enumerator                   -> EnumeratorSeq {"SingleEnumeratorSeq"}
+		Enumerator ";" EnumeratorSeq -> EnumeratorSeq {"SemiEnumeratorSeq"}
+		Enumerator EnumeratorSeq     -> EnumeratorSeq {"EnumeratorSeq", layout("2.first.line > 1.last.line")}
+		
+		Generator               -> Enumerator
+		Guard                   -> Enumerator
+		"val" Pattern1 "=" Expr -> Enumerator {"Enumerator"}
+		
+		"case" Pattern Guard? "=>" Block -> CaseClause {"CaseClause"}
+		
+		CaseClause+ -> CaseClauses {"CaseClauses"}
+		
+		BlockStatSeq* ResultExpr? -> Block {"Block"} 
+		
+		BlockStat EOL -> BlockStatSeq {"BlockStatSeq", enforce-newline}
+		BlockStat EOB -> BlockStatSeq {"EOBBlockStatSeq"}
+		BlockStat ";" -> BlockStatSeq {"SemiBlockStatSeq"}
+		
+		Expr1 -> ResultExpr
+		Bindings "=>" Block                       -> ResultExpr {"BindingsResultExpr"}
+		"implicit" Id ":" CompoundType "=>" Block -> ResultExpr{"ImplicitResultExpr"}
+		Id ":" CompoundType "=>" Block            -> ResultExpr{"SimpleResultExpr"}
+		"_" ":" CompoundType "=>" Block           -> ResultExpr{"WildcardResultExpr"}
+		
+		Import                             -> BlockStat
+		Expr1                              -> BlockStat
+		Annotation* Def                    -> BlockStat {"DefBlockStat"}
+		Annotation* "implicit" Def         -> BlockStat {"ImplicitDefBlockStat"}
+		Annotation* "lazy" Def             -> BlockStat {"LazyDefBlockStat"}
+		Annotation* LocalModifier* TmplDef -> BlockStat {"TmplDefBlockStat"}
+		
+		"{" CaseClauses "}" -> BlockExpr {"CaseBlockExpr"}
+		"{" Block "}"       -> BlockExpr {"BlockExpr"}
+		
+		Id (":" Type)?  -> Binding  {"Binding"}
+		"_" (":" Type)? -> Binding {"WildCardBinding"}
+		
+		"(" {Binding ","}+ ")" -> Bindings {"Bindings"}
+		
+		
+		
+		
+		
+		

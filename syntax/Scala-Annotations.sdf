@@ -1,0 +1,12 @@
+module Scala-Annotations
+
+imports
+	Scala-Types
+
+exports
+	context-free syntax
+		"@" SimpleType ArgumentExprs* -> Annotation {"Annotation"}
+		"@" SimpleType ArgumentExprs  -> ConstrAnnotation {"ConstrAnnotation"}
+		
+		Annotation               -> AnnotationSeq
+		Annotation AnnotationSeq -> AnnotationSeq {"AnnotationSeq", layout("2.first.line - 1.last.line < num(2)")}

@@ -1,0 +1,63 @@
+module Scala-Literals
+
+imports
+	Scala-Identifiers
+
+exports
+	lexical syntax
+		(DecimalNumeral | HexNumeral | OctalNumeral) ("L" | "l")? -> IntegerLiteral
+		"-" IntegerLiteral                                        -> IntegerLiteral
+		
+		"0" | NonZeroDigit Digit* -> DecimalNumeral {"Decimal"}
+		"0" "x" HexDigit+ -> HexNumeral {"HexNumeral"}
+		"0" OctalDigit+ -> OctalNumeral {"Octal"}
+		[0-9]       -> Digit {"Digit"}
+		[1-9]       -> NonZeroDigit {"NonZeroDigit"}
+		[0-7]       -> OctalDigit {"OctalDigit"}
+		[0-9A-Fa-f] -> HexDigit {"HexDigit"}
+		
+		Digit+ "." Digit* ExponentPart? FloatType? -> FloatingPointLiteral
+		"." Digit+ ExponentPart? FloatType?        -> FloatingPointLiteral
+		Digit+ ExponentPart FloatType?             -> FloatingPointLiteral
+		Digit+ ExponentPart? FloatType             -> FloatingPointLiteral
+		"-" FloatingPointLiteral                   -> FloatingPointLiteral
+		
+		("E" | "e") ("+" | "-")? Digit+ -> ExponentPart
+		"F" | "f" | "D" | "d" -> FloatType
+		
+		"'" PrintableChar "'" -> CharacterLiteral
+		"'" CharEscapeSeq "'" -> CharacterLiteral
+		
+		[\33-\126] -> PrintableChar
+		[\0-\127] / [\34] -> CharNoDoubleQuote
+		[\33-\126] / [\34] -> PrintableCharNoDoubleQuote
+		"\\b" | "\\t" | "\\n" | "\\f" | "\\r" | "\\\"" | "\\'" | "\\\\" -> CharEscapeSeq
+		"\\" [0-1]? [0-9]? [0-9]                                        -> CharEscapeSeq
+		"\\" Digit? Digit? Digit                                        -> CharEscapeSeq
+		
+		"\"" StringElement* "\""         -> StringLiteral
+		"\"\"\"" MultiLineChars "\"\"\"" -> StringLiteral
+		
+		PrintableCharNoDoubleQuote -> StringElement
+		CharEscapeSeq              -> StringElement
+		
+		(("\"")? ("\"")? CharNoDoubleQuote)* "\""* -> MultiLineChars
+		
+		"'" PlainId -> SymbolLiteral
+		
+	lexical restrictions
+		DecimalNumeral -/- [0-9]
+		OctalNumeral -/- [0-9]
+		HexNumeral -/- [0-9a-zA-Z]
+		
+	context-free syntax
+		IntegerLiteral       -> Literal {"Int"}
+		FloatingPointLiteral -> Literal {"Float"}
+		BooleanLiteral       -> Literal
+		CharacterLiteral     -> Literal {"Char"}
+		StringLiteral        -> Literal {"String"}
+		SymbolLiteral        -> Literal {"Symbol"}
+		"null"               -> Literal {"Null"}
+		
+		"true"  -> BooleanLiteral {"True"}
+		"false" -> BooleanLiteral {"False"}

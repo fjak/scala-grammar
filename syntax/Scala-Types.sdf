@@ -1,0 +1,59 @@
+module Scala-Types
+
+imports
+	Scala-Whitespace
+	Scala-Paths
+	Scala-Annotations
+	Scala-BasicDeclarations
+
+exports
+	context-free syntax
+		Path "." "type"     -> SimpleType {"SingletonType"}
+		SimpleType "#" Id   -> SimpleType {"TypeProjection"}
+		StableId            -> SimpleType {"TypeDesignator"}
+		SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
+		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
+		
+		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
+		
+		SimpleType Annotation* -> AnnotType {"AnnotType"}
+		
+		%% TODO
+		%% Let's just ignore refinements until later…
+		%% Refinements are prepended by an optional nl
+		%% We need to express this in the productions using a Refinement, not here
+		%% "{" RefineStatSeq* "}" -> Refinement {"Refinement"}
+		%%
+		%% RefineStat ";" -> RefineStatSeq {"SemiRefineStatSeq"}
+		%% RefineStat EOL -> RefineStatSeq {"RefineStatSeq", enforce-newline, prefer}
+		%% RefineStat EOB -> RefineStatSeq {"EOBRefineStatSeq"}
+		
+		%% Dcl            -> RefineStat
+		%% "type" TypeDef -> RefineStat {"RefineStat"}
+		
+		AnnotType With* -> CompoundType {"CompoundType"}
+		
+		"with" AnnotType -> With {"With"}
+		
+		"forSome" "{" ExistentialDclSemi+ "}" -> ExistentialClause {"ExistentialClause"}
+		
+		ExistentialDcl ";" -> ExistentialDclSemi {"SemiExistentialDclSeq"}
+		ExistentialDcl EOL -> ExistentialDclSemi {"ExistentialDclSeq", enforce-newline, prefer}
+		ExistentialDcl EOB -> ExistentialDclSemi {"EOBExistentialDclSeq"}
+		
+		TypeDcl -> ExistentialDcl {"ExistentialType"}
+		ValDcl  -> ExistentialDcl {"ExistentialVal"}
+		
+		CompoundType InfixTypeOp* -> InfixType {"InfixType"}
+		Id CompoundType -> InfixTypeOp {"InfixTypeOp", layout("2.first.line - 1.last.line < num(2)")}
+		
+		FunctionArgTypes "=>" Type -> Type {"FunctionType"}
+		
+		InfixType -> FunctionArgTypes
+		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType"}
+		
+		Type      -> ParamType
+		"=>" Type -> ParamType {"ByNameParam"}
+		Type "*"  -> ParamType {"RepeatedParam"}
+		
+		

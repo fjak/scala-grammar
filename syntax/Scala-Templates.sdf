@@ -1,0 +1,68 @@
+module Scala-Templates
+
+imports
+	Scala-Identifiers
+	Scala-Types
+	Scala-Expressions
+	Scala-Definitions
+
+exports
+	context-free syntax
+		SelfInvocation -> ConstrExpr
+		ConstrBlock    -> ConstrExpr
+		
+		"{" SelfInvocation ";" BlockStatSeq? "}" -> ConstrBlock {"SemiConstrBlock"}
+		"{" SelfInvocation BlockStatSeq? "}"     -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
+		
+		"this" ArgumentExprs+ -> SelfInvocation {"SelfInvocation"}
+		
+		Id FunTypeParamClause? ParamClauses -> FunSig {"FunSig"}
+			
+		%% TODO: Nl
+		Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
+		
+		ClassParamClause* -> ClassParamClauses {"ClassParamClauses"}
+		ClassParamClause* "(" "implicit" {ClassParam ","}+ ")" -> ClassParamClauses {"ImplicitClassParamClauses", layout("2.first.line - 1.last.line < num(2)")}
+		
+		Annotation* Id ":" ParamType ("=" Expr)? -> ClassParam {"ClassParam"}
+		Annotation* Modifier* "val" Id ":" ParamType ("=" Expr)? -> ClassParam {"ValClassParam"}
+		Annotation* Modifier* "var" Id ":" ParamType ("=" Expr)? -> ClassParam {"VarClassParam"}
+		
+		EarlyDefs? ClassParents TemplateBody? -> ClassTemplate {"ClassTemplate"}
+		
+		"extends" ClassTemplate -> ClassTemplateOpt {"ClassClassTemplateOpt"}
+		"extends" TemplateBody  -> ClassTemplateOpt {"TemplateClassTemplateOpt"}
+		TemplateBody            -> ClassTemplateOpt
+		                        -> ClassTemplateOpt {"EmptyClassTemplateOpt"}
+		%% TODO Nl              
+		Nl? "{" SelfType? TemplateStatSemi* "}" -> TemplateBody {"TemplateBody"}
+		
+		TemplateStat ";" -> TemplateStatSemi {"SemiTemplateStatSemi"}
+		TemplateStat EOL -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, prefer}
+		TemplateStat EOB -> TemplateStatSemi {"EOBTemplateStatSemi", avoid}
+		
+		%%AnnotationSeq? Modifier* Def -> TemplateStat {"DefTemplateStat"}
+		Def -> TemplateStat {"DefTemplateStat"}
+		AnnotationSeq? Modifier* Dcl -> TemplateStat {"DclTemplateStat"}
+		Expr                         -> TemplateStat
+		Import                       -> TemplateStat
+		
+		Id (":" Type)? "=>"  -> SelfType {"SelfType"}
+		"this" ":" Type "=>" -> SelfType {"ThisSelfType"}
+		
+		Constr WithAnnotType* -> ClassParents {"ClassParents"}
+		
+		AnnotType ArgumentExprs* -> Constr {"Constr"}
+		
+		AnnotType WithAnnotType* -> TraitParents {"TraitParents"}
+		
+		"with" AnnotType -> WithAnnotType {"WithAnnotType"}
+		
+		"extends" TraitTemplate -> TraitTemplateOpt {"TraitTraitTemplateOpt"}
+		"extends" TemplateBody  -> TraitTemplateOpt {"TemplateTraitTemplateOpt"}
+		TemplateBody            -> TraitTemplateOpt
+		
+		EarlyDefs? TraitParents TemplateBody? -> TraitTemplate {"TraitTemplate"}
+		
+		
+		

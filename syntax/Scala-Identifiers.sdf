@@ -1,29 +1,76 @@
 module Scala-Identifiers
 
-exports
-
-  lexical syntax 
-  	[A-Z] | "$" | "_" -> Upper
-  	[a-z] -> Lower
-  	Upper | Lower -> Letter
-  	[0-9] -> Digit
-  	[\33-\39] \/ [\42-45] \/ [\47] \/ [\58-\64] \/ [\92] \/ [\94] \/ [\96] \/ [\124] \/ [\126] -> OpChar
-  	
-  	OpChar+ -> Op
-  	Lower IdRest -> VarId
-  	
-  	Upper IdRest -> PlainId
-  	VarId        -> PlainId
-  	Op           -> PlainId
-  	
-  	%%PrintableCharNoDoubleQuote -> StringElement
-  	%%CharEscapeSeq              -> StringElement
-  	
-  	%%"\"" StringElement* "\""         -> StringLiteral
-  	%%"\"\"\"" MultiLineChars "\"\"\"" -> StringLiteral
-  	
-  	PlainId               -> Id
-  	%%"'" StringLiteral "'" -> Id
-  	
-  	(Letter | Digit)* ("_" Op)? -> IdRest
+	exports
 	
+	lexical syntax
+		[A-Z] | "$" | "_" -> Upper
+		[a-z] -> Lower
+		Upper | Lower -> Letter
+		[0-9] -> Digit
+		[\33-\39] \/ [\42-45] \/ [\47] \/ [\58-\64] \/ [\92] \/ [\94] \/ [\96] \/ [\124] \/ [\126] -> OpChar
+		
+		OpChar+ -> Op
+		Lower IdRest -> VarId
+		
+		Upper IdRest -> PlainId
+		VarId        -> PlainId
+		Op           -> PlainId
+		
+		PlainId               -> Id
+		
+		(Letter | Digit)* ("_" Op)? -> IdRest
+		
+		"abstract"  -> Keyword
+		"case"      -> Keyword
+		"catch"     -> Keyword
+		"class"     -> Keyword
+		"def"       -> Keyword
+		"do"        -> Keyword
+		"else"      -> Keyword
+		"extends"   -> Keyword
+		"false"     -> Keyword
+		"final"     -> Keyword
+		"finally"   -> Keyword
+		"for"       -> Keyword
+		"forSome"   -> Keyword
+		"if"        -> Keyword
+		"implicit"  -> Keyword
+		"import"    -> Keyword
+		"lazy"      -> Keyword
+		"match"     -> Keyword
+		"new"       -> Keyword
+		"null"      -> Keyword
+		"object"    -> Keyword
+		"override"  -> Keyword
+		"package"   -> Keyword
+		"private"   -> Keyword
+		"protected" -> Keyword
+		"return"    -> Keyword
+		"sealed"    -> Keyword
+		"super"     -> Keyword
+		"this"      -> Keyword
+		"throw"     -> Keyword
+		"trait"     -> Keyword
+		"try"       -> Keyword
+		"true"      -> Keyword
+		"type"      -> Keyword
+		"val"       -> Keyword
+		"var"       -> Keyword
+		"while"     -> Keyword
+		"with"      -> Keyword
+		"yield"     -> Keyword
+		"_"         -> Keyword
+		":"         -> Keyword
+		"="         -> Keyword
+		"=>"        -> Keyword
+		"<-"        -> Keyword
+		"<:"        -> Keyword
+		"<%"        -> Keyword
+		">:"        -> Keyword
+		"#"         -> Keyword
+		"@"         -> Keyword
+		
+		Keyword -> Id {reject}
+		
+	lexical restrictions
+		Id -/- [a-zA-Z0-9]
