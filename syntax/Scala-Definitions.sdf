@@ -18,7 +18,9 @@ exports
 		{Pattern2 ","}+ (":" Type)? "=" Expr -> PatDef {"PatDef"}
 		
 		PatDef                     -> VarDef
-		{Id ","}+ ":" Type "=" "_" -> VarDef {"WildcardVarDef"}
+		%% I am not sure why the following is explicitly given in the grammar, because
+		%% PatDef will also match expressions of this kind
+		%% {Id ","}+ ":" Type "=" "_" -> VarDef {"WildcardVarDef", prefer}
 		
 		Id TypeParamClause? "=" Type -> TypeDef {"TypeDef"}
 		
