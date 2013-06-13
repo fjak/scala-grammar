@@ -21,10 +21,10 @@ exports
 		%% TODO: Nl
 		Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
 		
-		ClassParamClause* -> ClassParamClauses {"ClassParamClauses"}
+		ClassParamClause*                                      -> ClassParamClauses {"ClassParamClauses"}
 		ClassParamClause* "(" "implicit" {ClassParam ","}+ ")" -> ClassParamClauses {"ImplicitClassParamClauses", layout("2.first.line - 1.last.line < num(2)")}
 		
-		Annotation* Id ":" ParamType ("=" Expr)? -> ClassParam {"ClassParam"}
+		Annotation* Id ":" ParamType ("=" Expr)?                 -> ClassParam {"ClassParam"}
 		Annotation* Modifier* "val" Id ":" ParamType ("=" Expr)? -> ClassParam {"ValClassParam"}
 		Annotation* Modifier* "var" Id ":" ParamType ("=" Expr)? -> ClassParam {"VarClassParam"}
 		
@@ -42,7 +42,7 @@ exports
 		TemplateStat EOB -> TemplateStatSemi {"EOBTemplateStatSemi", avoid}
 		
 		%%AnnotationSeq? Modifier* Def -> TemplateStat {"DefTemplateStat"}
-		Def -> TemplateStat {"DefTemplateStat"}
+		Def                          -> TemplateStat {"DefTemplateStat"}
 		AnnotationSeq? Modifier* Dcl -> TemplateStat {"DclTemplateStat"}
 		Expr                         -> TemplateStat
 		Import                       -> TemplateStat
