@@ -15,8 +15,6 @@ exports
 		"{" SelfInvocation BlockStatSeq? "}"     -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
 		
 		"this" ArgumentExprs+ -> SelfInvocation {"SelfInvocation"}
-		
-		Id FunTypeParamClause? ParamClauses -> FunSig {"FunSig"}
 			
 		%% TODO: Nl
 		Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
