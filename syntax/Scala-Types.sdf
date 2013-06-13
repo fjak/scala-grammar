@@ -8,6 +8,10 @@ imports
 
 exports
 	context-free syntax
+		FunctionArgTypes "=>" Type  -> Type {"FunctionType"}
+		InfixType                   -> Type
+		InfixType ExistentialClause -> Type {"ExistentialType"}
+		
 		Path "." "type"     -> SimpleType {"SingletonType"}
 		SimpleType "#" Id   -> SimpleType {"TypeProjection"}
 		StableId            -> SimpleType {"TypeDesignator"}
@@ -45,9 +49,9 @@ exports
 		ValDcl  -> ExistentialDcl {"ExistentialVal"}
 		
 		CompoundType InfixTypeOp* -> InfixType {"InfixType"}
+		
 		Id CompoundType -> InfixTypeOp {"InfixTypeOp", layout("2.first.line - 1.last.line < num(2)")}
 		
-		FunctionArgTypes "=>" Type -> Type {"FunctionType"}
 		
 		InfixType -> FunctionArgTypes
 		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType"}
