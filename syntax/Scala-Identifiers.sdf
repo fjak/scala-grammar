@@ -7,7 +7,9 @@ module Scala-Identifiers
 		[a-z] -> Lower
 		Upper | Lower -> Letter
 		[0-9] -> Digit
-		[\33-\39] \/ [\42-45] \/ [\47] \/ [\58-\64] \/ [\92] \/ [\94] \/ [\96] \/ [\124] \/ [\126] -> OpChar
+		
+		%% ':' is not part of OpChar in this definition
+		[\33] \/ [\35-\38] \/ [\42-\43] \/ [\45] \/ [\47] \/ [\60-\64] \/ [\92] \/ [\94] \/ [\124] \/ [\126] -> OpChar
 		
 		OpChar+ -> Op
 		Lower IdRest -> VarId
