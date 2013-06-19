@@ -125,4 +125,4 @@ exports
 		Id (":" Type)?  -> Binding {"Binding"}
 		"_" (":" Type)? -> Binding {"WildCardBinding"}
 		
-		"(" {Binding ","}+ ")" -> Bindings {"Bindings"}
+		"(" {Binding ","}* ")" -> Bindings {"Bindings"}
