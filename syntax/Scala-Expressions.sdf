@@ -37,7 +37,7 @@ exports
 		Path                      -> SimpleExpr1
 		"_"                       -> SimpleExpr1 {"WildcardExpr"}
 		"(" Exprs? ")"            -> SimpleExpr1 {"TupleExpr"}
-		SimpleExpr "." Id         -> SimpleExpr1 {"DesignatorExpr"}
+		%% SimpleExpr "." Id         -> SimpleExpr1 {"DesignatorExpr"}
 		SimpleExpr TypeArgs       -> SimpleExpr1 {"TypeArgsExpr"}
 		SimpleExpr1 ArgumentExprs -> SimpleExpr1 {"AppExpr"}
 			
