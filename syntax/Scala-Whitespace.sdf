@@ -9,8 +9,16 @@ exports
 		-> EOL
 		-> EOF
 		-> EOB
+		"/*" (~[\*] | Asterisk)* "*/" -> LAYOUT
+		"//" ~[\n]* [\n] -> LAYOUT
+		[\*] -> Asterisk
+
+	lexical restrictions
+		EOF -/- ~[]
+		EOB -/- ~[\}]
+		Asterisk -/- [\/]
 	
 	context-free restrictions
-    	LAYOUT? -/- [\ \t\n\r]
-    	EOF -/- ~[]
-		EOB -/- ~[\}]
+		LAYOUT? -/- [\ \t\n\r]
+		LAYOUT? -/- [\/].[\*]
+		LAYOUT? -/- [\/].[\/]
