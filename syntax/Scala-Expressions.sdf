@@ -44,8 +44,9 @@ exports
 		PostfixExpr Ascription                                               -> Expr1 {"AscriptionExpr"}
 		PostfixExpr "match" "{" CaseClauses "}"                              -> Expr1 {"MatchExpr"}
 		
-		%% TODO: Inline this to express the optional newline
-		InfixExpr (Id Nl?)? -> PostfixExpr {"PostfixExpr"}
+		%% TODO: Inline this to express the optional newline, disables "real" PostfixExprs until then
+		%%InfixExpr (Id Nl?)? -> PostfixExpr {"PostfixExpr"}
+		InfixExpr -> PostfixExpr {"PostfixExpr"}
 		
 		PrefixExpr             -> InfixExpr
 		InfixExpr Id InfixExpr -> InfixExpr {"InfixExpr", layout("3.first.line - 2.last.line < num(2)")}
@@ -107,7 +108,8 @@ exports
 		BlockStat EOB -> BlockStatSemi {"EOBBlockStatSemi", avoid}
 		BlockStat ";" -> BlockStatSemi {"SemiBlockStatSemi"}
 		
-		Expr1                                     -> ResultExpr
+		%% Only treat "special" expressions as ResultExpr to avoid ambiguity with BlockStatSemi
+		%% Expr1                                     -> ResultExpr
 		Bindings "=>" Block                       -> ResultExpr {"BindingsResultExpr"}
 		"implicit" Id ":" CompoundType "=>" Block -> ResultExpr {"ImplicitResultExpr"}
 		Id ":" CompoundType "=>" Block            -> ResultExpr {"SimpleResultExpr"}
