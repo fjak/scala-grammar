@@ -75,4 +75,5 @@ module Scala-Identifiers
 		Keyword -> Id {reject}
 		
 	lexical restrictions
-		Id -/- [a-zA-Z0-9]
+		%% && should always be one identifier, so we need to include all opchars here
+		Id -/- [a-zA-Z0-9] \/ [\33] \/ [\35-\38] \/ [\42-\43] \/ [\45] \/ [\47] \/ [\60-\64] \/ [\92] \/ [\94] \/ [\124] \/ [\126]

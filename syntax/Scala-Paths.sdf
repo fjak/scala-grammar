@@ -13,4 +13,8 @@ exports
 		(Id ".") "super" ClassQualifier? "." Id -> StableId{"Super"}
 		
 		"[" Id "]" -> ClassQualifier{"ClassQualifier"}
+	
+	context-free restrictions
+		%% thisfoo should never be a Path{"this"} followed by the identifier foo
+		Path -/- [a-zA-Z0-9]
 		
