@@ -27,6 +27,31 @@ exports
 		"implicit" Id "=>" Expr -> Expr {"ImplicitFunExpr"}
 		"_" "=>" Expr           -> Expr {"WildcardFunExpr"}
 		
+		"if" "(" Expr ")" Expr                                               -> Expr1 {"IfExpr"}
+		"if" "(" Expr ")" Expr Semi? "else" Expr                             -> Expr1 {"IfElseExpr"}
+		"while" "(" Expr ")" Expr                                            -> Expr1 {"WhileExpr"}
+		"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)? -> Expr1 {"TryExpr"}
+		"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr1 {"DoWhileExpr"}
+		"for" "(" Enumerators ")" Expr                                       -> Expr1 {"BraceForExpr"}
+		"for" "{" Enumerators "}" Expr                                       -> Expr1 {"CurlyBraceForExpr"}
+		"for" "(" Enumerators ")" "yield" Expr                               -> Expr1 {"BraceYieldForExpr"}
+		"for" "{" Enumerators "}" "yield" Expr                               -> Expr1 {"CurlyBraceYieldForExpr"}
+		"throw" Expr                                                         -> Expr1 {"ThrowExpr"}
+		"return" Expr                                                        -> Expr1 {"ReturnExpr"}
+		(SimpleExpr ".")? Id "=" Expr                                        -> Expr1 {"AssignmentExpr"}
+		SimpleExpr1 ArgumentExprs "=" Expr                                   -> Expr1 {"AccessAssignmentExpr"}
+		PostfixExpr                                                          -> Expr1
+		PostfixExpr Ascription                                               -> Expr1 {"AscriptionExpr"}
+		PostfixExpr "match" "{" CaseClauses "}"                              -> Expr1 {"MatchExpr"}
+		
+		%% TODO: Inline this to express the optional newline
+		InfixExpr (Id Nl?)? -> PostfixExpr {"PostfixExpr"}
+		
+		PrefixExpr             -> InfixExpr
+		InfixExpr Id InfixExpr -> InfixExpr {"InfixExpr", layout("3.first.line - 2.last.line < num(2)")}
+		
+		Prefix? SimpleExpr -> PrefixExpr{"PrefixExpr"}
+		
 		"new" ClassTemplate -> SimpleExpr {"NewClassExpr"}
 		"new" TemplateBody  -> SimpleExpr {"TemplateExpr"}
 		BlockExpr           -> SimpleExpr
@@ -42,51 +67,19 @@ exports
 		SimpleExpr1 ArgumentExprs -> SimpleExpr1 {"AppExpr"}
 			
 		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
-		"(" (Exprs ",")? PostfixExpr ":" "_" "*" ")" -> ArgumentExprs {"PostfixArgumentExprs"}
-		
+		"(" (Exprs ",")? PostfixExpr ":" "_" "*" ")" -> ArgumentExprs {"PostfixArgumentExprs"}		
 		%% TODO: Need to inline this because of optional nl in the beginning
 		Nl? BlockExpr                                -> ArgumentExprs {"BlockArgumentExprs"}
 		
 		{Expr ","}+ -> Exprs {"Exprs"}
-		
-		"if" "(" Expr ")" Expr                   -> Expr1 {"IfExpr"}
-		"if" "(" Expr ")" Expr Semi? "else" Expr -> Expr1 {"IfElseExpr"}
-		
-		"while" "(" Expr ")" Expr -> Expr1 {"WhileExpr"}
-		
-		"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)? -> Expr1 {"TryExpr"}
-		
-		"do" Expr Semi? "while" "(" Expr ")" -> Expr1 {"DoWhileExpr"}
-		
-		"for" "(" Enumerators ")" Expr         -> Expr1 {"BraceForExpr"}
-		"for" "{" Enumerators "}" Expr         -> Expr1 {"CurlyBraceForExpr"}
-		"for" "(" Enumerators ")" "yield" Expr -> Expr1 {"BraceYieldForExpr"}
-		"for" "{" Enumerators "}" "yield" Expr -> Expr1 {"CurlyBraceYieldForExpr"}
-		
-		"throw" Expr -> Expr1 {"ThrowExpr"}
-		
-		"return" Expr -> Expr1 {"ReturnExpr"}
-		
-		(SimpleExpr ".")? Id "=" Expr           -> Expr1 {"AssignmentExpr"}
-		SimpleExpr1 ArgumentExprs "=" Expr      -> Expr1 {"AccessAssignmentExpr"}
-		PostfixExpr                             -> Expr1
-		PostfixExpr Ascription                  -> Expr1 {"AscriptionExpr"}
-		PostfixExpr "match" "{" CaseClauses "}" -> Expr1 {"MatchExpr"}
-		
-		Prefix? SimpleExpr -> PrefixExpr{"PrefixExpr"}
 		
 		":" InfixType   -> Ascription {"TypeAscription"}
 		":" Annotation+ -> Ascription {"AnnotationAscription"}
 		":" "_" "*"     -> Ascription {"SequenceAscription"}
 		
 		Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
+		
 		"if" PostfixExpr -> Guard {"Guard"}
-		
-		%% TODO: Inline this to express the optional newline
-		InfixExpr (Id Nl?)? -> PostfixExpr {"PostfixExpr"}
-		
-		PrefixExpr             -> InfixExpr
-		InfixExpr Id InfixExpr -> InfixExpr {"InfixExpr", layout("3.first.line - 2.last.line < num(2)")}
 		
 		Generator                   -> Enumerators 
 		Generator ";" EnumeratorSeq -> Enumerators {"SemiEnumerators"}
@@ -104,18 +97,21 @@ exports
 		
 		CaseClause+ -> CaseClauses {"CaseClauses"}
 		
-		BlockStatSemi* ResultExpr -> Block {"Block", prefer}
-		BlockStatSemi*            -> Block {"Block"}
+		"{" CaseClauses "}" -> BlockExpr {"CaseBlockExpr"}
+		"{" Block "}"       -> BlockExpr {"BlockExpr"}
 		
-		BlockStat EOL -> BlockStatSemi {"BlockStatSeq", enforce-newline, prefer}
-		BlockStat EOB -> BlockStatSemi {"EOBBlockStatSeq", avoid}
-		BlockStat ";" -> BlockStatSemi {"SemiBlockStatSeq"}
+		BlockStatSemi* ResultExpr -> Block {"BlockWithResult", prefer}
+		BlockStatSemi*            -> Block {"BlockWithoutResult"}
 		
-		Expr1 -> ResultExpr
+		BlockStat EOL -> BlockStatSemi {"BlockStatSemi", enforce-newline, prefer}
+		BlockStat EOB -> BlockStatSemi {"EOBBlockStatSemi", avoid}
+		BlockStat ";" -> BlockStatSemi {"SemiBlockStatSemi"}
+		
+		Expr1                                     -> ResultExpr
 		Bindings "=>" Block                       -> ResultExpr {"BindingsResultExpr"}
-		"implicit" Id ":" CompoundType "=>" Block -> ResultExpr{"ImplicitResultExpr"}
-		Id ":" CompoundType "=>" Block            -> ResultExpr{"SimpleResultExpr"}
-		"_" ":" CompoundType "=>" Block           -> ResultExpr{"WildcardResultExpr"}
+		"implicit" Id ":" CompoundType "=>" Block -> ResultExpr {"ImplicitResultExpr"}
+		Id ":" CompoundType "=>" Block            -> ResultExpr {"SimpleResultExpr"}
+		"_" ":" CompoundType "=>" Block           -> ResultExpr {"WildcardResultExpr"}
 		
 		Import                             -> BlockStat
 		Expr1                              -> BlockStat
@@ -123,17 +119,8 @@ exports
 		Annotation* "implicit" Def         -> BlockStat {"ImplicitDefBlockStat"}
 		Annotation* "lazy" Def             -> BlockStat {"LazyDefBlockStat"}
 		Annotation* LocalModifier* TmplDef -> BlockStat {"TmplDefBlockStat"}
-		
-		"{" CaseClauses "}" -> BlockExpr {"CaseBlockExpr"}
-		"{" Block "}"       -> BlockExpr {"BlockExpr"}
-		
-		Id (":" Type)?  -> Binding  {"Binding"}
+			
+		Id (":" Type)?  -> Binding {"Binding"}
 		"_" (":" Type)? -> Binding {"WildCardBinding"}
 		
 		"(" {Binding ","}+ ")" -> Bindings {"Bindings"}
-		
-		
-		
-		
-		
-		

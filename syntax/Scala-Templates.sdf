@@ -11,8 +11,8 @@ exports
 		SelfInvocation -> ConstrExpr
 		ConstrBlock    -> ConstrExpr
 		
-		"{" SelfInvocation ";" BlockStatSeq? "}" -> ConstrBlock {"SemiConstrBlock"}
-		"{" SelfInvocation BlockStatSeq? "}"     -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
+		"{" SelfInvocation ";" BlockStatSemi? "}" -> ConstrBlock {"SemiConstrBlock"}
+		"{" SelfInvocation BlockStatSemi? "}"     -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
 		
 		"this" ArgumentExprs+ -> SelfInvocation {"SelfInvocation"}
 			
