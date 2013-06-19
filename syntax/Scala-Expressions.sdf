@@ -104,11 +104,12 @@ exports
 		
 		CaseClause+ -> CaseClauses {"CaseClauses"}
 		
-		BlockStatSeq* ResultExpr? -> Block {"Block"} 
+		BlockStatSemi* ResultExpr -> Block {"Block", prefer}
+		BlockStatSemi*            -> Block {"Block"}
 		
-		BlockStat EOL -> BlockStatSeq {"BlockStatSeq", enforce-newline}
-		BlockStat EOB -> BlockStatSeq {"EOBBlockStatSeq"}
-		BlockStat ";" -> BlockStatSeq {"SemiBlockStatSeq"}
+		BlockStat EOL -> BlockStatSemi {"BlockStatSeq", enforce-newline, prefer}
+		BlockStat EOB -> BlockStatSemi {"EOBBlockStatSeq", avoid}
+		BlockStat ";" -> BlockStatSemi {"SemiBlockStatSeq"}
 		
 		Expr1 -> ResultExpr
 		Bindings "=>" Block                       -> ResultExpr {"BindingsResultExpr"}
