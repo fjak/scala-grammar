@@ -21,8 +21,11 @@ exports
 		Annotation* "+" TypeParam -> VariantTypeParam {"PlusVariantTypeParam"}
 		Annotation* "-" TypeParam -> VariantTypeParam {"NegVariantTypeParam"}
 		
-		Id TypeParamClause? (">:" Type)? ("<:" Type)? (":" Type)?  -> TypeParam {"TypeParam"}
-		"_" TypeParamClause? (">:" Type)? ("<:" Type)? (":" Type)? -> TypeParam {"WildcardTypeParam"}
+		Id  TypeParamClause? (">:" Type)? ("<:" Type)? TypeViewBound* TypeContextBound* -> TypeParam {"TypeParam"}
+		"_" TypeParamClause? (">:" Type)? ("<:" Type)? TypeViewBound* TypeContextBound* -> TypeParam {"WildcardTypeParam"}
+		
+		"<%" Type -> TypeViewBound {"TypeViewBound"}
+		":" Type -> TypeContextBound {"TypeContextBound"}
 		
 		FunSig ":" Type -> FunDcl {"FunDcl"}
 		
