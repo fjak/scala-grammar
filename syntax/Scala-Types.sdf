@@ -17,6 +17,7 @@ exports
 		StableId            -> SimpleType {"TypeDesignator"}
 		SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
 		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
+		"_"                 -> SimpleType {"WildcardType"}
 		
 		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
 		
