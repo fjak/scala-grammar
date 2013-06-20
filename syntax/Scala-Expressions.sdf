@@ -19,13 +19,19 @@ exports
 		"-" -> Prefix
 		"~" -> Prefix
 		"!" -> Prefix
+		"=" -> AssignOp
+	
+	lexical restrictions
+		AssignOp -/- [\>]
 	
 	context-free syntax
-		Expr1                   -> Expr
-		Bindings "=>" Expr      -> Expr {"FunExpr"}
-		Id "=>" Expr            -> Expr {"IdFunExpr"}
-		"implicit" Id "=>" Expr -> Expr {"ImplicitFunExpr"}
-		"_" "=>" Expr           -> Expr {"WildcardFunExpr"}
+		Expr1                   -> Expr {avoid}
+		FunExpr                 -> Expr {prefer}
+		
+		Bindings "=>" Expr      -> FunExpr {"FunExpr"}
+		Id "=>" Expr            -> FunExpr {"IdFunExpr"}
+		"implicit" Id "=>" Expr -> FunExpr {"ImplicitFunExpr"}
+		"_" "=>" Expr           -> FunExpr {"WildcardFunExpr"}
 		
 		"if" "(" Expr ")" Expr                                               -> Expr1 {"IfExpr"}
 		"if" "(" Expr ")" Expr Semi? "else" Expr                             -> Expr1 {"IfElseExpr"}
@@ -38,8 +44,8 @@ exports
 		"for" "{" Enumerators "}" "yield" Expr                               -> Expr1 {"CurlyBraceYieldForExpr"}
 		"throw" Expr                                                         -> Expr1 {"ThrowExpr"}
 		"return" Expr                                                        -> Expr1 {"ReturnExpr"}
-		(SimpleExpr ".")? Id "=" Expr                                        -> Expr1 {"AssignmentExpr"}
-		SimpleExpr1 ArgumentExprs "=" Expr                                   -> Expr1 {"AccessAssignmentExpr"}
+		(SimpleExpr ".")? Id AssignOp Expr                                   -> Expr1 {"AssignmentExpr"}
+		SimpleExpr1 ArgumentExprs AssignOp Expr                              -> Expr1 {"AccessAssignmentExpr"}
 		PostfixExpr                                                          -> Expr1
 		PostfixExpr Ascription                                               -> Expr1 {"AscriptionExpr"}
 		PostfixExpr "match" "{" CaseClauses "}"                              -> Expr1 {"MatchExpr"}
@@ -60,10 +66,10 @@ exports
 		SimpleExpr1 "_"     -> SimpleExpr {"WildcardSuffixExpr"}
 			
 		Literal                   -> SimpleExpr1
-		Path                      -> SimpleExpr1
+		Path                      -> SimpleExpr1 {avoid}
 		"_"                       -> SimpleExpr1 {"WildcardExpr"}
 		"(" Exprs? ")"            -> SimpleExpr1 {"TupleExpr"}
-		%% SimpleExpr "." Id         -> SimpleExpr1 {"DesignatorExpr"}
+		SimpleExpr "." Id         -> SimpleExpr1 {"DesignatorExpr", prefer}
 		SimpleExpr TypeArgs       -> SimpleExpr1 {"TypeArgsExpr"}
 		SimpleExpr1 ArgumentExprs -> SimpleExpr1 {"AppExpr"}
 			
