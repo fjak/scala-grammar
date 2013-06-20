@@ -14,11 +14,11 @@ exports
 		[\*] -> Asterisk
 
 	lexical restrictions
-		EOF -/- ~[]
-		EOB -/- ~[\}]
 		Asterisk -/- [\/]
 	
 	context-free restrictions
 		LAYOUT? -/- [\ \t\n\r]
 		LAYOUT? -/- [\/].[\*]
 		LAYOUT? -/- [\/].[\/]
+		EOF -/- ~[]
+		EOB -/- ~[\}]
