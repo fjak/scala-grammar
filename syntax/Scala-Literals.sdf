@@ -28,9 +28,9 @@ exports
 		"'" PrintableChar "'" -> CharacterLiteral
 		"'" CharEscapeSeq "'" -> CharacterLiteral
 		
-		[\33-\126] -> PrintableChar
+		[\32-\126] -> PrintableChar
 		[\0-\127] / [\34] -> CharNoDoubleQuote
-		[\33-\126] / [\34] -> PrintableCharNoDoubleQuote
+		[\32-\126] / [\34] -> PrintableCharNoDoubleQuote
 		"\\b" | "\\t" | "\\n" | "\\f" | "\\r" | "\\\"" | "\\'" | "\\\\" -> CharEscapeSeq
 		"\\" [0-1]? [0-9]? [0-9]                                        -> CharEscapeSeq
 		"\\" Digit? Digit? Digit                                        -> CharEscapeSeq
