@@ -49,7 +49,9 @@ exports
 		
 		Constr WithAnnotType* -> ClassParents {"ClassParents"}
 		
-		AnnotType ArgumentExprs* -> Constr {"Constr"}
+		AnnotType ConstrArgExpr* -> Constr {"Constr"}
+		
+		"(" Exprs? ")" -> ConstrArgExpr {"ConstrArgExpr"}
 		
 		AnnotType WithAnnotType* -> TraitParents {"TraitParents"}
 		
