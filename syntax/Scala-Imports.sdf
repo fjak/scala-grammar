@@ -12,9 +12,10 @@ exports
 		StableId "." "_"             -> ImportExpr {"WildcardImportExpr"}
 		StableId "." ImportSelectors -> ImportExpr {"SelectorsImportExpr"}
 	
-		"{" {ImportSelector ","}* ImportSelector "}" -> ImportSelectors {"ImportSelectors"}
-		"{" {ImportSelector ","}* "_" "}"            -> ImportSelectors {"WildcardImportSelectors"}	
+		"{" {ImportSelector ","}+ "}"         -> ImportSelectors {"ImportSelectors"}
+		"{" {ImportSelector ","}+ "," "_" "}" -> ImportSelectors {"ImportSelectorsWithWildcard"}
+		"{" "_" "}"                           -> ImportSelectors {"OnlyWildcardImportSelectors"}	
 	
-		Id "=>" Id  -> ImportSelector {"ImportSelector"}
+		Id          -> ImportSelector {"ImportSelector"}
+		Id "=>" Id  -> ImportSelector {"MappedImportSelector"}
 		Id "=>" "_" -> ImportSelector {"WildcardImportSelector"}
-		
