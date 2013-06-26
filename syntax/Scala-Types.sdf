@@ -46,8 +46,8 @@ exports
 		ExistentialDcl EOL -> ExistentialDclSemi {"ExistentialDclSeq", enforce-newline, prefer}
 		ExistentialDcl EOB -> ExistentialDclSemi {"EOBExistentialDclSeq"}
 		
-		TypeDcl -> ExistentialDcl {"ExistentialType"}
-		ValDcl  -> ExistentialDcl {"ExistentialVal"}
+		"type" TypeDcl -> ExistentialDcl {"ExistentialType"}
+		"val"  ValDcl  -> ExistentialDcl {"ExistentialVal"}
 		
 		CompoundType InfixTypeOp* -> InfixType {"InfixType"}
 		
