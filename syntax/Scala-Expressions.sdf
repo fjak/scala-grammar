@@ -60,17 +60,17 @@ exports
 		Prefix? SimpleExpr -> PrefixExpr{"PrefixExpr"}
 		
 		"new" ClassTemplate -> SimpleExpr {"NewClassExpr"}
-		"new" TemplateBody  -> SimpleExpr {"TemplateExpr"}
+		"new" TemplateBody  -> SimpleExpr {"NewTemplateExpr"}
 		BlockExpr           -> SimpleExpr
 		SimpleExpr1         -> SimpleExpr
-		SimpleExpr1 "_"     -> SimpleExpr {"WildcardSuffixExpr"}
+		SimpleExpr1 "_"     -> SimpleExpr {"ToFunctionEtaExpansion"}
 			
 		Literal                   -> SimpleExpr1
 		Path                      -> SimpleExpr1 {avoid}
 		"_"                       -> SimpleExpr1 {"WildcardExpr"}
 		"(" Exprs? ")"            -> SimpleExpr1 {"TupleExpr"}
 		SimpleExpr "." Id         -> SimpleExpr1 {"DesignatorExpr", prefer}
-		SimpleExpr TypeArgs       -> SimpleExpr1 {"TypeArgsExpr"}
+		SimpleExpr TypeArgs       -> SimpleExpr1 {"TypeApplication"}
 		SimpleExpr1 ArgumentExprs -> SimpleExpr1 {"AppExpr"}
 			
 		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
