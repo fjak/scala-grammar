@@ -21,7 +21,8 @@ exports
 		
 		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
 		
-		SimpleType Annotation* -> AnnotType {"AnnotType"}
+		SimpleType             -> AnnotType
+		SimpleType Annotation+ -> AnnotType {"AnnotType", layout("1.last.line == 2.first.line")}
 		
 		%% TODO
 		%% Let's just ignore refinements until later…
