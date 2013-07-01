@@ -8,9 +8,9 @@ exports
 		StableId         -> Path
 		(Id ".")? "this" -> Path{"This"}
 		
-		Id          -> StableId
-		Path "." Id -> StableId {"StableId"}
-		(Id ".") "super" ClassQualifier? "." Id -> StableId{"Super"}
+		Id                                       -> StableId
+		Path "." Id                              -> StableId {"StableId"}
+		(Id ".")? "super" ClassQualifier? "." Id -> StableId{"Super"}
 		
 		"[" Id "]" -> ClassQualifier{"ClassQualifier"}
 	
