@@ -22,9 +22,9 @@ exports
 		ClassParamClause*                                      -> ClassParamClauses {"ClassParamClauses"}
 		ClassParamClause* "(" "implicit" {ClassParam ","}+ ")" -> ClassParamClauses {"ImplicitClassParamClauses", layout("2.first.line - 1.last.line < num(2)")}
 		
-		Annotation* Id ":" ParamType ("=" Expr)?                 -> ClassParam {"ClassParam"}
-		Annotation* Modifier* "val" Id ":" ParamType ("=" Expr)? -> ClassParam {"ValClassParam"}
-		Annotation* Modifier* "var" Id ":" ParamType ("=" Expr)? -> ClassParam {"VarClassParam"}
+		Annotation* Id ":" ParamType Assignment?                 -> ClassParam {"ClassParam"}
+		Annotation* Modifier* "val" Id ":" ParamType Assignment? -> ClassParam {"ValClassParam"}
+		Annotation* Modifier* "var" Id ":" ParamType Assignment? -> ClassParam {"VarClassParam"}
 		
 		EarlyDefs? ClassParents TemplateBody? -> ClassTemplate {"ClassTemplate"}
 		

@@ -35,7 +35,8 @@ exports
 		
 		{Param ","}+ -> Params {"Params"}
 		
-		Annotation* Id (":" ParamType)? ("=" Expr)? -> Param {"Param"}
+		Annotation* Id (":" ParamType)?            -> Param {"Param"}
+		Annotation* Id (":" ParamType)? Assignment -> Param {"ParamWithDefVal"}
 		
 		ParamClauses? ImplicitParams? -> ImplicitParamClauses {"ImplicitParamClauses", layout("2.first.line - 1.last.line < num(2)")}
 		

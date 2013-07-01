@@ -45,8 +45,8 @@ exports
 		"for" "{" Enumerators "}" "yield" Expr                               -> Expr1 {"CurlyBraceYieldForExpr"}
 		"throw" Expr                                                         -> Expr1 {"ThrowExpr"}
 		"return" Expr                                                        -> Expr1 {"ReturnExpr"}
-		(SimpleExpr ".")? Id AssignOp Expr                                   -> Expr1 {"AssignmentExpr"}
-		SimpleExpr1 ArgumentExprs AssignOp Expr                              -> Expr1 {"AccessAssignmentExpr"}
+		(SimpleExpr ".")? Id Assignment                                      -> Expr1 {"AssignmentExpr"}
+		SimpleExpr1 ArgumentExprs Assignment                                 -> Expr1 {"AccessAssignmentExpr"}
 		PostfixExpr                                                          -> Expr1
 		PostfixExpr Ascription                                               -> Expr1 {"AscriptionExpr"}
 		PostfixExpr "match" "{" CaseClauses "}"                              -> Expr1 {"MatchExpr"}
@@ -99,9 +99,9 @@ exports
 		Enumerator ";" EnumeratorSeq -> EnumeratorSeq {"SemiEnumeratorSeq"}
 		Enumerator EnumeratorSeq     -> EnumeratorSeq {"EnumeratorSeq", layout("2.first.line > 1.last.line")}
 		
-		Generator               -> Enumerator
-		Guard                   -> Enumerator
-		"val" Pattern1 "=" Expr -> Enumerator {"Enumerator"}
+		Generator                 -> Enumerator
+		Guard                     -> Enumerator
+		"val" Pattern1 Assignment -> Enumerator {"Enumerator"}
 		
 		"case" Pattern Guard? "=>" Block -> CaseClause {"CaseClause"}
 		
@@ -135,3 +135,5 @@ exports
 		"_" (":" Type)? -> Binding {"WildCardBinding"}
 		
 		"(" {Binding ","}* ")" -> Bindings {"Bindings"}
+
+		AssignOp Expr -> Assignment {"Assignment"}
