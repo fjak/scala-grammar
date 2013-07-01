@@ -34,7 +34,8 @@ exports
 		"_" "=>" Expr           -> FunExpr {"WildcardFunExpr"}
 		
 		"if" "(" Expr ")" Expr                                               -> Expr1 {"IfExpr"}
-		"if" "(" Expr ")" Expr Semi? "else" Expr                             -> Expr1 {"IfElseExpr"}
+		"if" "(" Expr ")" Expr "else" Expr                                   -> Expr1 {"IfElseExpr"}
+		"if" "(" Expr ")" Expr ";" "else" Expr                               -> Expr1 {"IfElseExpr"}
 		"while" "(" Expr ")" Expr                                            -> Expr1 {"WhileExpr"}
 		"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)? -> Expr1 {"TryExpr"}
 		"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr1 {"DoWhileExpr"}
@@ -52,12 +53,14 @@ exports
 		
 		%% TODO: Inline this to express the optional newline, disables "real" PostfixExprs until then
 		%%InfixExpr (Id Nl?)? -> PostfixExpr {"PostfixExpr"}
-		InfixExpr -> PostfixExpr {"PostfixExpr"}
-		
+		InfixExpr    -> PostfixExpr
+		InfixExpr Id -> PostfixExpr {"PostfixExpr"}
+
 		PrefixExpr             -> InfixExpr
 		InfixExpr Id InfixExpr -> InfixExpr {"InfixExpr", layout("3.first.line - 2.last.line < num(2)")}
 		
-		Prefix? SimpleExpr -> PrefixExpr{"PrefixExpr"}
+		Prefix SimpleExpr -> PrefixExpr{"PrefixExpr"}
+		SimpleExpr        -> PrefixExpr
 		
 		"new" ClassTemplate -> SimpleExpr {"NewClassExpr"}
 		"new" TemplateBody  -> SimpleExpr {"NewTemplateExpr"}
@@ -74,7 +77,7 @@ exports
 		SimpleExpr1 ArgumentExprs -> SimpleExpr1 {"AppExpr"}
 			
 		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
-		"(" (Exprs ",")? PostfixExpr ":" "_" "*" ")" -> ArgumentExprs {"PostfixArgumentExprs"}		
+		"(" (Exprs ",")? PostfixExpr ":" "_" "*" ")" -> ArgumentExprs {"SequenceArgumentExprs", prefer}
 		%% TODO: Need to inline this because of optional nl in the beginning
 		Nl? BlockExpr                                -> ArgumentExprs {"BlockArgumentExprs"}
 		
