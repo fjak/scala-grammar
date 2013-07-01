@@ -29,7 +29,8 @@ exports
 		
 		FunSig ":" Type -> FunDcl {"FunDcl"}
 		
-		Id FunTypeParamClause? ImplicitParamClauses -> FunSig {"FunSig"}
+		Id ImplicitParamClauses                    -> FunSig {"FunSig"}
+		Id FunTypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
 		
 		"[" {TypeParam ","}+ "]" -> FunTypeParamClause {"FunTypeParamClause"}
 		
