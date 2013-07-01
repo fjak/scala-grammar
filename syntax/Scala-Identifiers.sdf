@@ -11,15 +11,26 @@ module Scala-Identifiers
 		[\33] \/ [\35-\38] \/ [\42-\43] \/ [\45] \/ [\47] \/ [\58] \/ [\60-\64] \/ [\92] \/ [\94] \/ [\124] \/ [\126] -> OpChar
 		
 		OpChar+ -> Op
-		Lower IdRest -> VarId
 		
-		Upper IdRest -> PlainId
-		VarId        -> PlainId
-		Op           -> PlainId
+		(Letter | Digit)+ -> NonOpIdRest
 		
-		PlainId               -> Id
+		"_" Op -> OpSuffix
 		
-		(Letter | Digit)* ("_" Op)? -> IdRest
+		PureTypeId     -> PlainId
+		PureVarId      -> PlainId
+		OpSuffixVarId  -> PlainId
+		OpSuffixTypeId -> PlainId
+		Op             -> PlainId
+		
+		Lower NonOpIdRest?          -> PureVarId
+		Lower NonOpIdRest? OpSuffix -> OpSuffixVarId
+		Upper NonOpIdRest?          -> PureTypeId
+		Upper NonOpIdRest? OpSuffix -> OpSuffixTypeId
+		
+		PureVarId     -> VarId
+		OpSuffixVarId -> VarId
+		
+		PlainId -> Id
 		
 		"abstract"  -> Keyword
 		"case"      -> Keyword
@@ -74,5 +85,7 @@ module Scala-Identifiers
 		Keyword -> Id {reject}
 		
 	lexical restrictions
-		%% && should always be one identifier, so we need to include all opchars here
-		Id -/- [a-zA-Z0-9] \/ [\33] \/ [\35-\38] \/ [\42-\43] \/ [\45] \/ [\47] \/ [\60-\64] \/ [\92] \/ [\94] \/ [\124] \/ [\126]
+		Op -/- [a-zA-Z0-9] \/ [\33] \/ [\35-\38] \/ [\42-\43] \/ [\45] \/ [\47] \/ [\60-\64] \/ [\92] \/ [\94] \/ [\124] \/ [\126]
+		NonOpIdRest -/- [A-Za-z0-9\$]
+		PureVarId -/- [A-Za-z0-9\$]
+		PureTypeId -/- [A-Za-z0-9\$]
