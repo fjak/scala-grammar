@@ -56,10 +56,10 @@ exports
 		
 		Id CompoundType -> InfixTypeOp {"InfixTypeOp", layout("2.first.line - 1.last.line < num(2)")}
 		
-		
-		InfixType -> FunctionArgTypes
-		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType"}
-		
+
+		InfixType                -> FunctionArgTypes
+		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType", prefer}
+
 		Type      -> ParamType
 		"=>" Type -> ParamType {"ByNameParam"}
 		Type "*"  -> ParamType {"RepeatedParam"}

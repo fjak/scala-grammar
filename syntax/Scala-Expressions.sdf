@@ -57,7 +57,7 @@ exports
 		InfixExpr Id -> PostfixExpr {"PostfixExpr"}
 
 		PrefixExpr             -> InfixExpr
-		InfixExpr Id InfixExpr -> InfixExpr {"InfixExpr", layout("3.first.line - 2.last.line < num(2)")}
+		InfixExpr Id InfixExpr -> InfixExpr {"InfixExpr", left, layout("3.first.line - 2.last.line < num(2)")}
 		
 		Prefix SimpleExpr -> PrefixExpr{"PrefixExpr"}
 		SimpleExpr        -> PrefixExpr
