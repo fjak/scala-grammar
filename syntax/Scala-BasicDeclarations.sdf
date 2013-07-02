@@ -6,8 +6,8 @@ imports
 
 exports
 	context-free syntax
-		"val" ValDcl  -> Dcl {"ValDclDcl"}
-		"var" VarDcl  -> Dcl {"VarDclDcl"}
+		Val ValDcl  -> Dcl {"ValDclDcl"}
+		Var VarDcl  -> Dcl {"VarDclDcl"}
 		"def" FunDcl  -> Dcl {"DefDclDcl"}
 		"type" TypeDcl -> Dcl {"TypeDclDcl"}
 		

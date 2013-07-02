@@ -81,7 +81,10 @@ module Scala-Identifiers
 		">:"        -> Keyword
 		"#"         -> Keyword
 		"@"         -> Keyword
-		
+
+		"val" -> Val
+		"var" -> Var
+
 		Keyword -> Id {reject}
 		
 	lexical restrictions
@@ -89,3 +92,6 @@ module Scala-Identifiers
 		NonOpIdRest -/- [A-Za-z0-9\$]
 		PureVarId -/- [A-Za-z0-9\$]
 		PureTypeId -/- [A-Za-z0-9\$]
+
+		Val -/- [a-zA-Z]
+		Var -/- [a-zA-Z]

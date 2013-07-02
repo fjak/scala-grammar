@@ -12,8 +12,8 @@ exports
 		"type" TypeDef -> Def {"TypeDefDef"}
 		TmplDef        -> Def
 		
-		"val" PatDef -> PatVarDef {"ValPatDef"}
-		"var" VarDef -> PatVarDef {"VarPatDef"}
+		Val PatDef -> PatVarDef {"ValPatDef"}
+		Var VarDef -> PatVarDef {"VarPatDef"}
 		
 		{Pattern2 ","}+ (":" Type)? Assignment -> PatDef {"PatDef"}
 		
