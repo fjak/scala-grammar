@@ -24,60 +24,54 @@ exports
 	lexical restrictions
 		AssignOp -/- [\>]
 	
-	context-free syntax
-		Expr1                   -> Expr {avoid}
-		FunExpr                 -> Expr {prefer}
-		
-		Bindings "=>" Expr      -> FunExpr {"FunExpr"}
-		Id "=>" Expr            -> FunExpr {"IdFunExpr"}
-		"implicit" Id "=>" Expr -> FunExpr {"ImplicitFunExpr"}
-		"_" "=>" Expr           -> FunExpr {"WildcardFunExpr"}
-		
-		"if" "(" Expr ")" Expr                                               -> Expr1 {"IfExpr"}
-		"if" "(" Expr ")" Expr "else" Expr                                   -> Expr1 {"IfElseExpr"}
-		"if" "(" Expr ")" Expr ";" "else" Expr                               -> Expr1 {"IfElseExpr"}
-		"while" "(" Expr ")" Expr                                            -> Expr1 {"WhileExpr"}
-		"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)? -> Expr1 {"TryExpr"}
-		"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr1 {"DoWhileExpr"}
-		"for" "(" Enumerators ")" Expr                                       -> Expr1 {"BraceForExpr"}
-		"for" "{" Enumerators "}" Expr                                       -> Expr1 {"CurlyBraceForExpr"}
-		"for" "(" Enumerators ")" "yield" Expr                               -> Expr1 {"BraceYieldForExpr"}
-		"for" "{" Enumerators "}" "yield" Expr                               -> Expr1 {"CurlyBraceYieldForExpr"}
-		"throw" Expr                                                         -> Expr1 {"ThrowExpr"}
-		"return" Expr                                                        -> Expr1 {"ReturnExpr"}
-		(SimpleExpr ".")? Id Assignment                                      -> Expr1 {"AssignmentExpr"}
-		SimpleExpr1 ArgumentExprs Assignment                                 -> Expr1 {"AccessAssignmentExpr"}
-		PostfixExpr                                                          -> Expr1
-		PostfixExpr Ascription                                               -> Expr1 {"AscriptionExpr"}
-		PostfixExpr "match" "{" CaseClauses "}"                              -> Expr1 {"MatchExpr"}
-		
-		%% TODO: Inline this to express the optional newline, disables "real" PostfixExprs until then
-		%%InfixExpr (Id Nl?)? -> PostfixExpr {"PostfixExpr"}
-		InfixExpr    -> PostfixExpr
-		InfixExpr Id -> PostfixExpr {"PostfixExpr"}
+	context-free priorities
+		{
+			"_"                -> Expr {"WildcardExpr"}
+			Literal            -> Expr
+			Expr "." Id        -> Expr {"DesignatorExpr", avoid}
+			Path               -> Expr {prefer}
+			Expr ArgumentExprs -> Expr {"AppExpr"}
+			"(" Exprs? ")"     -> Expr {"TupleExpr"}
+			Expr TypeArgs      -> Expr {"TypeApplication", avoid}
+		}
 
-		PrefixExpr             -> InfixExpr
-		InfixExpr Id InfixExpr -> InfixExpr {"InfixExpr", left, layout("3.first.line - 2.last.line < num(2)")}
-		
-		Prefix SimpleExpr -> PrefixExpr{"PrefixExpr"}
-		SimpleExpr        -> PrefixExpr
-		
-		"new" ClassTemplate -> SimpleExpr {"NewClassExpr"}
-		"new" TemplateBody  -> SimpleExpr {"NewTemplateExpr"}
-		BlockExpr           -> SimpleExpr
-		SimpleExpr1         -> SimpleExpr
-		SimpleExpr1 "_"     -> SimpleExpr {"ToFunctionEtaExpansion"}
+		> {
+			"new" ClassTemplate -> Expr {"NewClassExpr", prefer}
+			"new" TemplateBody  -> Expr {"NewTemplateExpr", prefer}
+			BlockExpr           -> Expr
+			Expr "_"            -> Expr {"ToFunctionEtaExpansion", left}
+		}
 			
-		Literal                   -> SimpleExpr1
-		Path                      -> SimpleExpr1 {avoid}
-		"_"                       -> SimpleExpr1 {"WildcardExpr"}
-		"(" Exprs? ")"            -> SimpleExpr1 {"TupleExpr"}
-		SimpleExpr "." Id         -> SimpleExpr1 {"DesignatorExpr", prefer}
-		SimpleExpr TypeArgs       -> SimpleExpr1 {"TypeApplication"}
-		SimpleExpr1 ArgumentExprs -> SimpleExpr1 {"AppExpr"}
-			
+		> Prefix Expr  -> Expr {"PrefixExpr", prefer}
+		> Expr Id Expr -> Expr {"InfixExpr", left, layout("3.first.line - 2.last.line < num(2)")}
+		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
+
+		> {
+			Bindings "=>" Expr                                                   -> Expr {"FunExpr"}
+			Id "=>" Expr                                                         -> Expr {"IdFunExpr"}
+			"implicit" Id "=>" Expr                                              -> Expr {"ImplicitFunExpr"}
+			"_" "=>" Expr                                                        -> Expr {"WildcardFunExpr"}
+			"if" "(" Expr ")" Expr                                               -> Expr {"IfExpr"}
+			"if" "(" Expr ")" Expr "else" Expr                                   -> Expr {"IfElseExpr"}
+			"if" "(" Expr ")" Expr ";" "else" Expr                               -> Expr {"IfElseExpr"}
+			"while" "(" Expr ")" Expr                                            -> Expr {"WhileExpr"}
+			"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)? -> Expr {"TryExpr"}
+			"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr {"DoWhileExpr"}
+			"for" "(" Enumerators ")" Expr                                       -> Expr {"BraceForExpr"}
+			"for" "{" Enumerators "}" Expr                                       -> Expr {"CurlyBraceForExpr"}
+			"for" "(" Enumerators ")" "yield" Expr                               -> Expr {"BraceYieldForExpr"}
+			"for" "{" Enumerators "}" "yield" Expr                               -> Expr {"CurlyBraceYieldForExpr"}
+			"throw" Expr                                                         -> Expr {"ThrowExpr"}
+			"return" Expr                                                        -> Expr {"ReturnExpr"}
+			Expr Ascription                                                      -> Expr {"AscriptionExpr"}
+			Expr "match" "{" CaseClauses "}"                                     -> Expr {"MatchExpr"}
+			(Expr ".")? Id AssignOp Expr                                         -> Expr {"AssignmentExpr", non-assoc}
+			Expr ArgumentExprs AssignOp Expr                                     -> Expr {"AccessAssignmentExpr", non-assoc}
+		}
+
+	context-free syntax
 		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
-		"(" (Exprs ",")? PostfixExpr ":" "_" "*" ")" -> ArgumentExprs {"SequenceArgumentExprs", prefer}
+		"(" (Exprs ",")? Expr ":" "_" "*" ")"        -> ArgumentExprs {"SequenceArgumentExprs", prefer}
 		%% TODO: Need to inline this because of optional nl in the beginning
 		Nl? BlockExpr                                -> ArgumentExprs {"BlockArgumentExprs"}
 		
@@ -89,7 +83,7 @@ exports
 		
 		Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
 		
-		"if" PostfixExpr -> Guard {"Guard"}
+		"if" Expr -> Guard {"Guard"}
 		
 		Generator                   -> Enumerators 
 		Generator ";" EnumeratorSeq -> Enumerators {"SemiEnumerators"}
@@ -99,9 +93,9 @@ exports
 		Enumerator ";" EnumeratorSeq -> EnumeratorSeq {"SemiEnumeratorSeq"}
 		Enumerator EnumeratorSeq     -> EnumeratorSeq {"EnumeratorSeq", layout("2.first.line > 1.last.line")}
 		
-		Generator                 -> Enumerator
-		Guard                     -> Enumerator
-		"val" Pattern1 Assignment -> Enumerator {"Enumerator"}
+		Generator                    -> Enumerator
+		Guard                        -> Enumerator
+		"val" Pattern1 AssignOp Expr -> Enumerator {"Enumerator"}
 		
 		"case" Pattern Guard? "=>" Block -> CaseClause {"CaseClause"}
 		
@@ -125,7 +119,7 @@ exports
 		"_" ":" CompoundType "=>" Block           -> ResultExpr {"WildcardResultExpr"}
 		
 		Import                             -> BlockStat
-		Expr1                              -> BlockStat
+		Expr                               -> BlockStat
 		Annotation* Def                    -> BlockStat {"DefBlockStat"}
 		Annotation* "implicit" Def         -> BlockStat {"ImplicitDefBlockStat"}
 		Annotation* "lazy" Def             -> BlockStat {"LazyDefBlockStat"}
