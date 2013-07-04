@@ -60,6 +60,7 @@ exports
 		"extends" TraitTemplate -> TraitTemplateOpt {"TraitTraitTemplateOpt"}
 		"extends" TemplateBody  -> TraitTemplateOpt {"TemplateTraitTemplateOpt"}
 		TemplateBody            -> TraitTemplateOpt
+		                        -> TraitTemplateOpt {"EmptyTraitTemplateOpt"}
 		
 		EarlyDefs? TraitParents TemplateBody? -> TraitTemplate {"TraitTemplate"}
 		
