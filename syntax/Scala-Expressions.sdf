@@ -20,9 +20,11 @@ exports
 		"~" -> Prefix
 		"!" -> Prefix
 		"=" -> AssignOp
+		"new" -> New
 	
 	lexical restrictions
 		AssignOp -/- [\>]
+		New -/- [a-zA-Z0-9]
 	
 	context-free priorities
 		{
@@ -36,8 +38,8 @@ exports
 		}
 
 		> {
-			"new" ClassTemplate -> Expr {"NewClassExpr", prefer}
-			"new" TemplateBody  -> Expr {"NewTemplateExpr", prefer}
+			New ClassTemplate -> Expr {"NewClassExpr", prefer}
+			New TemplateBody  -> Expr {"NewTemplateExpr", prefer}
 			BlockExpr           -> Expr
 			Expr "_"            -> Expr {"ToFunctionEtaExpansion", left}
 		}
