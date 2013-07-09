@@ -18,13 +18,7 @@ exports
 		"+" -> Prefix
 		"-" -> Prefix
 		"~" -> Prefix
-		"!" -> Prefix
-		"=" -> AssignOp
-		"new" -> New
-	
-	lexical restrictions
-		AssignOp -/- [\>]
-		New -/- [a-zA-Z0-9]
+		"!" -> Prefix	
 	
 	context-free priorities
 		{
@@ -38,8 +32,8 @@ exports
 		}
 
 		> {
-			New ClassTemplate -> Expr {"NewClassExpr", prefer}
-			New TemplateBody  -> Expr {"NewTemplateExpr", prefer}
+			"new" ClassTemplate -> Expr {"NewClassExpr", prefer}
+			"new" TemplateBody  -> Expr {"NewTemplateExpr", prefer}
 			BlockExpr           -> Expr
 			Expr "_"            -> Expr {"ToFunctionEtaExpansion", left}
 		}
@@ -67,8 +61,8 @@ exports
 			"return" Expr?                                                       -> Expr {"ReturnExpr"}
 			Expr Ascription                                                      -> Expr {"AscriptionExpr"}
 			Expr "match" "{" CaseClauses "}"                                     -> Expr {"MatchExpr"}
-			(Expr ".")? Id AssignOp Expr                                         -> Expr {"AssignmentExpr", non-assoc}
-			Expr ArgumentExprs AssignOp Expr                                     -> Expr {"AccessAssignmentExpr", non-assoc}
+			(Expr ".")? Id "=" Expr                                              -> Expr {"AssignmentExpr", non-assoc}
+			Expr ArgumentExprs "=" Expr                                          -> Expr {"AccessAssignmentExpr", non-assoc}
 		}
 
 	context-free syntax
@@ -97,7 +91,7 @@ exports
 		
 		Generator                    -> Enumerator
 		Guard                        -> Enumerator
-		"val" Pattern1 AssignOp Expr -> Enumerator {"Enumerator"}
+		"val" Pattern1 "=" Expr -> Enumerator {"Enumerator"}
 		
 		"case" Pattern Guard? "=>" Block -> CaseClause {"CaseClause"}
 		
@@ -132,4 +126,4 @@ exports
 		
 		"(" {Binding ","}* ")" -> Bindings {"Bindings"}
 
-		AssignOp Expr -> Assignment {"Assignment"}
+		"=" Expr -> Assignment {"Assignment"}

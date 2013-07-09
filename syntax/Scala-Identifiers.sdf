@@ -91,3 +91,6 @@ module Scala-Identifiers
 
 		"val" -/- [a-zA-Z0-9]
 		"var" -/- [a-zA-Z0-9]
+		"new" -/- [a-zA-Z0-9]
+		
+		"=" -/- [\>]

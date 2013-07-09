@@ -15,7 +15,7 @@ exports
 		"val" PatDef -> PatVarDef {"ValPatDef"}
 		"var" VarDef -> PatVarDef {"VarPatDef"}
 		
-		{Pattern2 ","}+ (":" Type)? AssignOp Expr -> PatDef {"PatDef"}
+		{Pattern2 ","}+ (":" Type)? "=" Expr -> PatDef {"PatDef"}
 		
 		PatDef                     -> VarDef
 		%% I am not sure why the following is explicitly given in the grammar, because
@@ -24,8 +24,8 @@ exports
 		
 		Id TypeParamClause? "=" Type -> TypeDef {"TypeDef"}
 		
-		FunSig AssignOp Expr                           -> FunDef {"ShortFunDef"}
-		FunSig ":" Type AssignOp Expr                  -> FunDef {"FunDef"}
+		FunSig "=" Expr                           -> FunDef {"ShortFunDef"}
+		FunSig ":" Type "=" Expr                  -> FunDef {"FunDef"}
 		FunSig "{" Block "}"                           -> FunDef {"BlockFunDef", layout("2.first.line - 1.last.line < num(2)")}
 		"this" ParamClause ParamClauses "=" ConstrExpr -> FunDef {"ThisExprFunDef"}
 		"this" ParamClause ParamClauses ConstrBlock    -> FunDef {"ThisBlockFunDef", layout("4.first.line - 3.last.line < num(2)")}
