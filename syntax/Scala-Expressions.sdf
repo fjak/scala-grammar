@@ -60,7 +60,7 @@ exports
 			"for" "{" Enumerators "}" "yield" Expr                               -> Expr {"CurlyBraceYieldForExpr"}
 			"throw" Expr                                                         -> Expr {"ThrowExpr"}
 			"return" Expr?                                                       -> Expr {"ReturnExpr"}
-			Expr Ascription                                                      -> Expr {"AscriptionExpr"}
+			Expr Ascription                                                      -> Expr {"AscriptionExpr", avoid}
 			Expr "match" "{" CaseClauses "}"                                     -> Expr {"MatchExpr"}
 			(Expr ".")? Id "=" Expr                                              -> Expr {"AssignmentExpr", non-assoc}
 			Expr ArgumentExprs "=" Expr                                          -> Expr {"AccessAssignmentExpr", non-assoc}
