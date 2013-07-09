@@ -44,10 +44,10 @@ exports
 		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 
 		> {
-			Bindings "=>" Expr                                                   -> Expr {"FunExpr"}
-			Id "=>" Expr                                                         -> Expr {"IdFunExpr"}
-			"implicit" Id "=>" Expr                                              -> Expr {"ImplicitFunExpr"}
-			"_" "=>" Expr                                                        -> Expr {"WildcardFunExpr"}
+			Bindings "=>" Expr                                                   -> Expr {"FunExpr", prefer}
+			Id "=>" Expr                                                         -> Expr {"IdFunExpr", prefer}
+			"implicit" Id "=>" Expr                                              -> Expr {"ImplicitFunExpr", prefer}
+			"_" "=>" Expr                                                        -> Expr {"WildcardFunExpr", prefer}
 			"if" "(" Expr ")" Expr                                               -> Expr {"IfExpr"}
 			"if" "(" Expr ")" Expr "else" Expr                                   -> Expr {"IfElseExpr"}
 			"if" "(" Expr ")" Expr ";" "else" Expr                               -> Expr {"IfElseExpr"}
