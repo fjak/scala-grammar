@@ -26,7 +26,8 @@ exports
 			Literal            -> Expr
 			Expr "." Id        -> Expr {"DesignatorExpr", avoid}
 			Path               -> Expr {prefer}
-			Expr ArgumentExprs -> Expr {"AppExpr"}
+			Expr ArgumentExprs -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
+			Expr BlockExpr     -> Expr {"BlockArgumentExpr", layout("2.first.line - 1.last.line < num(2)")}
 			"(" Exprs? ")"     -> Expr {"TupleExpr"}
 			Expr TypeArgs      -> Expr {"TypeApplication", avoid}
 		}
@@ -68,8 +69,6 @@ exports
 	context-free syntax
 		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
 		"(" (Exprs ",")? Expr ":" "_" "*" ")"        -> ArgumentExprs {"SequenceArgumentExprs", prefer}
-		%% TODO: Need to inline this because of optional nl in the beginning
-		Nl? BlockExpr                                -> ArgumentExprs {"BlockArgumentExprs"}
 		
 		{Expr ","}+ -> Exprs {"Exprs"}
 		
