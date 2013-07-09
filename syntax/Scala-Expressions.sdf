@@ -39,7 +39,7 @@ exports
 		}
 			
 		> Prefix Expr  -> Expr {"PrefixExpr", prefer}
-		> Expr Id Expr -> Expr {"InfixExpr", left, layout("3.first.line - 2.last.line < num(2)")}
+		> Expr Id Expr -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line")}
 		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 
 		> {
