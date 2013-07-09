@@ -3,7 +3,7 @@ module Scala-Identifiers
 	exports
 	
 	lexical syntax
-		[A-Z] | "$" | "_" -> Upper
+		[A-Z] | [\$] | [\_] -> Upper
 		[a-z] -> Lower
 		Upper | Lower -> Letter
 		[0-9] -> Digit
@@ -14,7 +14,7 @@ module Scala-Identifiers
 		
 		(Letter | Digit)+ -> NonOpIdRest
 		
-		"_" Op -> OpSuffix
+		[\_] Op -> OpSuffix
 		
 		PureTypeId     -> PlainId
 		PureVarId      -> PlainId
@@ -94,3 +94,5 @@ module Scala-Identifiers
 		"new" -/- [a-zA-Z0-9]
 		
 		"=" -/- [\33] \/ [\35-\38] \/ [\42-\43] \/ [\45] \/ [\47] \/ [\58] \/ [\60-\64] \/ [\92] \/ [\94] \/ [\124] \/ [\126]
+		":" -/- [\33] \/ [\35-\38] \/ [\42-\43] \/ [\45] \/ [\47] \/ [\58] \/ [\60-\64] \/ [\92] \/ [\94] \/ [\124] \/ [\126]
+		"_" -/- [a-zA-Z0-9\_\$]
