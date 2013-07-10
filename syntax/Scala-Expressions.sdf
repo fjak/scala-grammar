@@ -23,7 +23,7 @@ exports
 	context-free priorities
 		{
 			"_"                -> Expr {"WildcardExpr"}
-			Literal            -> Expr
+			Literal            -> Expr {prefer}
 			Expr "." Id        -> Expr {"DesignatorExpr", avoid}
 			Path               -> Expr {prefer}
 			Expr ArgumentExprs -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
@@ -39,8 +39,8 @@ exports
 			Expr "_"            -> Expr {"ToFunctionEtaExpansion", left}
 		}
 			
-		> Prefix Expr  -> Expr {"PrefixExpr", prefer}
-		> Expr Id Expr -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line")}
+		> Prefix Expr  -> Expr {"PrefixExpr", right}
+		> Expr Id Expr -> Expr {"InfixExpr", left, prefer, layout("1.last.line == 2.first.line")}
 		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 
 		> {
