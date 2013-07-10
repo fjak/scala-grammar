@@ -69,7 +69,10 @@ exports
 	context-free syntax
 		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
 		"(" (Exprs ",")? Expr ":" "_" "*" ")"        -> ArgumentExprs {"SequenceArgumentExprs", prefer}
-		
+
+		ArgumentExprs                  -> ArgumentExprsSeq
+		ArgumentExprs ArgumentExprsSeq -> ArgumentExprsSeq {"ArgumentExprsSeq", layout("1.last.line == 2.first.line")}
+
 		{Expr ","}+ -> Exprs {"Exprs"}
 		
 		":" InfixType   -> Ascription {"TypeAscription"}

@@ -13,8 +13,8 @@ exports
 		
 		"{" SelfInvocation ";" BlockStatSemi? "}" -> ConstrBlock {"SemiConstrBlock"}
 		"{" SelfInvocation BlockStatSemi? "}"     -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
-		
-		"this" ArgumentExprs+ -> SelfInvocation {"SelfInvocation"}
+
+		"this" ArgumentExprsSeq -> SelfInvocation {"SelfInvocation"}
 			
 		%% TODO: Nl
 		Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
@@ -49,9 +49,7 @@ exports
 		
 		Constr WithAnnotType* -> ClassParents {"ClassParents"}
 		
-		AnnotType ConstrArgExpr* -> Constr {"Constr"}
-		
-		"(" Exprs? ")" -> ConstrArgExpr {"ConstrArgExpr"}
+		AnnotType ArgumentExprsSeq? -> Constr {"Constr"}
 		
 		AnnotType WithAnnotType* -> TraitParents {"TraitParents"}
 		
