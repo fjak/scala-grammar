@@ -28,7 +28,7 @@ exports
 			Path               -> Expr {prefer}
 			Expr ArgumentExprs -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
 			Expr BlockExpr     -> Expr {"BlockArgumentExpr", layout("2.first.line - 1.last.line < num(2)")}
-			"(" Exprs? ")"     -> Expr {"TupleExpr"}
+			"(" Exprs? ")"     -> Expr {"TupleExpr", avoid}
 			Expr TypeArgs      -> Expr {"TypeApplication", avoid}
 		}
 
@@ -40,9 +40,9 @@ exports
 		}
 			
 		> Prefix Expr  -> Expr {"PrefixExpr", right, prefer}
-		> Expr Id Expr -> Expr {"InfixExpr", left, prefer, layout("1.last.line == 2.first.line")}
-		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
-		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
+		> Expr Id Expr -> Expr {"InfixExpr", left, avoid, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr Id      -> Expr {"PostfixExpr", layout("1.last.line == 2.first.line")}
+		> Expr Id      -> Expr {"PostfixExpr", layout("1.last.line == 2.first.line")}
 
 		> {
 			Bindings "=>" Expr                                                   -> Expr {"FunExpr", prefer}
