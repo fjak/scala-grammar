@@ -119,10 +119,11 @@ exports
 		
 		Import                             -> BlockStat
 		Expr                               -> BlockStat
+		Annotation* LocalModifier* TmplDef -> BlockStat {"TmplDefBlockStat", prefer}
 		Annotation* Def                    -> BlockStat {"DefBlockStat"}
 		Annotation* "implicit" Def         -> BlockStat {"ImplicitDefBlockStat"}
 		Annotation* "lazy" Def             -> BlockStat {"LazyDefBlockStat"}
-		Annotation* LocalModifier* TmplDef -> BlockStat {"TmplDefBlockStat"}
+
 			
 		Id (":" Type)?  -> Binding {"Binding"}
 		"_" (":" Type)? -> Binding {"WildCardBinding"}
