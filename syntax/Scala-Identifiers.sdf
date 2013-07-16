@@ -3,31 +3,36 @@ module Scala-Identifiers
 	exports
 
 	lexical syntax
-		[A-Z] | [\$] | [\_] -> Upper
+		[A-Z] | [\$] -> Upper
 		[a-z] -> Lower
 		Upper | Lower -> Letter
 		[0-9] -> Digit
-		[\_] -> USS
 
 		[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OpChar
 
 		OpChar+ -> Op
 
-		(Letter | Digit)+ -> NonOpIdRest
+		Lower -> IVarId
+		(IVarId | IVarIdUSS) Letter -> IVarId
+		(IVarId | IVarIdUSS) "_" -> IVarIdUSS
+		IVarIdUSS "_" -> IVarIdUSS
+		IVarIdUSS Op -> IVarIdOp
+		
+		Upper -> ITypeId
+		(ITypeId | ITypeIdUSS) Letter -> ITypeId
+		(ITypeId | ITypeIdUSS) "_" -> ITypeIdUSS
+		ITypeIdUSS Op -> ITypeIdOp
+		
+		IVarId -> VarId
+		IVarIdUSS -> VarIdUSS
+		IVarIdOp -> VarIdOp
+    ITypeId -> TypeId
+    ITypeIdUSS -> TypeIdUSS
+    ITypeIdOp -> TypeIdOp
 
-		Lower NonOpIdRest? -> VarId
-		Upper NonOpIdRest? -> TypeId
-		Letter NonOpIdRest? USS -> USSId
-		Letter NonOpIdRest? [\_] Op -> OpSuffixId
-
-		USSId -> VarId {reject}
-		USSId -> TypeId {reject}
-
-		Op         -> PlainId
-		VarId      -> PlainId
-		TypeId     -> PlainId
-		USSId      -> PlainId
-		OpSuffixId -> PlainId
+    Op -> PlainId
+		(VarId  | VarIdUSS  | VarIdOp)  -> PlainId
+		(TypeId | TypeIdUSS | TypeIdOp) -> PlainId
 
 		"abstract"  -> Keyword
 		"case"      -> Keyword
@@ -81,12 +86,14 @@ module Scala-Identifiers
 		Keyword     -> PlainId {reject}
 
 	lexical restrictions
-		Op -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		NonOpIdRest -/- [A-Za-z0-9\$]
-
+	  Op -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	  
 		VarId  -/- [A-Za-z0-9\$\_]
 		TypeId -/- [A-Za-z0-9\$\_]
-		USS    -/- [\_A-Za-z0-9\$\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+
+    VarIdUSS -/-  [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+    TypeIdUSS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+    
 
 		"val" -/- [a-zA-Z0-9]
 		"var" -/- [a-zA-Z0-9]
@@ -94,7 +101,7 @@ module Scala-Identifiers
 
 		"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		"_" -/- [a-zA-Z0-9\_\$]
+%%		"_" -/- [a-zA-Z0-9\_\$]
 
 	context-free syntax
 		PlainId -> Id {"Id"}
