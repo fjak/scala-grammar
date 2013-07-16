@@ -18,7 +18,10 @@ exports
 		"+" -> Prefix
 		"-" -> Prefix
 		"~" -> Prefix
-		"!" -> Prefix	
+		"!" -> Prefix
+		
+	lexical restrictions
+		Prefix -/- [\+\-\~\!]
 	
 	context-free priorities
 		{

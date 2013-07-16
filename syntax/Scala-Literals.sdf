@@ -6,7 +6,7 @@ imports
 exports
 	lexical syntax
 		(DecimalNumeral | HexNumeral | OctalNumeral) ("L" | "l")? -> IntegerLiteral
-		"-" IntegerLiteral                                        -> IntegerLiteral
+		%% "-" IntegerLiteral                                        -> IntegerLiteral
 		
 		"0" | NonZeroDigit Digit* -> DecimalNumeral {"Decimal"}
 		"0" "x" HexDigit+ -> HexNumeral {"HexNumeral"}
@@ -20,7 +20,7 @@ exports
 		"." Digit+ ExponentPart? FloatType?        -> FloatingPointLiteral
 		Digit+ ExponentPart FloatType?             -> FloatingPointLiteral
 		Digit+ ExponentPart? FloatType             -> FloatingPointLiteral
-		"-" FloatingPointLiteral                   -> FloatingPointLiteral
+		%% "-" FloatingPointLiteral                   -> FloatingPointLiteral
 		
 		("E" | "e") ("+" | "-")? Digit+ -> ExponentPart
 		"F" | "f" | "D" | "d" -> FloatType
