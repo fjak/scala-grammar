@@ -24,21 +24,18 @@ exports
 		SimpleType             -> AnnotType
 		SimpleType Annotation+ -> AnnotType {"AnnotType", layout("1.last.line == 2.first.line")}
 		
-		%% TODO
-		%% Let's just ignore refinements until later…
-		%% Refinements are prepended by an optional nl
-		%% We need to express this in the productions using a Refinement, not here
-		%% "{" RefineStatSeq* "}" -> Refinement {"Refinement"}
-		%%
-		%% RefineStat ";" -> RefineStatSeq {"SemiRefineStatSeq"}
-		%% RefineStat EOL -> RefineStatSeq {"RefineStatSeq", enforce-newline, prefer}
-		%% RefineStat EOB -> RefineStatSeq {"EOBRefineStatSeq"}
+		"{" RefineStatSemi* "}" -> Refinement {"Refinement"}
 		
-		%% Dcl            -> RefineStat
-		%% "type" TypeDef -> RefineStat {"RefineStat"}
+		RefineStat ";" -> RefineStatSemi {"SemiRefineStatSemi"}
+		RefineStat EOL -> RefineStatSemi {"RefineStatSemi", enforce-newline, prefer}
+		RefineStat EOB -> RefineStatSemi {"EOBRefineStatSemi", avoid}
 		
-		AnnotType       -> CompoundType
-		AnnotType With+ -> CompoundType {"CompoundType"}
+		Dcl            -> RefineStat
+		"type" TypeDef -> RefineStat {"TypeRefineStat"}
+
+		AnnotType                   -> CompoundType
+		Refinement                  -> CompoundType
+		AnnotType With+ Refinement? -> CompoundType {"CompoundType", layout("3.first.line - 2.last.line < num(2)")}
 		
 		"with" AnnotType -> With {"With"}
 		

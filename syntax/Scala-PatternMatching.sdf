@@ -6,28 +6,39 @@ imports
 	Scala-Types
 	
 exports
+	context-free priorities
+		{
+			"_"                                                   -> SimplePattern {"WildcardPattern"}
+			%% VarId                                                 -> SimplePattern {"VariablePattern"}
+			Literal                                               -> SimplePattern {"LiteralPattern"}
+			StableId                                              -> SimplePattern {"StableIdPattern"}
+			StableId "(" Patterns ")"                             -> SimplePattern {"ConstructorPattern"}
+			"(" Patterns ")"                                      -> SimplePattern {"TuplePattern"}
+			StableId "(" (Patterns ",")? (VarId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
+		}
+		
+		> {
+			Pattern3 Id Pattern3 -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			SimplePattern -> Pattern3
+		}
+		
+		> {
+			VarId "@" Pattern3 -> Pattern2 {"PatternBinder"}
+			Pattern3           -> Pattern2
+		}
+		
+		> {
+			VarId ":" Type -> Pattern1 {"TypedPattern"}
+			"_" ":" Type   -> Pattern1 {"WildcardTypedPattern"}
+			Pattern2       -> Pattern1
+		}
+		
+		> {
+			Pattern1 -> Pattern
+			Pattern "|" Pattern -> Pattern {"DisjunctPattern", left, prefer}
+		}
+	
 	context-free syntax
-		{Pattern1 "|"}+ -> Pattern {"Pattern"}
-		
-		VarId ":" Type -> Pattern1 {"TypedPattern"}
-		"_" ":" Type   -> Pattern1 {"WildcardTypedPattern"}
-		Pattern2       -> Pattern1
-		
-		VarId "@" Pattern3 -> Pattern2 {"PatternBinder"}
-		Pattern3           -> Pattern2
-		
-		SimplePattern SimplePatternOp* -> Pattern3 {"SimplePattern"}
-		
-		Id SimplePattern -> SimplePatternOp {"SimplePatternOp", layout("2.first.line - 1.last.line < num(2)")}
-		
-		"_"                                                   -> SimplePattern {"WildcardPattern"}
-		%% VarId                                                 -> SimplePattern {"VariablePattern"}
-		Literal                                               -> SimplePattern {"LiteralPattern"}
-		StableId                                              -> SimplePattern {"StableIdPattern"}
-		StableId "(" Patterns ")"                             -> SimplePattern {"ConstructorPattern"}
-		"(" Patterns ")"                                      -> SimplePattern {"TuplePattern"}
-		StableId "(" (Patterns ",")? (VarId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
-		
 		{Pattern ","}* -> Patterns {"Patterns"}
 		
 		

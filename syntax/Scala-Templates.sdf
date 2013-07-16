@@ -13,8 +13,8 @@ exports
 		
 		"{" SelfInvocation ";" BlockStatSemi? "}" -> ConstrBlock {"SemiConstrBlock"}
 		"{" SelfInvocation BlockStatSemi? "}"     -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
-		
-		"this" ArgumentExprs+ -> SelfInvocation {"SelfInvocation"}
+
+		"this" ArgumentExprsSeq -> SelfInvocation {"SelfInvocation"}
 			
 		%% TODO: Nl
 		Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
@@ -23,8 +23,8 @@ exports
 		ClassParamClause* "(" "implicit" {ClassParam ","}+ ")" -> ClassParamClauses {"ImplicitClassParamClauses", layout("2.first.line - 1.last.line < num(2)")}
 		
 		Annotation* Id ":" ParamType Assignment?               -> ClassParam {"ClassParam"}
-		Annotation* Modifier* Val Id ":" ParamType Assignment? -> ClassParam {"ValClassParam"}
-		Annotation* Modifier* Var Id ":" ParamType Assignment? -> ClassParam {"VarClassParam"}
+		Annotation* Modifier* "val" Id ":" ParamType Assignment? -> ClassParam {"ValClassParam"}
+		Annotation* Modifier* "var" Id ":" ParamType Assignment? -> ClassParam {"VarClassParam"}
 		
 		EarlyDefs? ClassParents TemplateBody? -> ClassTemplate {"ClassTemplate"}
 		
@@ -49,9 +49,7 @@ exports
 		
 		Constr WithAnnotType* -> ClassParents {"ClassParents"}
 		
-		AnnotType ConstrArgExpr* -> Constr {"Constr"}
-		
-		"(" Exprs? ")" -> ConstrArgExpr {"ConstrArgExpr"}
+		AnnotType ArgumentExprsSeq? -> Constr {"Constr"}
 		
 		AnnotType WithAnnotType* -> TraitParents {"TraitParents"}
 		
