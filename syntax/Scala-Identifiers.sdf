@@ -1,107 +1,111 @@
 module Scala-Identifiers
 
-	exports
+exports
 
-	lexical syntax
-		[A-Z] | [\$] -> Upper
-		[a-z] -> Lower
-		Upper | Lower -> Letter
-		[0-9] -> Digit
+lexical syntax
+	[A-Z] | [\$] -> Upper
+	[a-z] -> Lower
+	Upper | Lower -> Letter
+	[0-9] -> Digit
+	Letter | Digit -> IdRest
+	
+	[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OpChar
+	
+	OpChar+ -> Op
+	
+	[\_] -> IVarId
+	Lower -> IVarId
+	(IVarId | IVarIdUSS) IdRest -> IVarId
+	(IVarId | IVarIdUSS) [\_] -> IVarIdUSS
+	IVarIdUSS [\_] -> IVarIdUSS
+	IVarIdUSS Op -> IVarIdOp
+	
+	Upper -> ITypeId
+	(ITypeId | ITypeIdUSS) IdRest -> ITypeId
+	(ITypeId | ITypeIdUSS) [\_] -> ITypeIdUSS
+	ITypeIdUSS Op -> ITypeIdOp
+	
+	IVarId -> VarId
+	IVarIdUSS -> VarIdUSS
+	IVarIdOp -> VarIdOp
+	ITypeId -> TypeId
+	ITypeIdUSS -> TypeIdUSS
+	ITypeIdOp -> TypeIdOp
+	
+	Op -> IPlainId
+	(VarId  | VarIdUSS  | VarIdOp)  -> IPlainId
+	(TypeId | TypeIdUSS | TypeIdOp) -> IPlainId
+	
+	IPlainId -> PlainId
+	
+	"abstract"  -> Keyword
+	"case"      -> Keyword
+	"catch"     -> Keyword
+	"class"     -> Keyword
+	"def"       -> Keyword
+	"do"        -> Keyword
+	"else"      -> Keyword
+	"extends"   -> Keyword
+	"false"     -> Keyword
+	"final"     -> Keyword
+	"finally"   -> Keyword
+	"for"       -> Keyword
+	"forSome"   -> Keyword
+	"if"        -> Keyword
+	"implicit"  -> Keyword
+	"import"    -> Keyword
+	"lazy"      -> Keyword
+	"match"     -> Keyword
+	"new"       -> Keyword
+	"null"      -> Keyword
+	"object"    -> Keyword
+	"override"  -> Keyword
+	"package"   -> Keyword
+	"private"   -> Keyword
+	"protected" -> Keyword
+	"return"    -> Keyword
+	"sealed"    -> Keyword
+	"super"     -> Keyword
+	"this"      -> Keyword
+	"throw"     -> Keyword
+	"trait"     -> Keyword
+	"try"       -> Keyword
+	"true"      -> Keyword
+	"type"      -> Keyword
+	"val"       -> Keyword
+	"var"       -> Keyword
+	"while"     -> Keyword
+	"with"      -> Keyword
+	"yield"     -> Keyword
+	"_"         -> Keyword
+	":"         -> Keyword
+	"="         -> Keyword
+	"=>"        -> Keyword
+	"<-"        -> Keyword
+	"<:"        -> Keyword
+	"<%"        -> Keyword
+	">:"        -> Keyword
+	"#"         -> Keyword
+	"@"         -> Keyword
+	Keyword     -> PlainId {reject}
 
-		[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OpChar
+lexical restrictions
+	Op -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	
+	VarId  -/- [A-Za-z0-9\$\_]
+	TypeId -/- [A-Za-z0-9\$\_]
+	
+	VarIdUSS -/-  [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	TypeIdUSS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	
+	
+	"val" -/- [a-zA-Z0-9]
+	"var" -/- [a-zA-Z0-9]
+	"new" -/- [a-zA-Z0-9]
+	
+	"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	"_" -/- [a-zA-Z0-9\_\$]
 
-		OpChar+ -> Op
-
-		Lower -> IVarId
-		(IVarId | IVarIdUSS) Letter -> IVarId
-		(IVarId | IVarIdUSS) "_" -> IVarIdUSS
-		IVarIdUSS "_" -> IVarIdUSS
-		IVarIdUSS Op -> IVarIdOp
-		
-		Upper -> ITypeId
-		(ITypeId | ITypeIdUSS) Letter -> ITypeId
-		(ITypeId | ITypeIdUSS) "_" -> ITypeIdUSS
-		ITypeIdUSS Op -> ITypeIdOp
-		
-		IVarId -> VarId
-		IVarIdUSS -> VarIdUSS
-		IVarIdOp -> VarIdOp
-    ITypeId -> TypeId
-    ITypeIdUSS -> TypeIdUSS
-    ITypeIdOp -> TypeIdOp
-
-    Op -> PlainId
-		(VarId  | VarIdUSS  | VarIdOp)  -> PlainId
-		(TypeId | TypeIdUSS | TypeIdOp) -> PlainId
-
-		"abstract"  -> Keyword
-		"case"      -> Keyword
-		"catch"     -> Keyword
-		"class"     -> Keyword
-		"def"       -> Keyword
-		"do"        -> Keyword
-		"else"      -> Keyword
-		"extends"   -> Keyword
-		"false"     -> Keyword
-		"final"     -> Keyword
-		"finally"   -> Keyword
-		"for"       -> Keyword
-		"forSome"   -> Keyword
-		"if"        -> Keyword
-		"implicit"  -> Keyword
-		"import"    -> Keyword
-		"lazy"      -> Keyword
-		"match"     -> Keyword
-		"new"       -> Keyword
-		"null"      -> Keyword
-		"object"    -> Keyword
-		"override"  -> Keyword
-		"package"   -> Keyword
-		"private"   -> Keyword
-		"protected" -> Keyword
-		"return"    -> Keyword
-		"sealed"    -> Keyword
-		"super"     -> Keyword
-		"this"      -> Keyword
-		"throw"     -> Keyword
-		"trait"     -> Keyword
-		"try"       -> Keyword
-		"true"      -> Keyword
-		"type"      -> Keyword
-		"val"       -> Keyword
-		"var"       -> Keyword
-		"while"     -> Keyword
-		"with"      -> Keyword
-		"yield"     -> Keyword
-		"_"         -> Keyword
-		":"         -> Keyword
-		"="         -> Keyword
-		"=>"        -> Keyword
-		"<-"        -> Keyword
-		"<:"        -> Keyword
-		"<%"        -> Keyword
-		">:"        -> Keyword
-		"#"         -> Keyword
-		"@"         -> Keyword
-		Keyword     -> PlainId {reject}
-
-	lexical restrictions
-	  Op -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	  
-		VarId  -/- [A-Za-z0-9\$\_]
-		TypeId -/- [A-Za-z0-9\$\_]
-
-    VarIdUSS -/-  [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-    TypeIdUSS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-    
-
-		"val" -/- [a-zA-Z0-9]
-		"var" -/- [a-zA-Z0-9]
-		"new" -/- [a-zA-Z0-9]
-
-		"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-%%		"_" -/- [a-zA-Z0-9\_\$]
-
-	context-free syntax
-		PlainId -> Id {"Id"}
+context-free syntax
+	PlainId -> Id {"Id"}

@@ -43,7 +43,7 @@ exports
 		
 		(("\"")? ("\"")? CharNoDoubleQuote)* "\""* -> MultiLineChars
 		
-		"'" PlainId -> SymbolLiteral
+		"'" IPlainId -> SymbolLiteral
 		
 	lexical restrictions
 		DecimalNumeral -/- [0-9]
