@@ -42,6 +42,7 @@ exports
 		> Prefix Expr  -> Expr {"PrefixExpr", right}
 		> Expr Id Expr -> Expr {"InfixExpr", left, prefer, layout("1.last.line == 2.first.line")}
 		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
+		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 
 		> {
 			Bindings "=>" Expr                                                   -> Expr {"FunExpr", prefer}
