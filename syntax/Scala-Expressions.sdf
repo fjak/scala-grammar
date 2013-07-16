@@ -39,7 +39,7 @@ exports
 			Expr "_"            -> Expr {"ToFunctionEtaExpansion", left}
 		}
 			
-		> Prefix Expr  -> Expr {"PrefixExpr", right}
+		> Prefix Expr  -> Expr {"PrefixExpr", right, prefer}
 		> Expr Id Expr -> Expr {"InfixExpr", left, prefer, layout("1.last.line == 2.first.line")}
 		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr Id      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
