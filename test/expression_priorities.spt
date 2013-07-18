@@ -1,0 +1,11 @@
+language Scala
+start symbol Expr
+
+test prefix > application [[
+	!(a + b)
+]] parse to PrefixExpr(_, _)
+
+test infix > postfix [[
+	if (a & a) b
+	else a & a
+]] parse to IfElseExpr(InfixExpr(_, _, _), _, InfixExpr(_, _, _))

@@ -1,9 +1,21 @@
 module Scala
 
 imports
-	Scala-Whitespace
+	Scala-Annotations
+	Scala-BasicDeclarations
+	Scala-Definitions
+	Scala-Expressions
+	Scala-Identifiers
+	Scala-Imports
+	Scala-Literals
+	Scala-Modifiers
+	Scala-Paths
+	Scala-PatternMatching
+	Scala-Templates
 	Scala-TopLevelDefinitions
+	Scala-Types
+	Scala-Whitespace
 	
 exports
 	context-free start-symbols
-		CompilationUnit
+		CompilationUnit Block Expr

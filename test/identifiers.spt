@@ -1,0 +1,30 @@
+language Scala
+start symbol Expr
+
+test ids can start with underscore [[
+	_foo
+]] parse to Id(_)
+
+test ids can have underscores in between [[
+	this_is_some_foo
+]] parse to Id(_)
+
+test __ is valid identifier [[
+	__
+]] parse to Id(_)
+
+test _ is not a valid identifier [[
+	_
+]] parse to WildcardExpr
+
+test operator suffix id [[
+	should_==
+]] parse to Id(_)
+
+test operator suffix id application [[
+	be_==()
+]] parse to AppExpr(Id("be_=="), _)
+
+test operator suffix id application is not confused with infix expression [[
+	foo must be_==(bar)
+]] parse to InfixExpr(_, _, AppExpr(Id("be_=="), _))
