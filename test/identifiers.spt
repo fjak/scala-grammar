@@ -1,5 +1,5 @@
 language Scala
-start symbol Expr
+start symbol Id
 
 test ids can start with underscore [[
 	_foo
@@ -15,16 +15,9 @@ test __ is valid identifier [[
 
 test _ is not a valid identifier [[
 	_
-]] parse to WildcardExpr
+]] parse fails
 
 test operator suffix id [[
 	should_==
 ]] parse to Id(_)
 
-test operator suffix id application [[
-	be_==()
-]] parse to AppExpr(Id("be_=="), _)
-
-test operator suffix id application is not confused with infix expression [[
-	foo must be_==(bar)
-]] parse to InfixExpr(_, _, AppExpr(Id("be_=="), _))

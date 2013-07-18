@@ -53,4 +53,4 @@ test pattern list [[
 		case x :: xs => toBoolean(x)
 		case o => toBoolean(o.toString)
 	}
-]] parse to MatchExpr(_, CaseClauses([_, _, _, _, _, _, _, _, _])) 
+]] parse to MatchExpr(_, CaseClauses([_, _, _, _, _, _, _, _, _]))

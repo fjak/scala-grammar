@@ -22,24 +22,23 @@ exports
 		
 	lexical restrictions
 		Prefix -/- [\+\-\~\!]
-	
+
 	context-free priorities
 		{
-			"_"                -> Expr {"WildcardExpr"}
-			Literal            -> Expr {prefer}
-			Expr "." Id        -> Expr {"DesignatorExpr", avoid}
-			Path               -> Expr {prefer}
-			Expr ArgumentExprs -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
-			Expr BlockExpr     -> Expr {"BlockArgumentExpr", layout("2.first.line - 1.last.line < num(2)")}
-			"(" Exprs? ")"     -> Expr {"TupleExpr", avoid}
-			Expr TypeArgs      -> Expr {"TypeApplication", avoid}
+			"_"                 -> Expr {"WildcardExpr"}
+			Literal             -> Expr {"LiteralExpr"}
+			Path                -> Expr {"PathExpr"}
+			Expr ArgumentExprs  -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
+			Expr BlockExpr      -> Expr {"BlockAppExpr", layout("2.first.line - 1.last.line < num(2)")}
+			"(" {Expr ","}* ")" -> Expr {"TupleExpr"}
+			Expr TypeArgs       -> Expr {"TypeApplication"}
 		}
 
 		> {
 			"new" ClassTemplate -> Expr {"NewClassExpr", prefer}
 			"new" TemplateBody  -> Expr {"NewTemplateExpr", prefer}
 			BlockExpr           -> Expr
-			Expr "_"            -> Expr {"ToFunctionEtaExpansion", left}
+			Expr "_"            -> Expr {"EtaExpansionExpr", left, layout("1.last.line == 2.first.line")}
 		}
 			
 		> Prefix Expr  -> Expr {"PrefixExpr", right, prefer}
@@ -69,6 +68,10 @@ exports
 			(Expr ".")? Id "=" Expr                                              -> Expr {"AssignmentExpr", non-assoc}
 			Expr ArgumentExprs "=" Expr                                          -> Expr {"AccessAssignmentExpr", non-assoc}
 		}
+
+	context-free priorities
+		Expr "." Id        -> Expr {"DesignatorExpr", avoid}
+		> Prefix Expr      -> Expr {"PrefixExpr"}
 
 	context-free syntax
 		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}

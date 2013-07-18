@@ -1,0 +1,191 @@
+language Scala
+start symbol Expr
+
+/* Literal */
+test literal expression [[
+	42
+]] parse to LiteralExpr(_)
+
+
+/* Path */
+test simple path [[
+	some.foo
+]]
+
+test path [[
+	scala.collection.mutable.Map
+]] parse to PathExpr(_)
+
+
+/* Wildcard */
+test wildcard expression [[
+	_
+]] parse to WildcardExpr
+
+
+/* Tuple */
+test braced expression [[
+	(23)
+]] parse to TupleExpr([LiteralExpr(Int("23"))])
+
+test tuple expression [[
+	(23, 42)
+]] parse to TupleExpr(_)
+
+test recursive brace expression [[
+	(((42)))
+]] parse to TupleExpr([TupleExpr([TupleExpr(_)])])
+
+
+/* Designator */
+test designator [[
+	f(23).foo.bar
+]] parse to DesignatorExpr(_, _)
+
+test designator expression allows blocks [[
+	{Person("John", "Doe")}.first_name
+]]
+
+test designator of new class instantiation [[
+	new Person().default_name
+]] parse to DesignatorExpr(_, _)
+
+/* Type Application */
+test type application [[
+	42 [Float]
+]] parse to TypeApplication(_, _)
+
+
+/* Application */
+test application [[
+	f(42)
+]] parse to AppExpr(_, _)
+
+test multiple arg lists [[
+	f(23)(42)
+]] parse to AppExpr(AppExpr(_, _), _)
+
+test application invalid layout [[
+	f
+	(42)
+]] parse fails
+
+test application valid layout [[
+	f (
+		42
+	)
+]] parse to AppExpr(_, _)
+
+test application wildcard target [[
+	_(23)
+]] parse to AppExpr(WildcardExpr, _)
+
+test application literal target [[
+	42(23)
+]] parse to AppExpr(LiteralExpr(_), _)
+
+test application path target [[
+	scala.collection.mutable.Map()
+]] parse to AppExpr(PathExpr(_), _)
+
+test application block target is invalid [[
+	{foo}(23)
+]] parse fails
+
+test application block application target [[
+	Map {'x -> 23} ('x)
+]] parse to AppExpr(BlockAppExpr(_, _), _)
+
+test multiple arg lists invalid layout [[
+	f(23)
+	(42)
+]] parse fails
+
+test multiple arg lists valid layout [[
+	f  (
+		23)  (
+			42)
+]] parse to AppExpr(AppExpr(_, _), _)
+
+test block argument [[
+	f {23}
+]] parse to BlockAppExpr(_, _)
+
+test block argument valid layout [[
+	f
+	{23}
+]] parse to BlockAppExpr(_, _)
+
+test block argument invalid layout [[
+	f
+	
+	{23}
+]] parse fails
+
+
+/* Instantiation */
+test simple class instantiation [[
+	new Foo()
+]] parse to NewClassExpr(_)
+
+test argument less class instantiation [[
+	new Foo
+]] parse to NewClassExpr(_)
+
+test multi argument list class instantiation [[
+	new Foo(42)(23)
+]] parse to NewClassExpr(_)
+
+test class instantiation layout [[
+	new
+	
+	Foo(42)
+]] parse to NewClassExpr(_)
+
+test template instantiation [[
+	new { def f() = println("42")}
+]] parse to NewTemplateExpr(_)
+
+test empty template instantiation [[
+	new {}
+]] parse to NewTemplateExpr(_)
+
+test template instantiation layout [[
+	new
+	
+	{}
+]] parse to NewTemplateExpr(_)
+
+test new fqn class instantiation [[
+	new scala.collection.mutable.Map()
+]] parse to NewClassExpr(_)
+
+
+/* Blocks */
+test block [[
+	{ println("Hello") }
+]] parse to BlockExpr(_)
+
+test block layout [[
+	{
+		
+		println("Hello")
+		
+		println("You")
+		
+	}
+]] parse to BlockExpr(_)
+
+/* Eta Expansion */
+test eta expansion [[
+	f _
+]] parse to EtaExpansionExpr(_)
+
+test eta expansion invalid layout [[
+	f
+	_
+]] parse fails
+
+test block eta expansion [[
+	{ def f(n: Int) = println(n) ; f } _
+]] parse to EtaExpansionExpr(_)

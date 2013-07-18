@@ -1,0 +1,10 @@
+language Scala
+start symbol Expr
+
+test operator suffix id application [[
+	be_==()
+]] parse to AppExpr(_, _)
+
+test operator suffix id application is not confused with infix expression [[
+	foo must be_==(bar)
+]] parse to InfixExpr(_, _, AppExpr(_, _))
