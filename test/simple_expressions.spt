@@ -157,7 +157,7 @@ test template instantiation layout [[
 ]] parse to NewTemplateExpr(_)
 
 test new fqn class instantiation [[
-	new scala.collection.mutable.Map()
+	new scala.collection.mutable.Map
 ]] parse to NewClassExpr(_)
 
 
