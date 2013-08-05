@@ -17,7 +17,7 @@ exports
 		"[" Id "]" -> ClassQualifier {"ClassQualifier"}
 		
 	context-free restrictions
-		StableId -/- [\.]
+		StableId -/- [\.] . [a-zA-Z\$]
 
 	lexical restrictions
 		"this" -/- [a-zA-Z0-9\$\_]

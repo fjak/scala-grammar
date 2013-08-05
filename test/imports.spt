@@ -1,0 +1,27 @@
+language Scala
+start symbol Import
+
+test stable id import [[
+	import scala.language.implicitConversions
+]] parse to Import(_)
+
+test multiple stable id imports [[
+	import foo.bar.baz, blark.blork.blurk
+]] parse to Import(_)
+
+test wildcard import [[
+	import foo._
+]] parse to Import(_)
+
+test selecting import [[
+	import foo.{bar, baz, blark}
+]] parse to Import(_)
+
+test mapping import with wildcard [[
+	import foo.{bar => baz, _}
+]] parse to Import(_)
+
+test all but some import [[
+	import foo.bar.{baz => _, _}
+]] parse to Import(_)
+

@@ -8,7 +8,7 @@ exports
 	context-free syntax
 		"import" {ImportExpr ","}+ -> Import{"Import"}
 		
-		StableId "." Id              -> ImportExpr {"ImportExpr"}
+		StableId                     -> ImportExpr {"ImportExpr"}
 		StableId "." "_"             -> ImportExpr {"WildcardImportExpr"}
 		StableId "." ImportSelectors -> ImportExpr {"SelectorsImportExpr"}
 	
