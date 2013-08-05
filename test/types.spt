@@ -1,0 +1,23 @@
+language Scala
+start symbol Type
+
+/* Literal */
+test simple type [[
+	Foo
+]] parse to Type(_)
+
+test singleton type [[
+	Map.type
+]]
+
+test type projection [[
+	Foo#Bar
+]]
+
+test parameterized type [[
+	List[String]
+]]
+
+test map type [[
+	scala.collection.mutable.Map
+]]

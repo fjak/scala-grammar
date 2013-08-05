@@ -12,12 +12,11 @@ exports
 		InfixType                   -> Type
 		InfixType ExistentialClause -> Type {"ExistentialType"}
 		
-		Path "." "type"     -> SimpleType {"SingletonType"}
+		SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
 		SimpleType "#" Id   -> SimpleType {"TypeProjection"}
 		StableId            -> SimpleType {"Type"}
-		SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
+		Path "." "type"     -> SimpleType {"SingletonType"}
 		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
-		"_"                 -> SimpleType {"WildcardType"}
 		
 		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
 		

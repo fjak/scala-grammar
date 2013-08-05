@@ -15,11 +15,11 @@ test left assoc pattern operations [[
 	CaseClause(
 		InfixPattern(
 			InfixPattern(
-				StableIdPattern(Id("a")),
+				StableIdPattern(SimpleStableId(Id("a"))),
 				Id("::"),
-				StableIdPattern(Id("b"))),
+				StableIdPattern(SimpleStableId(Id("b")))),
 			Id("::"),
-			StableIdPattern(Id("c"))), _, _)]))
+			StableIdPattern(SimpleStableId(Id("c")))), _, _)]))
 			
 test constructor pattern [[
 	v match {

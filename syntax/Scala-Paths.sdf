@@ -5,16 +5,21 @@ imports
 
 exports
 	context-free syntax
-		StableId         -> Path
-		(Id ".")? "this" -> Path{"This"}
+		{PathElem "."}+ -> Path {"Path"}
+
+		Id                                -> PathElem
+		(Id ".")? "this"                  -> PathElem {"This"}
+		(Id ".")? "super" ClassQualifier? -> PathElem {"Super"}
+
+		Id                     -> StableId {"SimpleStableId"}
+		{PathElem "."}+ "." Id -> StableId {"StableId"}
+
+		"[" Id "]" -> ClassQualifier {"ClassQualifier"}
 		
-		Id                                       -> StableId
-		Path "." Id                              -> StableId {"StableId"}
-		(Id ".")? "super" ClassQualifier? "." Id -> StableId{"Super"}
-		
-		"[" Id "]" -> ClassQualifier{"ClassQualifier"}
-	
 	context-free restrictions
-		%% thisfoo should never be a Path{"this"} followed by the identifier foo
-		Path -/- [a-zA-Z0-9]
+		StableId -/- [\.]
+
+	lexical restrictions
+		"this" -/- [a-zA-Z0-9\$\_]
+		"super" -/- [a-zA-Z0-9\$\_]
 		

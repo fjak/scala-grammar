@@ -20,4 +20,3 @@ test _ is not a valid identifier [[
 test operator suffix id [[
 	should_==
 ]] parse to Id(_)
-

@@ -6,6 +6,9 @@ test literal expression [[
 	42
 ]] parse to LiteralExpr(_)
 
+test id expression [[
+	foo
+]]
 
 /* Path */
 test simple path [[

@@ -1,0 +1,9 @@
+language Scala
+start symbol Block
+
+test [[
+	def lookbehind(cs:Set[Char]):Parser[Unit] = Parser{ in =>
+        val bar = 23
+    }
+
+]]
