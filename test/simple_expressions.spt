@@ -6,6 +6,10 @@ test literal expression [[
 	42
 ]] parse to LiteralExpr(_)
 
+test long expression [[
+	42L
+]] parse to LiteralExpr(_)
+
 test id expression [[
 	foo
 ]]
