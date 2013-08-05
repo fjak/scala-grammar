@@ -17,6 +17,7 @@ exports
 		StableId            -> SimpleType {"Type"}
 		Path "." "type"     -> SimpleType {"SingletonType"}
 		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
+		"_"                 -> SimpleType {"WildcardType"}
 		
 		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
 		

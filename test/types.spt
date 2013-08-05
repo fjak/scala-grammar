@@ -21,3 +21,7 @@ test parameterized type [[
 test map type [[
 	scala.collection.mutable.Map
 ]]
+
+test map complex type [[
+	AnyVar[LRU[K, Box[V]], _]
+]]
