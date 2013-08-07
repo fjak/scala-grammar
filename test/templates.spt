@@ -1,0 +1,14 @@
+language Scala
+start symbol TemplateBody
+
+// The priorization from the Expr token is not respected in the TemplateBody
+// context. Unfortunately, I currently do not have a clue how to disambiguate
+// the following input. What the parser should do is always take as much from the
+// expressions as possible, and thus not split this into three TemplateStatSemis.
+test InfixExpr > PostfixExpr in template body [[
+{
+	_
+	foo &&
+	bar
+}
+]]

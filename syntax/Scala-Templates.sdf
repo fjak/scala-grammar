@@ -35,14 +35,20 @@ exports
 		%% TODO Nl              
 		Nl? "{" SelfType? TemplateStatSemi* "}" -> TemplateBody {"TemplateBody"}
 		
+		%% TemplateStat                        -> TemplateStatSemis {"LastTemplateStat", prefer}
+		%% TemplateStat ";" TemplateStatSemis  -> TemplateStatSemis {"SemiTemplateStatSemis"}
+		%% TemplateStat TemplateStatSemis      -> TemplateStatSemis {"TemplateStatSemis", layout("1.last.line < 2.first.line"), prefer}
+		%% TemplateStat Expr TemplateStatSemis -> TemplateStatSemis {"MuchExprTemplateStatSemis", layout("1.last.line < 2.first.line && 2.last.line < 3.first.line")}
+		%% TemplateStat Expr                   -> TemplateStatSemis {"LastExprTemplateStat", layout("1.last.line < 2.first.line")}
+
 		TemplateStat ";" -> TemplateStatSemi {"SemiTemplateStatSemi"}
 		TemplateStat EOL -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, prefer}
 		TemplateStat EOB -> TemplateStatSemi {"EOBTemplateStatSemi", avoid}
 		
 		AnnotationSeq? Modifier* Def -> TemplateStat {"DefTemplateStat"}
 		AnnotationSeq? Modifier* Dcl -> TemplateStat {"DclTemplateStat"}
-		Expr                         -> TemplateStat
-		Import                       -> TemplateStat
+		Import                       -> TemplateStat {"ImportTemplateStat"}
+		Expr                         -> TemplateStat {"ExprTemplateStat"}
 		
 		Id (":" Type)? "=>"  -> SelfType {"SelfType"}
 		"this" ":" Type "=>" -> SelfType {"ThisSelfType"}
