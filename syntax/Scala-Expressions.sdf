@@ -122,6 +122,7 @@ exports
 		"implicit" Id ":" CompoundType "=>" Block -> ResultExpr {"ImplicitResultExpr"}
 		Id ":" CompoundType "=>" Block            -> ResultExpr {"SimpleResultExpr"}
 		"_" ":" CompoundType "=>" Block           -> ResultExpr {"WildcardResultExpr"}
+		Id "=>" Block                             -> ResultExpr {"SpecialOneArgResultExpr"}
 		
 		Import                             -> BlockStat
 		Expr                               -> BlockStat

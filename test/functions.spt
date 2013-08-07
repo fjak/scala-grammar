@@ -1,9 +1,43 @@
 language Scala
-start symbol Block
+start symbol Expr
 
-test [[
-	def lookbehind(cs:Set[Char]):Parser[Unit] = Parser{ in =>
-        val bar = 23
-    }
+test anonymous parameterless function [[
+	() => "hello"
+]] parse to FunExpr(_, _)
 
+test anonymous function with one untyped parameter [[
+	(x) => x
+]] parse to FunExpr(_, _)
+
+test anonymous function with one untyped parameter (special notation) [[
+	x => x
+]]
+
+test anonymous function with one typed parameter [[
+	(x: Int) => x
+]]
+
+test anonymous function with multiple parameters [[
+	(x, _, z) => x + z
+]]
+
+test block function without parameter (block with only result expr) [[
+	{ () =>
+		val x = foo
+		var z = bar
+	}
+]]
+
+test block function with one parameter (block with ony result expr) [[
+	{ (in) =>
+	  val out = blark
+	  out
+	}
+]]
+
+test block function with one parameter (special notation) [[
+	{ in =>
+	  val x = foo
+	  x
+	}
 ]]
