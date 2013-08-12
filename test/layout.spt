@@ -1,0 +1,18 @@
+language Scala
+start symbol Block
+
+test application layout [[
+	f(
+		3
+		+
+		7
+	)
+]]
+
+test tuple layout [[
+	val x = (
+		3
+		+
+		7
+	)
+]]

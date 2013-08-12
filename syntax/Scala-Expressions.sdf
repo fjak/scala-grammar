@@ -23,15 +23,17 @@ exports
 	lexical restrictions
 		Prefix -/- [\+\-\~\!]
 
+
+	%% With Layout
 	context-free priorities
 		{
-			"_"                 -> Expr {"WildcardExpr"}
-			Literal             -> Expr {"LiteralExpr", prefer}
-			Path                -> Expr {"PathExpr"}
-			Expr ArgumentExprs  -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
-			Expr BlockExpr      -> Expr {"BlockAppExpr", layout("2.first.line - 1.last.line < num(2)")}
-			"(" {Expr ","}* ")" -> Expr {"TupleExpr"}
-			Expr TypeArgs       -> Expr {"TypeApplication"}
+			"_"                    -> Expr {"WildcardExpr"}
+			Literal                -> Expr {"LiteralExpr", prefer}
+			Path                   -> Expr {"PathExpr"}
+			Expr ArgumentExprs     -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
+			Expr BlockExpr         -> Expr {"BlockAppExpr", layout("2.first.line - 1.last.line < num(2)")}
+			"(" {NoLExpr ","}* ")" -> Expr {"TupleExpr"}
+			Expr TypeArgs          -> Expr {"TypeApplication"}
 		}
 
 		> {
@@ -51,10 +53,10 @@ exports
 			Id "=>" Expr                                                         -> Expr {"IdFunExpr", prefer}
 			"implicit" Id "=>" Expr                                              -> Expr {"ImplicitFunExpr", prefer}
 			"_" "=>" Expr                                                        -> Expr {"WildcardFunExpr", prefer}
-			"if" "(" Expr ")" Expr                                               -> Expr {"IfExpr"}
-			"if" "(" Expr ")" Expr "else" Expr                                   -> Expr {"IfElseExpr"}
-			"if" "(" Expr ")" Expr ";" "else" Expr                               -> Expr {"IfElseExpr"}
-			"while" "(" Expr ")" Expr                                            -> Expr {"WhileExpr"}
+			"if" "(" NoLExpr ")" Expr                                            -> Expr {"IfExpr"}
+			"if" "(" NoLExpr ")" Expr "else" Expr                                -> Expr {"IfElseExpr"}
+			"if" "(" NoLExpr ")" Expr ";" "else" Expr                            -> Expr {"IfElseExpr"}
+			"while" "(" NoLExpr ")" Expr                                         -> Expr {"WhileExpr"}
 			"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)? -> Expr {"TryExpr"}
 			"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr {"DoWhileExpr"}
 			"for" "(" Enumerators ")" Expr                                       -> Expr {"BraceForExpr"}
@@ -73,14 +75,68 @@ exports
 		Expr "." Id        -> Expr {"DesignatorExpr", avoid}
 		> Prefix Expr      -> Expr {"PrefixExpr"}
 
+
+	%% Without Layout
+	context-free priorities
+		{
+			"_"                    -> NoLExpr {"WildcardNoLExpr"}
+			Literal                -> NoLExpr {"LiteralNoLExpr", prefer}
+			Path                   -> NoLExpr {"PathNoLExpr"}
+			NoLExpr ArgumentExprs  -> NoLExpr {"AppNoLExpr"}
+			NoLExpr BlockExpr      -> NoLExpr {"BlockAppNoLExpr"}
+			"(" {NoLExpr ","}* ")" -> NoLExpr {"TupleNoLExpr"}
+			NoLExpr TypeArgs       -> NoLExpr {"TypeApplication"}
+		}
+
+		> {
+			"new" ClassTemplate -> NoLExpr {"NewClassNoLExpr", prefer}
+			"new" TemplateBody  -> NoLExpr {"NewTemplateNoLExpr", prefer}
+			BlockExpr           -> NoLExpr
+			NoLExpr "_"         -> NoLExpr {"EtaExpansionNoLExpr", left}
+		}
+
+		> Prefix NoLExpr     -> NoLExpr {"PrefixNoLExpr", right, prefer}
+		> NoLExpr Id NoLExpr -> NoLExpr {"InfixNoLExpr", left, avoid}
+		> NoLExpr Id         -> NoLExpr {"PostfixNoLExpr"}
+		> NoLExpr Id         -> NoLExpr {"PostfixNoLExpr"}
+
+		> {
+			Bindings "=>" NoLExpr                                                   -> NoLExpr {"FunNoLExpr", prefer}
+			Id "=>" NoLExpr                                                         -> NoLExpr {"IdFunNoLExpr", prefer}
+			"implicit" Id "=>" NoLExpr                                              -> NoLExpr {"ImplicitFunNoLExpr", prefer}
+			"_" "=>" NoLExpr                                                        -> NoLExpr {"WildcardFunNoLExpr", prefer}
+			"if" "(" NoLExpr ")" NoLExpr                                            -> NoLExpr {"IfNoLExpr"}
+			"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr                             -> NoLExpr {"IfElseNoLExpr"}
+			"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr                         -> NoLExpr {"IfElseNoLExpr"}
+			"while" "(" NoLExpr ")" NoLExpr                                         -> NoLExpr {"WhileNoLExpr"}
+			"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" NoLExpr)? -> NoLExpr {"TryNoLExpr"}
+			"do" NoLExpr Semi? "while" "(" NoLExpr ")"                              -> NoLExpr {"DoWhileNoLExpr"}
+			"for" "(" Enumerators ")" NoLExpr                                       -> NoLExpr {"BraceForNoLExpr"}
+			"for" "{" Enumerators "}" NoLExpr                                       -> NoLExpr {"CurlyBraceForNoLExpr"}
+			"for" "(" Enumerators ")" "yield" NoLExpr                               -> NoLExpr {"BraceYieldForNoLExpr"}
+			"for" "{" Enumerators "}" "yield" NoLExpr                               -> NoLExpr {"CurlyBraceYieldForNoLExpr"}
+			"throw" NoLExpr                                                         -> NoLExpr {"ThrowNoLExpr"}
+			"return" NoLExpr?                                                       -> NoLExpr {"ReturnNoLExpr"}
+			NoLExpr Ascription                                                      -> NoLExpr {"AscriptionNoLExpr", avoid}
+			NoLExpr "match" "{" CaseClauses "}"                                     -> NoLExpr {"MatchNoLExpr"}
+			(NoLExpr ".")? Id "=" NoLExpr                                           -> NoLExpr {"AssignmentNoLExpr", non-assoc}
+			NoLExpr ArgumentExprs "=" NoLExpr                                       -> NoLExpr {"AccessAssignmentNoLExpr", non-assoc}
+		}
+
+	context-free priorities
+		NoLExpr "." Id        -> NoLExpr {"DesignatorNoLExpr", avoid}
+		> Prefix NoLExpr      -> NoLExpr {"PrefixNoLExpr"}
+
+
+
 	context-free syntax
-		"(" Exprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
-		"(" (Exprs ",")? Expr ":" "_" "*" ")"        -> ArgumentExprs {"SequenceArgumentExprs", prefer}
+		"(" NoLExprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
+		"(" (NoLExprs ",")? NoLExpr ":" "_" "*" ")"     -> ArgumentExprs {"SequenceArgumentExprs", prefer}
 
 		ArgumentExprs                  -> ArgumentExprsSeq
 		ArgumentExprs ArgumentExprsSeq -> ArgumentExprsSeq {"ArgumentExprsSeq", layout("1.last.line == 2.first.line")}
 
-		{Expr ","}+ -> Exprs {"Exprs"}
+		{NoLExpr ","}+ -> NoLExprs {"Exprs"}
 		
 		":" InfixType   -> Ascription {"TypeAscription"}
 		":" Annotation+ -> Ascription {"AnnotationAscription"}

@@ -1,16 +1,16 @@
 language Scala
-start symbol Expr
+start symbol NoLExpr
 
 /* Literal */
-test literal expression [[
+test literal NoLExpression [[
 	42
-]] parse to LiteralExpr(_)
+]] parse to LiteralNoLExpr(_)
 
-test long expression [[
+test long NoLExpression [[
 	42L
-]] parse to LiteralExpr(_)
+]] parse to LiteralNoLExpr(_)
 
-test id expression [[
+test id NoLExpression [[
 	foo
 ]]
 
@@ -21,41 +21,41 @@ test simple path [[
 
 test path [[
 	scala.collection.mutable.Map
-]] parse to PathExpr(_)
+]] parse to PathNoLExpr(_)
 
 
 /* Wildcard */
-test wildcard expression [[
+test wildcard NoLExpression [[
 	_
-]] parse to WildcardExpr
+]] parse to WildcardNoLExpr
 
 
 /* Tuple */
-test braced expression [[
+test braced NoLExpression [[
 	(23)
-]] parse to TupleExpr([LiteralNoLExpr(Int("23"))])
+]] parse to TupleNoLExpr([LiteralNoLExpr(Int("23"))])
 
-test tuple expression [[
+test tuple NoLExpression [[
 	(23, 42)
-]] parse to TupleExpr(_)
+]] parse to TupleNoLExpr(_)
 
-test recursive brace expression [[
+test recursive brace NoLExpression [[
 	(((42)))
-]] parse to TupleExpr([TupleNoLExpr([TupleNoLExpr(_)])])
+]] parse to TupleNoLExpr([TupleNoLExpr([TupleNoLExpr(_)])])
 
 
 /* Designator */
 test designator [[
 	f(23).foo.bar
-]] parse to DesignatorExpr(_, _)
+]] parse to DesignatorNoLExpr(_, _)
 
-test designator expression allows blocks [[
+test designator NoLExpression allows blocks [[
 	{Person("John", "Doe")}.first_name
 ]]
 
 test designator of new class instantiation [[
 	new Person().default_name
-]] parse to DesignatorExpr(_, _)
+]] parse to DesignatorNoLExpr(_, _)
 
 /* Type Application */
 test type application [[
@@ -66,34 +66,34 @@ test type application [[
 /* Application */
 test application [[
 	f(42)
-]] parse to AppExpr(_, _)
+]] parse to AppNoLExpr(_, _)
 
 test multiple arg lists [[
 	f(23)(42)
-]] parse to AppExpr(AppExpr(_, _), _)
+]] parse to AppNoLExpr(AppNoLExpr(_, _), _)
 
-test application invalid layout [[
+test application spread layout [[
 	f
 	(42)
-]] parse fails
+]] parse to AppNoLExpr(_, _)
 
 test application valid layout [[
 	f (
 		42
 	)
-]] parse to AppExpr(_, _)
+]] parse to AppNoLExpr(_, _)
 
 test application wildcard target [[
 	_(23)
-]] parse to AppExpr(WildcardExpr, _)
+]] parse to AppNoLExpr(WildcardNoLExpr, _)
 
 test application literal target [[
 	42(23)
-]] parse to AppExpr(LiteralExpr(_), _)
+]] parse to AppNoLExpr(LiteralNoLExpr(_), _)
 
 test application path target [[
 	scala.collection.mutable.Map()
-]] parse to AppExpr(PathExpr(_), _)
+]] parse to AppNoLExpr(PathNoLExpr(_), _)
 
 test application block target is invalid [[
 	{foo}(23)
@@ -101,71 +101,71 @@ test application block target is invalid [[
 
 test application block application target [[
 	Map {'x -> 23} ('x)
-]] parse to AppExpr(BlockAppExpr(_, _), _)
+]] parse to AppNoLExpr(BlockAppNoLExpr(_, _), _)
 
-test multiple arg lists invalid layout [[
+test multiple arg lists spread layout [[
 	f(23)
 	(42)
-]] parse fails
+]] parse to AppNoLExpr(_, _)
 
 test multiple arg lists valid layout [[
 	f  (
 		23)  (
 			42)
-]] parse to AppExpr(AppExpr(_, _), _)
+]] parse to AppNoLExpr(AppNoLExpr(_, _), _)
 
 test block argument [[
 	f {23}
-]] parse to BlockAppExpr(_, _)
+]] parse to BlockAppNoLExpr(_, _)
 
 test block argument valid layout [[
 	f
 	{23}
-]] parse to BlockAppExpr(_, _)
+]] parse to BlockAppNoLExpr(_, _)
 
-test block argument invalid layout [[
+test block argument spread layout [[
 	f
 	
 	{23}
-]] parse fails
+]] parse to BlockAppNoLExpr(_, _)
 
 
 /* Instantiation */
 test simple class instantiation [[
 	new Foo()
-]] parse to NewClassExpr(_)
+]] parse to NewClassNoLExpr(_)
 
 test argument less class instantiation [[
 	new Foo
-]] parse to NewClassExpr(_)
+]] parse to NewClassNoLExpr(_)
 
 test multi argument list class instantiation [[
 	new Foo(42)(23)
-]] parse to NewClassExpr(_)
+]] parse to NewClassNoLExpr(_)
 
 test class instantiation layout [[
 	new
 	
 	Foo(42)
-]] parse to NewClassExpr(_)
+]] parse to NewClassNoLExpr(_)
 
 test template instantiation [[
 	new { def f() = println("42")}
-]] parse to NewTemplateExpr(_)
+]] parse to NewTemplateNoLExpr(_)
 
 test empty template instantiation [[
 	new {}
-]] parse to NewTemplateExpr(_)
+]] parse to NewTemplateNoLExpr(_)
 
 test template instantiation layout [[
 	new
 	
 	{}
-]] parse to NewTemplateExpr(_)
+]] parse to NewTemplateNoLExpr(_)
 
 test new fqn class instantiation [[
 	new scala.collection.mutable.Map
-]] parse to NewClassExpr(_)
+]] parse to NewClassNoLExpr(_)
 
 
 /* Blocks */
@@ -186,13 +186,13 @@ test block layout [[
 /* Eta Expansion */
 test eta expansion [[
 	f _
-]] parse to EtaExpansionExpr(_)
+]] parse to EtaExpansionNoLExpr(_)
 
-test eta expansion invalid layout [[
+test eta expansion spread layout [[
 	f
 	_
-]] parse fails
+]] parse to EtaExpansionNoLExpr(_)
 
 test block eta expansion [[
 	{ def f(n: Int) = println(n) ; f } _
-]] parse to EtaExpansionExpr(_)
+]] parse to EtaExpansionNoLExpr(_)
