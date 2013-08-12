@@ -12,3 +12,11 @@ test InfixExpr > PostfixExpr in template body [[
 	bar
 }
 ]]
+
+test InfixExpr > PostfixExpr in template body with function statement [[
+{
+	def g = _
+	def f = foo &
+	bar
+}
+]]
