@@ -10,6 +10,20 @@ lexical syntax
 	Letter | Digit -> IdRest
 	
 	[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OpChar
+
+	%% Operators by precedence from low to high
+	Letter+                      -> LetterOp %% TODO support mixed (e.g. should_==)
+	[\|] OpChar*                 -> BarOp
+	[\^] OpChar*                 -> CircumflexOp
+	[\&] OpChar*                 -> AmpersandOp
+	([\<] | [\>]) OpChar*        -> BracketOp
+	([\=] | [\!]) OpChar*        -> AssignOp
+	[\:] OpChar*                 -> ColonOp
+	([\+] | [\-]) OpChar*        -> SumOp
+	([\*] | [\/] | [\%]) OpChar* -> MultOp
+	[\#\?\@\\\~] OpChar*         -> SpecialOp
+
+	[\=] -> AssignOp {reject}
 	
 	OpChar+ -> Op
 	
@@ -88,10 +102,22 @@ lexical syntax
 	"#"         -> Keyword
 	"@"         -> Keyword
 	Keyword     -> PlainId {reject}
+	Keyword     -> LetterOp {reject}
 
 lexical restrictions
 	Op -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 	
+	LetterOp      -/- [a-zA-Z0-9]
+	BarOp         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	CircumflexOp  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	AmpersandOp   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	BracketOp     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	AssignOp      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	ColonOp       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	SumOp         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	MultOp        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	SpecialOp     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+
 	VarId  -/- [A-Za-z0-9\$\_]
 	TypeId -/- [A-Za-z0-9\$\_]
 	

@@ -9,3 +9,31 @@ test infix > postfix [[
 	if (a & a) b
 	else a & a
 ]] parse to IfElseExpr(InfixNoLExpr(_, _, _), _, InfixExpr(_, _, _))
+
+test [[
+	-sin(x)
+]] parse to PrefixExpr(_, AppExpr(_, _))
+
+test [[
+	!a && !b
+]] parse to InfixExpr(PrefixExpr(_, _), _, PrefixExpr(_, _))
+
+test [[
+	a && b || c ^^ d and e
+]] parse to InfixExpr(InfixExpr(_, "||", _), "and", _)
+
+test [[
+	a && b || (c ^^ d and e)
+]] parse to InfixExpr(_, "||",  _)
+
+test [[
+	negate sin(x)
+]] parse to InfixExpr(_, _, _)
+
+test [[
+	3 + 2 + 7
+]] parse to InfixExpr(InfixExpr(_, _, _), _, _)
+
+test [[
+	foo = bar
+]] parse to AssignmentExpr(_, _, _)
