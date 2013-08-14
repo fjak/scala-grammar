@@ -5,13 +5,13 @@ test | is pattern disjunctor [[
 	v match {
 		case A | B =>
 	}
-]] parse to MatchExpr(_, CaseClauses([CaseClause(DisjunctPattern(_, _), _, _)]))
+]] parse to MatchExpr(_, [CaseClause(DisjunctPattern(_, _), _, _)])
 
 test left assoc pattern operations [[
 	v match {
 		case a :: b :: c =>
 	}
-]] parse to MatchExpr(_, CaseClauses([
+]] parse to MatchExpr(_, [
 	CaseClause(
 		InfixPattern(
 			InfixPattern(
@@ -19,19 +19,19 @@ test left assoc pattern operations [[
 				Id("::"),
 				StableIdPattern(SimpleStableId(Id("b")))),
 			Id("::"),
-			StableIdPattern(SimpleStableId(Id("c")))), _, _)]))
+			StableIdPattern(SimpleStableId(Id("c")))), _, _)])
 			
 test constructor pattern [[
 	v match {
 		case CaseClass(b) =>
 	}
-]] parse to MatchExpr(_, CaseClauses([CaseClause(ConstructorPattern(_, _), _, _)]))
+]] parse to MatchExpr(_, [CaseClause(ConstructorPattern(_, _), _, _)])
 
 test typed pattern [[
 	v match {
 		case b: Bool =>
 	}
-]] parse to MatchExpr(_, CaseClauses([CaseClause(TypedPattern(_, _), _, _)]))
+]] parse to MatchExpr(_, [CaseClause(TypedPattern(_, _), _, _)])
 
 test pattern list [[
 	v match {
@@ -53,4 +53,8 @@ test pattern list [[
 		case x :: xs => toBoolean(x)
 		case o => toBoolean(o.toString)
 	}
-]] parse to MatchExpr(_, CaseClauses([_, _, _, _, _, _, _, _, _]))
+]] parse to MatchExpr(_, [_, _, _, _, _, _, _, _, _])
+
+test same line multiple clauses [[
+	v match { case foo => bar case baz => bau }
+]]

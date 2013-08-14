@@ -19,9 +19,13 @@ exports
 		"-" -> Prefix
 		"~" -> Prefix
 		"!" -> Prefix
-		
+		    -> EOC
+
 	lexical restrictions
 		Prefix -/- [\+\-\~\!]
+
+	context-free restrictions
+		EOC -/- ~[c]
 
 
 	%% With Layout
@@ -57,7 +61,7 @@ exports
 			"if" "(" NoLExpr ")" Expr "else" Expr                                -> Expr {"IfElseExpr"}
 			"if" "(" NoLExpr ")" Expr ";" "else" Expr                            -> Expr {"IfElseExpr"}
 			"while" "(" NoLExpr ")" Expr                                         -> Expr {"WhileExpr"}
-			"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" Expr)? -> Expr {"TryExpr"}
+			"try" "{" Block "}" ("catch" "{" CaseClause+ "}")? ("finally" Expr)? -> Expr {"TryExpr"}
 			"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr {"DoWhileExpr"}
 			"for" "(" Enumerators ")" Expr                                       -> Expr {"BraceForExpr"}
 			"for" "{" Enumerators "}" Expr                                       -> Expr {"CurlyBraceForExpr"}
@@ -66,7 +70,7 @@ exports
 			"throw" Expr                                                         -> Expr {"ThrowExpr"}
 			"return" Expr?                                                       -> Expr {"ReturnExpr"}
 			Expr Ascription                                                      -> Expr {"AscriptionExpr", avoid}
-			Expr "match" "{" CaseClauses "}"                                     -> Expr {"MatchExpr"}
+			Expr "match" "{" CaseClause+ "}"                                     -> Expr {"MatchExpr"}
 			(Expr ".")? Id "=" Expr                                              -> Expr {"AssignmentExpr", non-assoc}
 			Expr ArgumentExprs "=" Expr                                          -> Expr {"AccessAssignmentExpr", non-assoc}
 		}
@@ -109,7 +113,7 @@ exports
 			"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr                             -> NoLExpr {"IfElseNoLExpr"}
 			"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr                         -> NoLExpr {"IfElseNoLExpr"}
 			"while" "(" NoLExpr ")" NoLExpr                                         -> NoLExpr {"WhileNoLExpr"}
-			"try" "{" Block "}" ("catch" "{" CaseClauses "}")? ("finally" NoLExpr)? -> NoLExpr {"TryNoLExpr"}
+			"try" "{" Block "}" ("catch" "{" CaseClause+ "}")? ("finally" NoLExpr)? -> NoLExpr {"TryNoLExpr"}
 			"do" NoLExpr Semi? "while" "(" NoLExpr ")"                              -> NoLExpr {"DoWhileNoLExpr"}
 			"for" "(" Enumerators ")" NoLExpr                                       -> NoLExpr {"BraceForNoLExpr"}
 			"for" "{" Enumerators "}" NoLExpr                                       -> NoLExpr {"CurlyBraceForNoLExpr"}
@@ -118,7 +122,7 @@ exports
 			"throw" NoLExpr                                                         -> NoLExpr {"ThrowNoLExpr"}
 			"return" NoLExpr?                                                       -> NoLExpr {"ReturnNoLExpr"}
 			NoLExpr Ascription                                                      -> NoLExpr {"AscriptionNoLExpr", avoid}
-			NoLExpr "match" "{" CaseClauses "}"                                     -> NoLExpr {"MatchNoLExpr"}
+			NoLExpr "match" "{" CaseClause+ "}"                                     -> NoLExpr {"MatchNoLExpr"}
 			(NoLExpr ".")? Id "=" NoLExpr                                           -> NoLExpr {"AssignmentNoLExpr", non-assoc}
 			NoLExpr ArgumentExprs "=" NoLExpr                                       -> NoLExpr {"AccessAssignmentNoLExpr", non-assoc}
 		}
@@ -160,9 +164,7 @@ exports
 		
 		"case" Pattern Guard? "=>" Block -> CaseClause {"CaseClause"}
 		
-		CaseClause+ -> CaseClauses {"CaseClauses"}
-		
-		"{" CaseClauses "}" -> BlockExpr {"CaseBlockExpr"}
+		"{" CaseClause+ "}" -> BlockExpr {"CaseBlockExpr"}
 		"{" Block "}"       -> BlockExpr {"BlockExpr"}
 		
 		BlockStatSemi* ResultExpr -> Block {"BlockWithResult", prefer}
@@ -170,6 +172,7 @@ exports
 		
 		BlockStat EOL -> BlockStatSemi {"BlockStatSemi", enforce-newline, prefer}
 		BlockStat EOB -> BlockStatSemi {"EOBBlockStatSemi", avoid}
+		BlockStat EOC -> BlockStatSemi {"EOCBlockStatSemi"}
 		BlockStat ";" -> BlockStatSemi {"SemiBlockStatSemi"}
 		
 		%% Only treat "special" expressions as ResultExpr to avoid ambiguity with BlockStatSemi
