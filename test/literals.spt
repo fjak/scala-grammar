@@ -1,0 +1,138 @@
+language Scala
+start symbol Expr
+
+test Decimal [[
+	123141
+]] parse to LiteralExpr(Int(_))
+
+test Negative Decimal [[
+	-1254151
+]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+
+test long Decimal [[
+	2147912l
+]] parse to LiteralExpr(Int(_))
+
+test Negative long Decimal [[
+	-1241241l
+]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+
+test Long Decimal [[
+	1479811L
+]] parse to LiteralExpr(Int(_))
+
+test negative Long Decimal [[
+	-12798141L
+]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+
+test Hex Numeral [[
+	0xFFFFFFFF
+]] parse to LiteralExpr(Int(_))
+
+test Negative Hex Numeral [[
+	-0x0123456789abcdef
+]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+
+test long Hex Numeral [[
+	0x0123456789abcdefl
+]] parse to LiteralExpr(Int(_))
+
+test Long Hex Numeral [[
+	0x0123456789abcdefL
+]] parse to LiteralExpr(Int(_))
+
+test negative long Hex Numeral [[
+	-0x0123456789abcdefl
+]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+
+test negative Long Hex Numeral [[
+	-0x0123456789abcdefL
+]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+
+test octal [[
+	0777L
+]] parse to LiteralExpr(Int(_))
+
+test Float1 [[
+	0.0
+]] parse to LiteralExpr(Float(_))
+
+test Float2 [[
+	1e30f
+]] parse to LiteralExpr(Float(_))
+
+test Float3 [[
+	3.14159f
+]] parse to LiteralExpr(Float(_))
+
+test Float4 [[
+	1.0e-100
+]] parse to LiteralExpr(_)
+
+test Float5 [[
+	.1
+]] parse to LiteralExpr(_)
+
+test boolean true [[
+	true
+]] parse to LiteralExpr(True())
+
+test boolean false [[
+	false
+]] parse to LiteralExpr(False())
+
+test false lexical [[
+	falsef
+]] parse to PathExpr(_)
+
+test true lexical [[
+	truef
+]] parse to PathExpr(_)
+
+test 'a' character [[
+	'a'
+]] parse to LiteralExpr(Char(_))
+
+test '\u0041' [[
+	'\u0041'
+]] parse to LiteralExpr(Char(_))
+
+test '\n' [[
+	'\n'
+]] parse to LiteralExpr(Char(_))
+
+test '\t' [[
+	'\t'
+]] parse to LiteralExpr(Char(_))
+
+test Unicode Characters [[
+	'\u00C0'
+]] parse to LiteralExpr(Char(_))
+
+test String literals [[
+	"Hello,\nWorld!"
+]] parse to LiteralExpr(String(_))
+
+test Escaped " String Literal [[
+	"This string contains a \" character."
+]] parse to LiteralExpr(String(_))
+
+test Multi-line string literal [[
+	"""the present string
+       spans three
+       lines."""
+]] parse to LiteralExpr(String(_))
+
+test Stripped String [[
+	"""the present string
+      |spans three
+      |lines.""".stripMargin
+]] parse to DesignatorExpr(LiteralExpr(String(_)), Id("stripMargin"))
+
+test Symbol 'x [[
+	'x
+]] parse to LiteralExpr(Symbol(_))
+
+test Symbol 'foobar [[
+	'foobar
+]] parse to LiteralExpr(Symbol(_))

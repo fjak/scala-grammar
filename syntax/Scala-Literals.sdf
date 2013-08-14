@@ -5,21 +5,24 @@ imports
 
 exports
 	lexical syntax
-		(DecimalNumeral | HexNumeral | OctalNumeral) ("L" | "l")? -> IntegerLiteral
+		DecimalNumeral ("L" | "l")? -> IntegerLiteral
+		HexNumeral ("L" | "l")?     -> IntegerLiteral
+		OctalNumeral ("L" | "l")?   -> IntegerLiteral {prefer}
 		%% "-" IntegerLiteral                                        -> IntegerLiteral
 		
-		"0" | NonZeroDigit Digit* -> DecimalNumeral {"Decimal"}
-		"0" "x" HexDigit+ -> HexNumeral {"HexNumeral"}
-		"0" OctalDigit+ -> OctalNumeral {"Octal"}
+		[0] | NonZeroDigit Digit* -> DecimalNumeral {"Decimal"}
+		"0x" HexDigit+ -> HexNumeral {"HexNumeral"}
+		[0] OctalDigit+ -> OctalNumeral {"Octal"}
 		[0-9]       -> Digit {"Digit"}
 		[1-9]       -> NonZeroDigit {"NonZeroDigit"}
 		[0-7]       -> OctalDigit {"OctalDigit"}
 		[0-9A-Fa-f] -> HexDigit {"HexDigit"}
 		
-		Digit+ "." Digit+ ExponentPart? FloatType? -> FloatingPointLiteral
+		Digit+ "." Digit* ExponentPart? FloatType? -> FloatingPointLiteral
 		"." Digit+ ExponentPart? FloatType?        -> FloatingPointLiteral
-		Digit+ ExponentPart FloatType?             -> FloatingPointLiteral
-		Digit+ ExponentPart? FloatType             -> FloatingPointLiteral
+		Digit+ ExponentPart                        -> FloatingPointLiteral
+		Digit+ FloatType                           -> FloatingPointLiteral
+		Digit+ ExponentPart FloatType              -> FloatingPointLiteral
 		%% "-" FloatingPointLiteral                   -> FloatingPointLiteral
 		
 		("E" | "e") ("+" | "-")? Digit+ -> ExponentPart
@@ -34,6 +37,9 @@ exports
 		"\\b" | "\\t" | "\\n" | "\\f" | "\\r" | "\\\"" | "\\'" | "\\\\" -> CharEscapeSeq
 		"\\" [0-1]? [0-9]? [0-9]                                        -> CharEscapeSeq
 		"\\" Digit? Digit? Digit                                        -> CharEscapeSeq
+		UnicodeEscape                                                   -> CharEscapeSeq
+
+		"\\" "u" HexDigit HexDigit HexDigit HexDigit -> UnicodeEscape
 		
 		"\"" StringElement* "\""         -> StringLiteral
 		"\"\"\"" MultiLineChars "\"\"\"" -> StringLiteral
@@ -46,9 +52,12 @@ exports
 		"'" IPlainId -> SymbolLiteral
 		
 	lexical restrictions
-		DecimalNumeral -/- [0-9]
-		OctalNumeral -/- [0-9]
-		HexNumeral -/- [0-9a-zA-Z]
+		DecimalNumeral -/- [0-9a-km-zA-KM-Z]
+		HexNumeral -/- [0-9a-km-zA-KM-Z]
+		OctalNumeral -/- [0-9a-km-zA-KM-Z]
+		Literal -/- [0-9a-zA-Z]
+		"true" -/- [a-zA-Z0-9]
+		"false" -/- [a-zA-Z0-9]
 		
 	context-free syntax
 		IntegerLiteral       -> Literal {"Int"}
