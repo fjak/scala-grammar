@@ -58,18 +58,6 @@ exports
 		> Expr CircumflexOp Expr  -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr BarOp Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr LetterOp Expr      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		<2> .> {
-			Expr SpecialOp Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr MultOp Expr        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr SumOp Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr ColonOp Expr       -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr AssignOp Expr      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr BracketOp Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr AmpersandOp Expr   -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr CircumflexOp Expr  -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr BarOp Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr LetterOp Expr      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 
@@ -131,18 +119,6 @@ exports
 		> NoLExpr CircumflexOp NoLExpr -> NoLExpr {"InfixNoLExpr", left}
 		> NoLExpr BarOp NoLExpr        -> NoLExpr {"InfixNoLExpr", left}
 		> NoLExpr LetterOp NoLExpr     -> NoLExpr {"InfixNoLExpr", left}
-		<2> .> {
-			NoLExpr SpecialOp NoLExpr     -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr MultOp NoLExpr        -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr SumOp NoLExpr         -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr ColonOp NoLExpr       -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr AssignOp NoLExpr      -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr BracketOp NoLExpr     -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr AmpersandOp NoLExpr   -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr CircumflexOp NoLExpr  -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr BarOp NoLExpr         -> NoLExpr {"InfixNoLExpr", left}
-			NoLExpr LetterOp NoLExpr      -> NoLExpr {"InfixNoLExpr", left}
-		}
 		> NoLExpr Id                   -> NoLExpr {"PostfixNoLExpr", avoid}
 		> NoLExpr Id                   -> NoLExpr {"PostfixNoLExpr", avoid}
 

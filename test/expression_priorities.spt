@@ -14,9 +14,14 @@ test [[
 	-sin(x)
 ]] parse to PrefixExpr(_, AppExpr(_, _))
 
+// not sure how to disambiguate this without making the next test fail
 test [[
 	!a && !b
 ]] parse to InfixExpr(PrefixExpr(_, _), _, PrefixExpr(_, _))
+
+test [[
+	a b c + d
+]]
 
 test [[
 	a && b || c ^^ d and e
