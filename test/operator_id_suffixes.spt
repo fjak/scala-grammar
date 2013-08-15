@@ -8,3 +8,7 @@ test operator suffix id application [[
 test operator suffix id application is not confused with infix expression [[
 	foo must be_==(bar)
 ]] parse to InfixExpr(_, _, AppExpr(_, _))
+
+test operator suffix id is valid in infix position [[
+	a op_== b
+]] parse to InfixExpr(_, "op_==", _)

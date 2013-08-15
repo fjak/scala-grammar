@@ -12,7 +12,7 @@ lexical syntax
 	[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OpChar
 
 	%% Operators by precedence from low to high
-	Letter+                      -> LetterOp %% TODO support mixed (e.g. should_==)
+	IVarPlainId | ITypePlainId   -> LetterOp
 	[\|] OpChar*                 -> BarOp
 	[\^] OpChar*                 -> CircumflexOp
 	[\&] OpChar*                 -> AmpersandOp
@@ -46,9 +46,12 @@ lexical syntax
 	ITypeIdUSS -> TypeIdUSS
 	ITypeIdOp -> TypeIdOp
 	
-	Op -> IPlainId
-	(VarId  | VarIdUSS  | VarIdOp)  -> IPlainId
-	(TypeId | TypeIdUSS | TypeIdOp) -> IPlainId
+	(VarId  | VarIdUSS  | VarIdOp)  -> IVarPlainId
+	(TypeId | TypeIdUSS | TypeIdOp) -> ITypePlainId
+
+	Op           -> IPlainId
+	IVarPlainId  -> IPlainId
+	ITypePlainId -> IPlainId
 	
 	IPlainId -> PlainId
 	
@@ -123,12 +126,47 @@ lexical restrictions
 	
 	VarIdUSS -/-  [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 	TypeIdUSS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	
-	
-	"val" -/- [a-zA-Z0-9]
-	"var" -/- [a-zA-Z0-9]
-	"new" -/- [a-zA-Z0-9]
-	
+
+	"abstract" -/- [a-zA-Z0-9\$\_]
+	"case"     -/- [a-zA-Z0-9\$\_]
+	"catch"    -/- [a-zA-Z0-9\$\_]
+	"class"    -/- [a-zA-Z0-9\$\_]
+	"def"      -/- [a-zA-Z0-9\$\_]
+	"do"       -/- [a-zA-Z0-9\$\_]
+	"else"     -/- [a-zA-Z0-9\$\_]
+	"extends"  -/- [a-zA-Z0-9\$\_]
+	"false"    -/- [a-zA-Z0-9\$\_]
+	"final"    -/- [a-zA-Z0-9\$\_]
+	"finally"  -/- [a-zA-Z0-9\$\_]
+	"for"      -/- [a-zA-Z0-9\$\_]
+	"forSome"  -/- [a-zA-Z0-9\$\_]
+	"if"       -/- [a-zA-Z0-9\$\_]
+	"implicit" -/- [a-zA-Z0-9\$\_]
+	"import"   -/- [a-zA-Z0-9\$\_]
+	"lazy"     -/- [a-zA-Z0-9\$\_]
+	"match"    -/- [a-zA-Z0-9\$\_]
+	"new"      -/- [a-zA-Z0-9\$\_]
+	"null"     -/- [a-zA-Z0-9\$\_]
+	"object"   -/- [a-zA-Z0-9\$\_]
+	"override" -/- [a-zA-Z0-9\$\_]
+	"package"  -/- [a-zA-Z0-9\$\_]
+	"private"  -/- [a-zA-Z0-9\$\_]
+	"protected"-/- [a-zA-Z0-9\$\_]
+	"return"   -/- [a-zA-Z0-9\$\_]
+	"sealed"   -/- [a-zA-Z0-9\$\_]
+	"super"    -/- [a-zA-Z0-9\$\_]
+	"this"     -/- [a-zA-Z0-9\$\_]
+	"throw"    -/- [a-zA-Z0-9\$\_]
+	"trait"    -/- [a-zA-Z0-9\$\_]
+	"try"      -/- [a-zA-Z0-9\$\_]
+	"true"     -/- [a-zA-Z0-9\$\_]
+	"type"     -/- [a-zA-Z0-9\$\_]
+	"val"      -/- [a-zA-Z0-9\$\_]
+	"var"      -/- [a-zA-Z0-9\$\_]
+	"while"    -/- [a-zA-Z0-9\$\_]
+	"with"     -/- [a-zA-Z0-9\$\_]
+	"yield"    -/- [a-zA-Z0-9\$\_]
+
 	"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 	":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 	"_" -/- [a-zA-Z0-9\_\$]

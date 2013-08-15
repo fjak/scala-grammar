@@ -58,3 +58,9 @@ test pattern list [[
 test same line multiple clauses [[
 	v match { case foo => bar case baz => bau }
 ]]
+
+test classOf is not confused with class definition [[
+  s.path match {
+    case "scala.Short"   => classOf[Short]
+  }
+]]
