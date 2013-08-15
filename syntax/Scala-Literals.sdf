@@ -18,7 +18,7 @@ exports
 		[0-7]       -> OctalDigit {"OctalDigit"}
 		[0-9A-Fa-f] -> HexDigit {"HexDigit"}
 		
-		Digit+ "." Digit* ExponentPart? FloatType? -> FloatingPointLiteral
+		Digit+ "." Digit+ ExponentPart? FloatType? -> FloatingPointLiteral
 		"." Digit+ ExponentPart? FloatType?        -> FloatingPointLiteral
 		Digit+ ExponentPart                        -> FloatingPointLiteral
 		Digit+ FloatType                           -> FloatingPointLiteral

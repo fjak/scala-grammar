@@ -196,3 +196,11 @@ test eta expansion spread layout [[
 test block eta expansion [[
 	{ def f(n: Int) = println(n) ; f } _
 ]] parse to EtaExpansionNoLExpr(_)
+
+test DesignatorExpr on Int [[
+	10000.toFloat
+]] parse to DesignatorNoLExpr(LiteralNoLExpr(_), _)
+
+test DesignatorExpr on Float [[
+	10000.000.toInt
+]] parse to DesignatorNoLExpr(LiteralNoLExpr(_), _)
