@@ -7,14 +7,14 @@ exports
 	context-free syntax
 		{PathElem "."}+ -> Path {"Path"}
 
-		Id                                -> PathElem
-		(Id ".")? "this"                  -> PathElem {"This"}
-		(Id ".")? "super" ClassQualifier? -> PathElem {"Super"}
+		PlainId                                -> PathElem
+		"this"                                 -> PathElem {"This"}
+		"super" ClassQualifier? "." PlainId    -> PathElem {"Super"}
 
-		Id                     -> StableId {"SimpleStableId"}
-		{PathElem "."}+ "." Id -> StableId {"StableId"}
+		Id                          -> StableId
+		{PathElem "."}+ "." PlainId -> StableId {"StableId"}
 
-		"[" Id "]" -> ClassQualifier {"ClassQualifier"}
+		"[" PlainId "]" -> ClassQualifier {"ClassQualifier"}
 		
 	context-free restrictions
 		StableId -/- [\.] . [a-zA-Z\$]

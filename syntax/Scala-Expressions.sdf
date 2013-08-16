@@ -32,8 +32,8 @@ exports
 	context-free priorities
 		{
 			"_"                    -> Expr {"WildcardExpr"}
-			Literal                -> Expr {"LiteralExpr", prefer}
-			Path                   -> Expr {"PathExpr"}
+			Literal                -> Expr {prefer}
+			Path                   -> Expr
 			Expr ArgumentExprs     -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
 			Expr BlockExpr         -> Expr {"BlockAppExpr", layout("2.first.line - 1.last.line < num(2)")}
 			"(" {NoLExpr ","}* ")" -> Expr {"TupleExpr"}
@@ -93,8 +93,8 @@ exports
 	context-free priorities
 		{
 			"_"                    -> NoLExpr {"WildcardNoLExpr"}
-			Literal                -> NoLExpr {"LiteralNoLExpr", prefer}
-			Path                   -> NoLExpr {"PathNoLExpr"}
+			Literal                -> NoLExpr {prefer}
+			Path                   -> NoLExpr
 			NoLExpr ArgumentExprs  -> NoLExpr {"AppNoLExpr"}
 			NoLExpr BlockExpr      -> NoLExpr {"BlockAppNoLExpr"}
 			"(" {NoLExpr ","}* ")" -> NoLExpr {"TupleNoLExpr"}

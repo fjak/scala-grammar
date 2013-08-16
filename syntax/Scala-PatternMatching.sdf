@@ -11,7 +11,7 @@ exports
 			"_"                                                   -> SimplePattern {"WildcardPattern"}
 			%% VarId                                                 -> SimplePattern {"VariablePattern"}
 			Literal                                               -> SimplePattern {"LiteralPattern"}
-			StableId                                              -> SimplePattern {"StableIdPattern"}
+			StableId                                              -> SimplePattern
 			StableId "(" Patterns ")"                             -> SimplePattern {"ConstructorPattern"}
 			"(" Patterns ")"                                      -> SimplePattern {"TuplePattern"}
 			StableId "(" (Patterns ",")? (VarId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}

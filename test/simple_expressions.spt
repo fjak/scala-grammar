@@ -4,15 +4,15 @@ start symbol Expr
 /* Literal */
 test literal expression [[
 	42
-]] parse to LiteralExpr(_)
+]] parse to Int(_)
 
 test long expression [[
 	42L
-]] parse to LiteralExpr(_)
+]] parse to Int(_)
 
 test id expression [[
 	foo
-]]
+]] parse to Path(["foo"])
 
 /* Path */
 test simple path [[
@@ -21,7 +21,7 @@ test simple path [[
 
 test path [[
 	scala.collection.mutable.Map
-]] parse to PathExpr(_)
+]] parse to Path(_)
 
 
 /* Wildcard */
@@ -33,7 +33,7 @@ test wildcard expression [[
 /* Tuple */
 test braced expression [[
 	(23)
-]] parse to TupleExpr([LiteralNoLExpr(Int("23"))])
+]] parse to TupleExpr([Int("23")])
 
 test tuple expression [[
 	(23, 42)
@@ -89,11 +89,11 @@ test application wildcard target [[
 
 test application literal target [[
 	42(23)
-]] parse to AppExpr(LiteralExpr(_), _)
+]] parse to AppExpr(Int(_), _)
 
 test application path target [[
 	scala.collection.mutable.Map()
-]] parse to AppExpr(PathExpr(_), _)
+]] parse to AppExpr(Path(_), _)
 
 test application block target is invalid [[
 	{foo}(23)
@@ -199,8 +199,8 @@ test block eta expansion [[
 
 test DesignatorExpr on Int [[
 	10000.toFloat
-]] parse to DesignatorExpr(LiteralExpr(_), _)
+]] parse to DesignatorExpr(Int(_), _)
 
 test DesignatorExpr on Float [[
 	10000.000.toInt
-]] parse to DesignatorExpr(LiteralExpr(_), _)
+]] parse to DesignatorExpr(Float(_), _)

@@ -4,11 +4,11 @@ start symbol NoLExpr
 /* Literal */
 test literal NoLExpression [[
 	42
-]] parse to LiteralNoLExpr(_)
+]] parse to Int(_)
 
 test long NoLExpression [[
 	42L
-]] parse to LiteralNoLExpr(_)
+]] parse to Int(_)
 
 test id NoLExpression [[
 	foo
@@ -21,7 +21,7 @@ test simple path [[
 
 test path [[
 	scala.collection.mutable.Map
-]] parse to PathNoLExpr(_)
+]] parse to Path(_)
 
 
 /* Wildcard */
@@ -33,7 +33,7 @@ test wildcard NoLExpression [[
 /* Tuple */
 test braced NoLExpression [[
 	(23)
-]] parse to TupleNoLExpr([LiteralNoLExpr(Int("23"))])
+]] parse to TupleNoLExpr([Int("23")])
 
 test tuple NoLExpression [[
 	(23, 42)
@@ -89,11 +89,11 @@ test application wildcard target [[
 
 test application literal target [[
 	42(23)
-]] parse to AppNoLExpr(LiteralNoLExpr(_), _)
+]] parse to AppNoLExpr(Int(_), _)
 
 test application path target [[
 	scala.collection.mutable.Map()
-]] parse to AppNoLExpr(PathNoLExpr(_), _)
+]] parse to AppNoLExpr(Path(_), _)
 
 test application block target is invalid [[
 	{foo}(23)
@@ -199,8 +199,8 @@ test block eta expansion [[
 
 test DesignatorExpr on Int [[
 	10000.toFloat
-]] parse to DesignatorNoLExpr(LiteralNoLExpr(_), _)
+]] parse to DesignatorNoLExpr(Int(_), _)
 
 test DesignatorExpr on Float [[
 	10000.000.toInt
-]] parse to DesignatorNoLExpr(LiteralNoLExpr(_), _)
+]] parse to DesignatorNoLExpr(Float(_), _)

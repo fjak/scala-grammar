@@ -3,136 +3,136 @@ start symbol Expr
 
 test Decimal [[
 	123141
-]] parse to LiteralExpr(Int(_))
+]] parse to Int(_)
 
 test Negative Decimal [[
 	-1254151
-]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+]] parse to PrefixExpr(_, Int(_))
 
 test long Decimal [[
 	2147912l
-]] parse to LiteralExpr(Int(_))
+]] parse to Int(_)
 
 test Negative long Decimal [[
 	-1241241l
-]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+]] parse to PrefixExpr(_, Int(_))
 
 test Long Decimal [[
 	1479811L
-]] parse to LiteralExpr(Int(_))
+]] parse to Int(_)
 
 test negative Long Decimal [[
 	-12798141L
-]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+]] parse to PrefixExpr(_, Int(_))
 
 test Hex Numeral [[
 	0xFFFFFFFF
-]] parse to LiteralExpr(Int(_))
+]] parse to Int(_)
 
 test Negative Hex Numeral [[
 	-0x0123456789abcdef
-]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+]] parse to PrefixExpr(_, Int(_))
 
 test long Hex Numeral [[
 	0x0123456789abcdefl
-]] parse to LiteralExpr(Int(_))
+]] parse to Int(_)
 
 test Long Hex Numeral [[
 	0x0123456789abcdefL
-]] parse to LiteralExpr(Int(_))
+]] parse to Int(_)
 
 test negative long Hex Numeral [[
 	-0x0123456789abcdefl
-]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+]] parse to PrefixExpr(_, Int(_))
 
 test negative Long Hex Numeral [[
 	-0x0123456789abcdefL
-]] parse to PrefixExpr(_, LiteralExpr(Int(_)))
+]] parse to PrefixExpr(_, Int(_))
 
 test octal [[
 	0777L
-]] parse to LiteralExpr(Int(_))
+]] parse to Int(_)
 
 test Float1 [[
 	0.0
-]] parse to LiteralExpr(Float(_))
+]] parse to Float(_)
 
 test Float2 [[
 	1e30f
-]] parse to LiteralExpr(Float(_))
+]] parse to Float(_)
 
 test Float3 [[
 	3.14159f
-]] parse to LiteralExpr(Float(_))
+]] parse to Float(_)
 
 test Float4 [[
 	1.0e-100
-]] parse to LiteralExpr(_)
+]] parse to Float(_)
 
 test Float5 [[
 	.1
-]] parse to LiteralExpr(_)
+]] parse to Float(_)
 
 test boolean true [[
 	true
-]] parse to LiteralExpr(True())
+]] parse to True()
 
 test boolean false [[
 	false
-]] parse to LiteralExpr(False())
+]] parse to False()
 
 test false lexical [[
 	falsef
-]] parse to PathExpr(_)
+]] parse to Path(_)
 
 test true lexical [[
 	truef
-]] parse to PathExpr(_)
+]] parse to Path(_)
 
 test 'a' character [[
 	'a'
-]] parse to LiteralExpr(Char(_))
+]] parse to Char(_)
 
 test '\u0041' [[
 	'\u0041'
-]] parse to LiteralExpr(Char(_))
+]] parse to Char(_)
 
 test '\n' [[
 	'\n'
-]] parse to LiteralExpr(Char(_))
+]] parse to Char(_)
 
 test '\t' [[
 	'\t'
-]] parse to LiteralExpr(Char(_))
+]] parse to Char(_)
 
 test Unicode Characters [[
 	'\u00C0'
-]] parse to LiteralExpr(Char(_))
+]] parse to Char(_)
 
 test String literals [[
 	"Hello,\nWorld!"
-]] parse to LiteralExpr(String(_))
+]] parse to String(_)
 
 test Escaped " String Literal [[
 	"This string contains a \" character."
-]] parse to LiteralExpr(String(_))
+]] parse to String(_)
 
 test Multi-line string literal [[
 	"""the present string
        spans three
        lines."""
-]] parse to LiteralExpr(String(_))
+]] parse to String(_)
 
 test Stripped String [[
 	"""the present string
       |spans three
       |lines.""".stripMargin
-]] parse to DesignatorExpr(LiteralExpr(String(_)), Id("stripMargin"))
+]] parse to DesignatorExpr(String(_), Id("stripMargin"))
 
 test Symbol 'x [[
 	'x
-]] parse to LiteralExpr(Symbol(_))
+]] parse to Symbol(_)
 
 test Symbol 'foobar [[
 	'foobar
-]] parse to LiteralExpr(Symbol(_))
+]] parse to Symbol(_)

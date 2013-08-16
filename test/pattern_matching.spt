@@ -3,7 +3,7 @@ start symbol Expr
 
 test | is pattern disjunctor [[
 	v match {
-		case A | B =>
+		case A | B => foo
 	}
 ]] parse to MatchExpr(_, [CaseClause(DisjunctPattern(_, _), _, _)])
 
@@ -14,12 +14,10 @@ test left assoc pattern operations [[
 ]] parse to MatchExpr(_, [
 	CaseClause(
 		InfixPattern(
-			InfixPattern(
-				StableIdPattern(SimpleStableId(Id("a"))),
-				Id("::"),
-				StableIdPattern(SimpleStableId(Id("b")))),
+			InfixPattern(Id("a"), Id("::"), Id("b")),
 			Id("::"),
-			StableIdPattern(SimpleStableId(Id("c")))), _, _)])
+			Id("c")),
+		_, _)])
 			
 test constructor pattern [[
 	v match {

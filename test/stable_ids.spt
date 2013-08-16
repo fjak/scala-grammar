@@ -1,0 +1,16 @@
+language Scala
+start symbol StableId
+
+test simple stable id [[
+	foo
+]] parse to Id("foo")
+
+test stable id with path [[
+	foo.bar.baz
+]] parse to StableId(["foo", "bar"], "baz")
+
+test this non-stable id [[
+	foo.this
+]] parse fails
+
+
