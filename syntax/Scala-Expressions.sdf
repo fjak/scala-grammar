@@ -188,7 +188,7 @@ exports
 		BlockStatSemi* ResultExpr -> Block {"BlockWithResult", prefer}
 		BlockStatSemi*            -> Block {"BlockWithoutResult"}
 		
-		BlockStat EOL -> BlockStatSemi {"BlockStatSemi", enforce-newline, prefer}
+		BlockStat EOL -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
 		BlockStat EOB -> BlockStatSemi {"EOBBlockStatSemi", avoid}
 		BlockStat EOC -> BlockStatSemi {"EOCBlockStatSemi"}
 		BlockStat ";" -> BlockStatSemi {"SemiBlockStatSemi"}

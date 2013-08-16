@@ -16,7 +16,7 @@ exports
 		%%TopStat TopStatSeq     -> TopStatSeq {"TopStatSeq", layout("2.first.line > 1.last.line")}
 		
 		TopStat ";" -> TopStatSemi {"SemiTopStatSeq"}
-		TopStat EOL -> TopStatSemi {"TopStatSeq", enforce-newline, prefer}
+		TopStat EOL -> TopStatSemi {"TopStatSeq", enforce-newline, longest-match, prefer}
 		TopStat EOF -> TopStatSemi {"EOFTopStatSeq"}
 		TopStat EOB -> TopStatSemi {"EOBTopStatSeq", avoid}
 		
