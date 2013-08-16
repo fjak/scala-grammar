@@ -83,11 +83,11 @@ test boolean false [[
 
 test false lexical [[
 	falsef
-]] parse to Path(_)
+]] parse to Id(_)
 
 test true lexical [[
 	truef
-]] parse to Path(_)
+]] parse to Id(_)
 
 test 'a' character [[
 	'a'

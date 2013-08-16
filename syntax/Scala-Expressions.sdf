@@ -13,16 +13,9 @@ imports
 	
 exports
 	lexical syntax
-		";" -> Semi
+		";"  -> Semi
 		"\n" -> Nl
-		"+" -> Prefix
-		"-" -> Prefix
-		"~" -> Prefix
-		"!" -> Prefix
-		    -> EOC
-
-	lexical restrictions
-		Prefix -/- [\+\-\~\!]
+		     -> EOC
 
 	context-free restrictions
 		EOC -/- ~[c]

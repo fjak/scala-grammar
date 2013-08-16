@@ -4,3 +4,7 @@ start symbol Path
 test [[
 	super.someMethod
 ]]
+
+test [[
+	foo
+]] parse to Id("foo")

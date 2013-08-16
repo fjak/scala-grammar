@@ -5,6 +5,7 @@ imports
 
 exports
 	context-free syntax
+		Id              -> Path {prefer}
 		{PathElem "."}+ -> Path {"Path"}
 
 		PlainId                                -> PathElem
@@ -15,7 +16,9 @@ exports
 		{PathElem "."}+ "." PlainId -> StableId {"StableId"}
 
 		"[" PlainId "]" -> ClassQualifier {"ClassQualifier"}
-		
+
+		Prefix -> Path {reject} %% not 100% sure this is correct
+
 	context-free restrictions
 		StableId -/- [\.] . [a-zA-Z\$]
 

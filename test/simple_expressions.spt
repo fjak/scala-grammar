@@ -12,7 +12,7 @@ test long expression [[
 
 test id expression [[
 	foo
-]] parse to Path(["foo"])
+]] parse to Id("foo")
 
 /* Path */
 test simple path [[

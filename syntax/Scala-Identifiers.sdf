@@ -107,6 +107,11 @@ lexical syntax
 	Keyword     -> PlainId {reject}
 	Keyword     -> LetterOp {reject}
 
+	"+" -> Prefix
+	"-" -> Prefix
+	"~" -> Prefix
+	"!" -> Prefix
+
 lexical restrictions
 	Op -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 	
@@ -170,6 +175,8 @@ lexical restrictions
 	"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 	":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 	"_" -/- [a-zA-Z0-9\_\$]
+
+	Prefix -/- [\+\-\~\!]
 
 context-free syntax
 	PlainId -> Id {"Id"}
