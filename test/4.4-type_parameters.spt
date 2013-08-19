@@ -1,0 +1,38 @@
+language Scala
+start symbol TypeParamClause
+
+test [[
+	[S, T]
+]]
+
+test [[
+	[@specialized T, U]
+]]
+
+test [[
+	[Ex <: Throwable]
+]]
+
+test [[
+	[A <: Comparable[B], B <: A]
+]]
+
+test [[
+	[A, B >: A, C >: A <: B]
+]]
+
+test [[
+	 [ M[X], N[X] ]
+]]
+
+test [[
+	[ M[_], N[_] ]
+]]
+
+test [[
+	[ M[ X <: Bound[X] ], Bound[_] ]
+]]
+
+test [[
+	[ M[+X] <: Iterable[X] ]
+]]
