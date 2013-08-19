@@ -18,4 +18,4 @@ imports
 	
 exports
 	context-free start-symbols
-		CompilationUnit Block Expr NoLExpr Type StableId Path Import TemplateBody TypeParamClause Id
+		CompilationUnit Block Expr NoLExpr Type StableId Path Import TemplateBody TemplateStat TypeParamClause Id

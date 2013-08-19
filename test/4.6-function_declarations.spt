@@ -1,0 +1,10 @@
+language Scala
+start symbol TemplateStat
+
+test procedure declaration [[
+	def f()
+]]
+
+test procedure definition [[
+	def f() {}
+]]

@@ -27,6 +27,7 @@ exports
 		"<%" Type -> TypeViewBound {"TypeViewBound"}
 		":" Type -> TypeContextBound {"TypeContextBound"}
 		
+		FunSig          -> FunDcl {"ProcDcl"}
 		FunSig ":" Type -> FunDcl {"FunDcl"}
 		
 		ConstructorName ImplicitParamClauses                    -> FunSig {"FunSig"}
