@@ -1,0 +1,30 @@
+language Scala
+start symbol TemplateStat
+
+test [[
+	type IntList = List[Integer]
+]]
+
+test [[
+	type T <: Comparable[T]
+]]
+
+test [[
+	type Two[A] = Tuple2[A, A]
+]]
+
+test [[
+	type MyCollection[+X] <: Iterable[X]
+]]
+
+test type declaration layout [[
+	type
+
+	foo >: Int
+]]
+
+test type definition layout [[
+	type
+
+	foo = Int
+]]
