@@ -1,0 +1,34 @@
+language Scala
+start symbol TemplateStat
+
+test variable declaration [[
+	var x: T
+]]
+
+test variable definition [[
+	var x: T = e
+]]
+
+test variable pattern definition [[
+	var Constr(x) = e
+]]
+
+test variable infix pattern definition [[
+	var x :: xs = e
+]]
+
+test default value definition [[
+	var x: T = _
+]]
+
+test variable sequence declarations [[
+	var a, b, c: T
+]]
+
+test untyped variable sequence definitions [[
+	var a, b, c = e
+]]
+
+test typed variable sequence definitions [[
+	var a, b, c: T = e
+]]

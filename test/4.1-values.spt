@@ -1,0 +1,30 @@
+language Scala
+start symbol TemplateStat
+
+test untyped value definition [[
+	val x = e
+]]
+
+test typed value definition [[
+	val x: T = e
+]]
+
+test pattern definition [[
+	val Some(x) = f()
+]]
+
+test infix pattern definition [[
+	val x :: xs = mylist
+]]
+
+test multiple value delecarations [[
+	val a, b, c: T
+]]
+
+test multiple untyped value definitions [[
+	val a, b, c = e
+]]
+
+test multiple typed value definitions [[
+	val a, b, c: T = e
+]]
