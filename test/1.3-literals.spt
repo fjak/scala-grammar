@@ -117,6 +117,10 @@ test Escaped " String Literal [[
 	"This string contains a \" character."
 ]] parse to String(_)
 
+test [[
+	"\"
+]] parse fails
+
 test Multi-line string literal [[
 	"""the present string
        spans three

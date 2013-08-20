@@ -48,3 +48,7 @@ test if else > match [[
 		case _ =>
 	}
 ]] parse to IfElseExpr(_, _, _)
+
+test string literals are parsed greedy in expr context [[
+	"\"%s\"".f
+]] parse to DesignatorExpr(_, _)
