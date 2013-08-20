@@ -54,3 +54,12 @@ test InfixExpr > PostfixExpr in ; block expression [[
 	}
 }
 ]]
+
+test no confusion with EOCBlockStatSemi [[
+{
+	{
+      val a = v
+      val b = (_)+columns.map(_.indexDesc).comma
+    }
+}
+]]

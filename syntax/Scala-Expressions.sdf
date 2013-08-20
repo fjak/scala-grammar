@@ -172,17 +172,22 @@ exports
 		Guard                        -> Enumerator
 		"val" Pattern1 "=" Expr -> Enumerator {"Enumerator"}
 		
-		"case" Pattern Guard? "=>" Block -> CaseClause {"CaseClause"}
+		"case" Pattern Guard? "=>" CaseBlock -> CaseClause {"CaseClause"}
 		
 		"{" CaseClause+ "}" -> BlockExpr {"CaseBlockExpr"}
 		"{" Block "}"       -> BlockExpr {"BlockExpr"}
 		
+		Block              -> CaseBlock
+		CaseBlockStatSemi* -> CaseBlock {"CaseBlock", avoid}
+
+		BlockStatSemi      -> CaseBlockStatSemi
+		BlockStat EOC      -> CaseBlockStatSemi {"EOCBlockStatSemi", avoid}
+
 		BlockStatSemi* ResultExpr -> Block {"BlockWithResult", prefer}
 		BlockStatSemi*            -> Block {"BlockWithoutResult"}
 		
 		BlockStat EOL -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
 		BlockStat EOB -> BlockStatSemi {"EOBBlockStatSemi", avoid}
-		BlockStat EOC -> BlockStatSemi {"EOCBlockStatSemi"}
 		BlockStat ";" -> BlockStatSemi {"SemiBlockStatSemi", longest-match}
 		
 		%% Only treat "special" expressions as ResultExpr to avoid ambiguity with BlockStatSemi
