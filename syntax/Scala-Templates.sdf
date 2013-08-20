@@ -41,7 +41,7 @@ exports
 		%% TemplateStat Expr TemplateStatSemis -> TemplateStatSemis {"MuchExprTemplateStatSemis", layout("1.last.line < 2.first.line && 2.last.line < 3.first.line")}
 		%% TemplateStat Expr                   -> TemplateStatSemis {"LastExprTemplateStat", layout("1.last.line < 2.first.line")}
 
-		TemplateStat ";" -> TemplateStatSemi {"SemiTemplateStatSemi"}
+		TemplateStat ";" -> TemplateStatSemi {"SemiTemplateStatSemi", longest-match}
 		TemplateStat EOL -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, longest-match, prefer}
 		TemplateStat EOB -> TemplateStatSemi {"EOBTemplateStatSemi", avoid}
 		

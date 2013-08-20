@@ -36,3 +36,21 @@ test InfixExpr > PostfixExpr in block expression with function statement [[
 	}
 }
 ]]
+
+test InfixExpr > PostfixExpr in template body with ; statements [[
+{
+    _
+	foo &&
+	bar;
+}
+]]
+
+test InfixExpr > PostfixExpr in ; block expression [[
+{
+	{
+		_
+		foo &&
+		bar;
+	}
+}
+]]
