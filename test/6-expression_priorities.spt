@@ -41,3 +41,10 @@ test [[
 test [[
 	foo = bar
 ]] parse to AssignmentExpr(_, _, _)
+
+test if else > match [[
+	if (cond) f() else
+	v match {
+		case _ =>
+	}
+]] parse to IfElseExpr(_, _, _)

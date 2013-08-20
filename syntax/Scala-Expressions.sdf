@@ -53,7 +53,7 @@ exports
 		> Expr LetterOp Expr      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
-
+		> Expr "match" "{" CaseClause+ "}" -> Expr {"MatchExpr"}
 		> {
 			Bindings "=>" Expr                                                   -> Expr {"FunExpr", prefer}
 			Id "=>" Expr                                                         -> Expr {"IdFunExpr", prefer}
@@ -72,7 +72,6 @@ exports
 			"throw" Expr                                                         -> Expr {"ThrowExpr"}
 			"return" Expr?                                                       -> Expr {"ReturnExpr"}
 			Expr Ascription                                                      -> Expr {"AscriptionExpr", avoid}
-			Expr "match" "{" CaseClause+ "}"                                     -> Expr {"MatchExpr"}
 			(Expr ".")? Id "=" Expr                                              -> Expr {"AssignmentExpr", non-assoc}
 			Expr ArgumentExprs "=" Expr                                          -> Expr {"AccessAssignmentExpr", non-assoc}
 		}
