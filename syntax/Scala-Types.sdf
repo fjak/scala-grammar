@@ -48,11 +48,8 @@ exports
 		"type" TypeDcl -> ExistentialDcl {"ExistentialType"}
 		"val"  ValDcl  -> ExistentialDcl {"ExistentialVal"}
 		
-		CompoundType              -> InfixType
-		CompoundType InfixTypeOp+ -> InfixType {"InfixType"}
-		
-		Id CompoundType -> InfixTypeOp {"InfixTypeOp", layout("2.first.line - 1.last.line < num(2)")}
-		
+		CompoundType                -> InfixType
+		InfixType PlainId InfixType -> InfixType {"InfixType", left, layout("3.first.line - 2.last.line < num(2)")}
 
 		InfixType                -> FunctionArgTypes
 		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType", prefer}

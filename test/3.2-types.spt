@@ -1,27 +1,58 @@
 language Scala
 start symbol Type
 
-/* Literal */
 test simple type [[
 	Foo
 ]] parse to Type(_)
 
 test singleton type [[
 	Map.type
-]]
+]] parse to SingletonType(_)
 
 test type projection [[
 	Foo#Bar
-]]
+]] parse to TypeProjection(_, _)
 
 test parameterized type [[
 	List[String]
-]]
+]] parse to ParameterizedType(_, _)
 
 test map type [[
 	scala.collection.mutable.Map
-]]
+]] parse to Type(_)
 
 test map complex type [[
 	AnyVar[LRU[K, Box[V]], _]
-]]
+]] parse to ParameterizedType(_, _)
+
+test tuple type [[
+	(Foo, Bar)
+]] parse to TupleType(_)
+
+test annotated type [[
+	Foo @awesome
+]] parse to AnnotType(_, _)
+
+test simple compound type [[
+	Cool with Awesome
+]] parse to CompoundType(_, _, _)
+
+test empty refinement [[
+	{}
+]] parse to Refinement(_)
+
+test longer compound type [[
+	Cool with Awesome with Super
+]] parse to CompoundType(_, _, _)
+
+test compound type with refinement [[
+	Cool with Awesome with Super { def whatami: String }
+]] parse to CompoundType(_, _, _)
+
+test infix type [[
+	Foo < Bar
+]] parse to InfixType(_, "<", _)
+
+test left assoc infix type [[
+	Foo < Bar < Baz
+]] parse to InfixType(InfixType(_, _, _), _, _)
