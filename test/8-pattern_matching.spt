@@ -68,3 +68,7 @@ test [[
     case a | b | c => foo
   }
 ]] parse to MatchExpr(_, [CaseClause(DisjunctPattern(DisjunctPattern(_, _), _), _, _)])
+
+test _ is special pattern [[
+	v match { case _: MappingException => None }
+]] parse to MatchExpr(_, [CaseClause(WildcardTypedPattern(_), _, _)])
