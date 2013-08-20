@@ -35,6 +35,7 @@ exports
 
 		AnnotType                   -> CompoundType
 		Refinement                  -> CompoundType
+		AnnotType Refinement        -> CompoundType {"RefinedType"}
 		AnnotType With+ Refinement? -> CompoundType {"CompoundType", layout("3.first.line - 2.last.line < num(2)")}
 		
 		"with" AnnotType -> With {"With"}

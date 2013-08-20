@@ -28,3 +28,7 @@ test type definition layout [[
 
 	foo = Int
 ]]
+
+test [[
+	type BooleanSetting <: Setting { type T = Boolean }
+]]

@@ -41,6 +41,10 @@ test empty refinement [[
 	{}
 ]] parse to Refinement(_)
 
+test type with refinement [[
+	Foo {}
+]] parse to RefinedType(_, _)
+
 test longer compound type [[
 	Cool with Awesome with Super
 ]] parse to CompoundType(_, _, _)
