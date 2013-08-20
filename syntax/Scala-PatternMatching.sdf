@@ -6,6 +6,10 @@ imports
 	Scala-Types
 	
 exports
+	lexical syntax
+		PlainId -> InfixPatternOp
+		"|" -> InfixPatternOp {reject}
+
 	context-free priorities
 		{
 			"_"                                                   -> SimplePattern {"WildcardPattern"}
@@ -18,7 +22,7 @@ exports
 		}
 		
 		> {
-			Pattern3 Id Pattern3 -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Pattern3 InfixPatternOp Pattern3 -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 			SimplePattern -> Pattern3
 		}
 		
@@ -35,7 +39,7 @@ exports
 		
 		> {
 			Pattern1 -> Pattern
-			Pattern "|" Pattern -> Pattern {"DisjunctPattern", left, prefer}
+			Pattern "|" Pattern -> Pattern {"DisjunctPattern", left}
 		}
 	
 	context-free syntax

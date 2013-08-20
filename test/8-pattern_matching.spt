@@ -14,8 +14,8 @@ test left assoc pattern operations [[
 ]] parse to MatchExpr(_, [
 	CaseClause(
 		InfixPattern(
-			InfixPattern(Id("a"), Id("::"), Id("b")),
-			Id("::"),
+			InfixPattern(Id("a"), "::", Id("b")),
+			"::",
 			Id("c")),
 		_, _)])
 			
@@ -62,3 +62,9 @@ test classOf is not confused with class definition [[
     case "scala.Short"   => classOf[Short]
   }
 ]]
+
+test [[
+  v match {
+    case a | b | c => foo
+  }
+]] parse to MatchExpr(_, [CaseClause(DisjunctPattern(DisjunctPattern(_, _), _), _, _)])
