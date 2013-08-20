@@ -57,3 +57,7 @@ test string literals are parsed greedy in expr context [[
 test L of int can not be confused with operator [[
 	1000L foo
 ]] parse to PostfixExpr(Int("1000L"), Id("foo"))
+
+test [[
+	if (c) f(x) = res
+]] parse to IfExpr(_, _)
