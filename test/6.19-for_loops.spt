@@ -1,0 +1,9 @@
+language Scala
+start symbol Expr
+
+test [[
+	for {
+		foo <- bar()
+		v = f()
+	} yield (foo, v)
+]]

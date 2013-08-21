@@ -169,7 +169,8 @@ exports
 		
 		Generator                    -> Enumerator
 		Guard                        -> Enumerator
-		"val" Pattern1 "=" Expr -> Enumerator {"Enumerator"}
+		Pattern1 "=" Expr            -> Enumerator {"Enumerator"}
+		"val" Pattern1 "=" Expr      -> Enumerator {"ValEnumerator"}
 		
 		"case" Pattern Guard? "=>" CaseBlock -> CaseClause {"CaseClause"}
 		
