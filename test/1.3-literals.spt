@@ -133,6 +133,10 @@ test Stripped String [[
       |lines.""".stripMargin
 ]] parse to DesignatorExpr(String(_), Id("stripMargin"))
 
+test String substitution notation [[
+	s"Hello $name"
+]]
+
 test Symbol 'x [[
 	'x
 ]] parse to Symbol(_)

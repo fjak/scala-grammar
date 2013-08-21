@@ -41,7 +41,7 @@ exports
 
 		"\\" "u" HexDigit HexDigit HexDigit HexDigit -> UnicodeEscape
 		
-		[\"] StringElement* [\"]         -> StringLiteral
+		"s"? "\"" StringElement* "\""    -> StringLiteral
 		"\"\"\"" MultiLineChars "\"\"\"" -> StringLiteral
 		
 		PrintableCharNoDoubleQuoteOrBackspace -> StringElement
