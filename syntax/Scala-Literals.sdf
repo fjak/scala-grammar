@@ -9,7 +9,7 @@ exports
 		DecimalNumeral ("L" | "l")? -> IntegerLiteral
 		HexNumeral ("L" | "l")?     -> IntegerLiteral
 		OctalNumeral ("L" | "l")?   -> IntegerLiteral {prefer}
-		%% "-" IntegerLiteral                                        -> IntegerLiteral
+		"-" IntegerLiteral          -> IntegerLiteral
 		
 		[0] | NonZeroDigit Digit* -> DecimalNumeral {"Decimal"}
 		"0x" HexDigit+ -> HexNumeral {"HexNumeral"}
@@ -24,7 +24,7 @@ exports
 		Digit+ ExponentPart                        -> FloatingPointLiteral
 		Digit+ FloatType                           -> FloatingPointLiteral
 		Digit+ ExponentPart FloatType              -> FloatingPointLiteral
-		%% "-" FloatingPointLiteral                   -> FloatingPointLiteral
+		"-" FloatingPointLiteral                   -> FloatingPointLiteral
 		
 		("E" | "e") ("+" | "-")? Digit+ -> ExponentPart
 		"F" | "f" | "D" | "d" -> FloatType

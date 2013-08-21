@@ -108,10 +108,11 @@ lexical syntax
 	Keyword     -> LetterOp {reject}
 	Keyword     -> VarId {reject}
 
-	"+" -> Prefix
-	"-" -> Prefix
-	"~" -> Prefix
-	"!" -> Prefix
+	"-" -> MinusPrefix
+	"+"         -> Prefix
+	MinusPrefix -> Prefix
+	"~"         -> Prefix
+	"!"         -> Prefix
 
 	"`" ~[\`]+ "`" -> FancyId
 
@@ -180,6 +181,7 @@ lexical restrictions
 	"_" -/- [a-zA-Z0-9\_\$]
 
 	Prefix -/- [\+\-\~\!]
+	MinusPrefix -/- [0-9]
 
 	FancyId -/- [a-zA-Z0-9\_\$]
 

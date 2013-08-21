@@ -7,7 +7,7 @@ test Decimal [[
 
 test Negative Decimal [[
 	-1254151
-]] parse to PrefixExpr(_, Int(_))
+]] parse to Int(_)
 
 test long Decimal [[
 	2147912l
@@ -15,7 +15,7 @@ test long Decimal [[
 
 test Negative long Decimal [[
 	-1241241l
-]] parse to PrefixExpr(_, Int(_))
+]] parse to Int(_)
 
 test Long Decimal [[
 	1479811L
@@ -23,7 +23,7 @@ test Long Decimal [[
 
 test negative Long Decimal [[
 	-12798141L
-]] parse to PrefixExpr(_, Int(_))
+]] parse to Int(_)
 
 test Hex Numeral [[
 	0xFFFFFFFF
@@ -31,7 +31,7 @@ test Hex Numeral [[
 
 test Negative Hex Numeral [[
 	-0x0123456789abcdef
-]] parse to PrefixExpr(_, Int(_))
+]] parse to Int(_)
 
 test long Hex Numeral [[
 	0x0123456789abcdefl
@@ -43,11 +43,11 @@ test Long Hex Numeral [[
 
 test negative long Hex Numeral [[
 	-0x0123456789abcdefl
-]] parse to PrefixExpr(_, Int(_))
+]] parse to Int(_)
 
 test negative Long Hex Numeral [[
 	-0x0123456789abcdefL
-]] parse to PrefixExpr(_, Int(_))
+]] parse to Int(_)
 
 test octal [[
 	0777L

@@ -72,3 +72,9 @@ test [[
 test _ is special pattern [[
 	v match { case _: MappingException => None }
 ]] parse to MatchExpr(_, [CaseClause(WildcardTypedPattern(_), _, _)])
+
+test literal -1 matching [[
+	v match {
+		case -1 =>
+	}
+]]
