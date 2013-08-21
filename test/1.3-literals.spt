@@ -135,7 +135,11 @@ test Stripped String [[
 
 test String substitution notation [[
 	s"Hello $name"
-]]
+]] parse to PlainSubstString(_)
+
+test String substitution with expressions [[
+	s" ${foo + bar + "another string"} and ${blork}${bark}"
+]] parse to SubstString(_, _, _, _)
 
 test Symbol 'x [[
 	'x

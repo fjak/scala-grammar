@@ -2,6 +2,7 @@ module Scala-Literals
 
 imports
 	Scala-Identifiers
+	Scala-Expressions
 
 exports
 	lexical syntax
@@ -41,9 +42,9 @@ exports
 
 		"\\" "u" HexDigit HexDigit HexDigit HexDigit -> UnicodeEscape
 		
-		"s"? "\"" StringElement* "\""    -> StringLiteral
+		"\"" StringElement* "\""         -> StringLiteral
 		"\"\"\"" MultiLineChars "\"\"\"" -> StringLiteral
-		
+
 		PrintableCharNoDoubleQuoteOrBackspace -> StringElement
 		CharEscapeSeq                         -> StringElement
 		
@@ -51,6 +52,18 @@ exports
 		
 		"'" IPlainId -> SymbolLiteral
 		
+		CharEscapeSeq -> SubstStringCharEscapeSeq
+		"$$"          -> SubstStringCharEscapeSeq
+
+		[\32-\126] / [\\\"\$]    -> SubstStringElement
+		SubstStringCharEscapeSeq -> SubstStringElement
+		"$" PlainId              -> SubstStringElement
+
+		"s\"" SubstStringElement* "\"" -> PlainSubstString
+		"s\"" SubstStringElement* "${" -> SubstStringLeadIn
+		"}" SubstStringElement* "${"   -> SubstStringInner
+		"}" SubstStringElement* "\""   -> SubstStringLeadOut
+
 	lexical restrictions
 		IntegerLiteral -/- [0-9a-zA-Z]
 		Literal -/- [0-9a-zA-Z]
@@ -65,6 +78,11 @@ exports
 		StringLiteral        -> Literal {"String"}
 		SymbolLiteral        -> Literal {"Symbol"}
 		"null"               -> Literal {"Null"}
+		SubstString          -> Literal
+
+		PlainSubstString                                        -> SubstString {"PlainSubstString"}
+		SubstStringLeadIn Expr ISubstString* SubstStringLeadOut -> SubstString {"SubstString"}
+		SubstStringInner Expr -> ISubstString {"ISubstString"}
 		
 		"true"  -> BooleanLiteral {"True"}
 		"false" -> BooleanLiteral {"False"}
