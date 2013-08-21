@@ -12,8 +12,12 @@ exports
 		"this"                                 -> PathElem {"This"}
 		"super" ClassQualifier? "." PlainId    -> PathElem {"Super"}
 
-		Id                          -> StableId
-		{PathElem "."}+ "." PlainId -> StableId {"StableId"}
+		PlainId                 -> StableIdElem
+		"this"                  -> StableIdElem {"StableThis"}
+		"super" ClassQualifier? -> StableIdElem {"StableSuper"}
+
+		Id                              -> StableId
+		{StableIdElem "."}+ "." PlainId -> StableId {"StableId"}
 
 		"[" PlainId "]" -> ClassQualifier {"ClassQualifier"}
 

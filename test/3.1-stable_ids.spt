@@ -13,4 +13,8 @@ test this non-stable id [[
 	foo.this
 ]] parse fails
 
+test super id [[
+	super.Type
+]]
+
 
