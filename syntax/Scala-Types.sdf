@@ -17,7 +17,7 @@ exports
 		StableId            -> SimpleType {"Type"}
 		Path "." "type"     -> SimpleType {"SingletonType"}
 		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
-		"_"                 -> SimpleType {"WildcardType"}
+		"_" TypeBounds?     -> SimpleType {"WildcardType"}
 		
 		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
 		
@@ -59,4 +59,6 @@ exports
 		"=>" Type -> ParamType {"ByNameParam"}
 		Type "*"  -> ParamType {"RepeatedParam"}
 		
-		
+		">:" Type           -> TypeBounds {"LowerTypeBound"}
+		"<:" Type           -> TypeBounds {"UpperTypeBound"}
+		">:" Type "<:" Type -> TypeBounds {"LowerAndUpperTypeBound"}

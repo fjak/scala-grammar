@@ -60,3 +60,11 @@ test infix type [[
 test left assoc infix type [[
 	Foo < Bar < Baz
 ]] parse to InfixType(InfixType(_, _, _), _, _)
+
+test wildcard type [[
+	Collection[_ <: List]
+]]
+
+test [[
+	Some[Qualified.Type]
+]]

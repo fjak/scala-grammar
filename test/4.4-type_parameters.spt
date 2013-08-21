@@ -22,6 +22,10 @@ test [[
 ]]
 
 test [[
+	[_ <: List]
+]]
+
+test [[
 	 [ M[X], N[X] ]
 ]]
 
