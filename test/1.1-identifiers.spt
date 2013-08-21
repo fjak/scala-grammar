@@ -20,3 +20,7 @@ test _ is not a valid identifier [[
 test operator suffix id [[
 	should_==
 ]] parse to Id(_)
+
+test fancy id [[
+	`2*^`
+]] parse to FancyId(_)
