@@ -65,9 +65,9 @@ exports
 			"if" "(" NoLExpr ")" Expr ";" "else" Expr                            -> Expr {"IfElseExpr"}
 			"while" "(" NoLExpr ")" Expr                                         -> Expr {"WhileExpr"}
 			"try" Expr                                                           -> Expr {"TryExpr"}
-			"try" Expr "catch" "{" CaseClause+ "}"                               -> Expr {"TryCatchExpr"}
+			"try" Expr "catch" Expr                                              -> Expr {"TryCatchExpr"}
 			"try" Expr "finally" Expr                                            -> Expr {"TryFinallyExpr"}
-			"try" Expr "catch" "{" CaseClause+ "}" "finally" Expr                -> Expr {"TryCatchFinallyExpr"}
+			"try" Expr "catch" Expr "finally" Expr                               -> Expr {"TryCatchFinallyExpr"}
 			"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr {"DoWhileExpr"}
 			"for" "(" Enumerators ")" Expr                                       -> Expr {"BraceForExpr"}
 			"for" "{" Enumerators "}" Expr                                       -> Expr {"CurlyBraceForExpr"}
@@ -127,7 +127,10 @@ exports
 			"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr                             -> NoLExpr {"IfElseNoLExpr"}
 			"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr                         -> NoLExpr {"IfElseNoLExpr"}
 			"while" "(" NoLExpr ")" NoLExpr                                         -> NoLExpr {"WhileNoLExpr"}
-			"try" "{" Block "}" ("catch" "{" CaseClause+ "}")? ("finally" NoLExpr)? -> NoLExpr {"TryNoLExpr"}
+			"try" NoLExpr                                                           -> NoLExpr {"TryNoLExpr"}
+			"try" NoLExpr "catch" NoLExpr                                           -> NoLExpr {"TryCatchNoLExpr"}
+			"try" NoLExpr "finally" NoLExpr                                         -> NoLExpr {"TryFinallyNoLExpr"}
+			"try" NoLExpr "catch" NoLExpr "finally" NoLExpr                         -> NoLExpr {"TryCatchFinallyNoLExpr"}
 			"do" NoLExpr Semi? "while" "(" NoLExpr ")"                              -> NoLExpr {"DoWhileNoLExpr"}
 			"for" "(" Enumerators ")" NoLExpr                                       -> NoLExpr {"BraceForNoLExpr"}
 			"for" "{" Enumerators "}" NoLExpr                                       -> NoLExpr {"CurlyBraceForNoLExpr"}

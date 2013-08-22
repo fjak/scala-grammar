@@ -9,12 +9,16 @@ test try without {} (undocumented, but accepted by scalac 2.10) [[
 	try foo()
 ]] parse to TryExpr(_)
 
-test try {} catch [[
+test try {} catch {} [[
 	try { foo() } catch { case e: Exception => }
 ]] parse to TryCatchExpr(_, _)
 
-test try catch [[
+test try catch {} [[
 	try foo() catch { case e: Exception => }
+]] parse to TryCatchExpr(_, _)
+
+test try catch [[
+	try foo() catch onInterrupt(())
 ]] parse to TryCatchExpr(_, _)
 
 test try {} finally [[
@@ -25,10 +29,14 @@ test try finally [[
 	try foo() finally cleanup()
 ]] parse to TryFinallyExpr(_, _)
 
-test try {} catch finally [[
+test try {} catch {} finally [[
 	try { foo() } catch { case e: Exception => } finally cleanup()
 ]] parse to TryCatchFinallyExpr(_, _, _)
 
-test try catch finally [[
+test try catch {} finally [[
 	try foo() catch { case e: Exception => } finally cleanup()
+]] parse to TryCatchFinallyExpr(_, _, _)
+
+test try catch finally [[
+	try foo() catch onInterrupt(()) finally cleanup()
 ]] parse to TryCatchFinallyExpr(_, _, _)
