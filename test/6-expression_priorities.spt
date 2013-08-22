@@ -40,7 +40,7 @@ test [[
 
 test [[
 	foo = bar
-]] parse to AssignmentExpr(_, _, _)
+]] parse to AssignmentExpr(_, _)
 
 test if else > match [[
 	if (cond) f() else
@@ -64,4 +64,9 @@ test [[
 
 test empty block statements [[
 	{;;;;}
+]]
+
+test [[
+	if (cond)
+	  qual.foo = bar
 ]]

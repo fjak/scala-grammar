@@ -55,6 +55,7 @@ exports
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr "match" "{" CaseClause+ "}" -> Expr {"MatchExpr"}
 		> Expr ArgumentExprs "=" Expr      -> Expr {"AccessAssignmentExpr", non-assoc}
+		<0> > Expr "." Id "=" Expr         -> Expr {"DesignatorAssignmentExpr", non-assoc}
 		<0> > {
 			Bindings "=>" Expr                                                   -> Expr {"FunExpr", prefer}
 			Id "=>" Expr                                                         -> Expr {"IdFunExpr", prefer}
@@ -75,8 +76,8 @@ exports
 			"for" "{" EnumeratorSemi+ "}" "yield" Expr                           -> Expr {"ForYieldExpr"}
 			"throw" Expr                                                         -> Expr {"ThrowExpr"}
 			"return" Expr?                                                       -> Expr {"ReturnExpr"}
+			Id "=" Expr                                                          -> Expr {"AssignmentExpr", non-assoc}
 			Expr Ascription                                                      -> Expr {"AscriptionExpr", avoid}
-			(Expr ".")? Id "=" Expr                                              -> Expr {"AssignmentExpr", non-assoc}
 		}
 
 	context-free priorities
@@ -118,6 +119,7 @@ exports
 		> NoLExpr Id                   -> NoLExpr {"PostfixNoLExpr", avoid}
 		> NoLExpr "match" "{" CaseClause+ "}" -> NoLExpr {"MatchNoLExpr"}
 		> NoLExpr ArgumentExprs "=" NoLExpr   -> NoLExpr {"AccessAssignmentNoLExpr", non-assoc}
+		<0> > NoLExpr "." Id "=" NoLExpr      -> NoLExpr {"DesignatorAssignmentNoLExpr", non-assoc}
 		<0> > {
 			Bindings "=>" NoLExpr                                                   -> NoLExpr {"FunNoLExpr", prefer}
 			Id "=>" NoLExpr                                                         -> NoLExpr {"IdFunNoLExpr", prefer}
@@ -139,7 +141,7 @@ exports
 			"throw" NoLExpr                                                         -> NoLExpr {"ThrowNoLExpr"}
 			"return" NoLExpr?                                                       -> NoLExpr {"ReturnNoLExpr"}
 			NoLExpr Ascription                                                      -> NoLExpr {"AscriptionNoLExpr", avoid}
-			(NoLExpr ".")? Id "=" NoLExpr                                           -> NoLExpr {"AssignmentNoLExpr", non-assoc}
+			Id "=" NoLExpr                                                          -> NoLExpr {"AssignmentNoLExpr", non-assoc}
 		}
 
 	context-free priorities
