@@ -61,7 +61,7 @@ exports
 			Id "=>" Expr                                                         -> Expr {"IdFunExpr", prefer}
 			"implicit" Id "=>" Expr                                              -> Expr {"ImplicitFunExpr", prefer}
 			"_" "=>" Expr                                                        -> Expr {"WildcardFunExpr", prefer}
-			"if" "(" NoLExpr ")" Expr                                            -> Expr {"IfExpr"}
+			"if" "(" NoLExpr ")" Expr                                            -> Expr {"IfExpr", prefer}
 			"if" "(" NoLExpr ")" Expr "else" Expr                                -> Expr {"IfElseExpr"}
 			"if" "(" NoLExpr ")" Expr ";" "else" Expr                            -> Expr {"IfElseExpr"}
 			"while" "(" NoLExpr ")" Expr                                         -> Expr {"WhileExpr"}
@@ -75,7 +75,7 @@ exports
 			"for" "(" EnumeratorSemi+ ")" "yield" Expr                           -> Expr {"ForYieldExpr"}
 			"for" "{" EnumeratorSemi+ "}" "yield" Expr                           -> Expr {"ForYieldExpr"}
 			"throw" Expr                                                         -> Expr {"ThrowExpr"}
-			"return" Expr?                                                       -> Expr {"ReturnExpr"}
+			"return" Expr?                                                       -> Expr {"ReturnExpr", layout("1.last.line == 2.first.line")}
 			Id "=" Expr                                                          -> Expr {"AssignmentExpr", non-assoc}
 			Expr Ascription                                                      -> Expr {"AscriptionExpr", avoid}
 		}
@@ -125,7 +125,7 @@ exports
 			Id "=>" NoLExpr                                                         -> NoLExpr {"IdFunNoLExpr", prefer}
 			"implicit" Id "=>" NoLExpr                                              -> NoLExpr {"ImplicitFunNoLExpr", prefer}
 			"_" "=>" NoLExpr                                                        -> NoLExpr {"WildcardFunNoLExpr", prefer}
-			"if" "(" NoLExpr ")" NoLExpr                                            -> NoLExpr {"IfNoLExpr"}
+			"if" "(" NoLExpr ")" NoLExpr                                            -> NoLExpr {"IfNoLExpr", prefer}
 			"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr                             -> NoLExpr {"IfElseNoLExpr"}
 			"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr                         -> NoLExpr {"IfElseNoLExpr"}
 			"while" "(" NoLExpr ")" NoLExpr                                         -> NoLExpr {"WhileNoLExpr"}
@@ -139,7 +139,7 @@ exports
 			"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr                           -> NoLExpr {"ForYieldNoLExpr"}
 			"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr                           -> NoLExpr {"ForYieldNoLExpr"}
 			"throw" NoLExpr                                                         -> NoLExpr {"ThrowNoLExpr"}
-			"return" NoLExpr?                                                       -> NoLExpr {"ReturnNoLExpr"}
+			"return" NoLExpr?                                                       -> NoLExpr {"ReturnNoLExpr", layout("1.last.line == 2.first.line")}
 			NoLExpr Ascription                                                      -> NoLExpr {"AscriptionNoLExpr", avoid}
 			Id "=" NoLExpr                                                          -> NoLExpr {"AssignmentNoLExpr", non-assoc}
 		}

@@ -75,3 +75,17 @@ test [[
 	if (c) () => foo()
 	else () => bar()
 ]]
+
+test [[
+	{
+		if (c)
+		  return
+		foo
+	}
+]] parse to BlockExpr(BlockWithoutResult([_, _]))
+
+test [[
+	if (c)
+	  if (c) t
+	  else f
+]] parse to IfExpr(_, _)
