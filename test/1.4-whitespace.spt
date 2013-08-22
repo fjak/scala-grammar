@@ -1,0 +1,11 @@
+language Scala
+start symbol CompilationUnit
+
+test nested comments [[
+		class Foo {
+			/*/** This is some documentation
+			*/
+			def f = foo // commented out function
+			*/
+		}
+]]
