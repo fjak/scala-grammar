@@ -61,3 +61,7 @@ test L of int can not be confused with operator [[
 test [[
 	if (c) f(x) = res
 ]] parse to IfExpr(_, _)
+
+test empty block statements [[
+	{;;;;}
+]]

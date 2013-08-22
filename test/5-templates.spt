@@ -63,3 +63,9 @@ test no confusion with EOCBlockStatSemi [[
     }
 }
 ]]
+
+test empty template statements [[
+{
+	;;;
+}
+]]
