@@ -64,7 +64,10 @@ exports
 			"if" "(" NoLExpr ")" Expr "else" Expr                                -> Expr {"IfElseExpr"}
 			"if" "(" NoLExpr ")" Expr ";" "else" Expr                            -> Expr {"IfElseExpr"}
 			"while" "(" NoLExpr ")" Expr                                         -> Expr {"WhileExpr"}
-			"try" "{" Block "}" ("catch" "{" CaseClause+ "}")? ("finally" Expr)? -> Expr {"TryExpr"}
+			"try" Expr                                                           -> Expr {"TryExpr"}
+			"try" Expr "catch" "{" CaseClause+ "}"                               -> Expr {"TryCatchExpr"}
+			"try" Expr "finally" Expr                                            -> Expr {"TryFinallyExpr"}
+			"try" Expr "catch" "{" CaseClause+ "}" "finally" Expr                -> Expr {"TryCatchFinallyExpr"}
 			"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr {"DoWhileExpr"}
 			"for" "(" Enumerators ")" Expr                                       -> Expr {"BraceForExpr"}
 			"for" "{" Enumerators "}" Expr                                       -> Expr {"CurlyBraceForExpr"}

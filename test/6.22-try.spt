@@ -1,0 +1,34 @@
+language Scala
+start symbol Expr
+
+test simplest try according to §6.22 [[
+	try { foo() }
+]] parse to TryExpr(_)
+
+test try without {} (undocumented, but accepted by scalac 2.10) [[
+	try foo()
+]] parse to TryExpr(_)
+
+test try {} catch [[
+	try { foo() } catch { case e: Exception => }
+]] parse to TryCatchExpr(_, _)
+
+test try catch [[
+	try foo() catch { case e: Exception => }
+]] parse to TryCatchExpr(_, _)
+
+test try {} finally [[
+	try { foo() } finally cleanup()
+]] parse to TryFinallyExpr(_, _)
+
+test try finally [[
+	try foo() finally cleanup()
+]] parse to TryFinallyExpr(_, _)
+
+test try {} catch finally [[
+	try { foo() } catch { case e: Exception => } finally cleanup()
+]] parse to TryCatchFinallyExpr(_, _, _)
+
+test try catch finally [[
+	try foo() catch { case e: Exception => } finally cleanup()
+]] parse to TryCatchFinallyExpr(_, _, _)
