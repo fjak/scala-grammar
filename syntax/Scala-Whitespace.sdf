@@ -18,6 +18,7 @@ exports
 		-> EOL
 		-> EOF
 		-> EOB
+		-> EOP
 
 		[\*] -> Asterisk
 		[\/] -> Slash
@@ -32,3 +33,4 @@ exports
 		LAYOUT? -/- [\/].[\/]
 		EOF -/- ~[]
 		EOB -/- ~[\}]
+		EOP -/- ~[\)]

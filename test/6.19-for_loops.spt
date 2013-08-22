@@ -7,3 +7,28 @@ test [[
 		v = f()
 	} yield (foo, v)
 ]]
+
+test [[
+	for { i <- 1 until n
+	      j <- 1 until i
+	      if isPrime(i+j)
+	} yield (i, j)
+]]
+
+test [[
+	for ( i <- Array.range(0, xss(0).length)) yield
+	  for (xs <- xss) yield xs(i)
+]]
+
+test [[
+	for (xs <- xss) yield
+	  for (yst <- ysst) yield
+	    scalprod(xs, yst)
+]]
+
+test [[
+	for (val a <- interp(l, e);
+	     val b <- interp(r, e);
+	     val c <- add(a, b))
+	           yield c
+]]

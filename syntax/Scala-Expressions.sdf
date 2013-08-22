@@ -69,10 +69,10 @@ exports
 			"try" Expr "finally" Expr                                            -> Expr {"TryFinallyExpr"}
 			"try" Expr "catch" Expr "finally" Expr                               -> Expr {"TryCatchFinallyExpr"}
 			"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr {"DoWhileExpr"}
-			"for" "(" Enumerators ")" Expr                                       -> Expr {"BraceForExpr"}
-			"for" "{" Enumerators "}" Expr                                       -> Expr {"CurlyBraceForExpr"}
-			"for" "(" Enumerators ")" "yield" Expr                               -> Expr {"BraceYieldForExpr"}
-			"for" "{" Enumerators "}" "yield" Expr                               -> Expr {"CurlyBraceYieldForExpr"}
+			"for" "(" EnumeratorSemi+ ")" Expr                                   -> Expr {"ForExpr"}
+			"for" "{" EnumeratorSemi+ "}" Expr                                   -> Expr {"ForExpr"}
+			"for" "(" EnumeratorSemi+ ")" "yield" Expr                           -> Expr {"ForYieldExpr"}
+			"for" "{" EnumeratorSemi+ "}" "yield" Expr                           -> Expr {"ForYieldExpr"}
 			"throw" Expr                                                         -> Expr {"ThrowExpr"}
 			"return" Expr?                                                       -> Expr {"ReturnExpr"}
 			Expr Ascription                                                      -> Expr {"AscriptionExpr", avoid}
@@ -132,10 +132,10 @@ exports
 			"try" NoLExpr "finally" NoLExpr                                         -> NoLExpr {"TryFinallyNoLExpr"}
 			"try" NoLExpr "catch" NoLExpr "finally" NoLExpr                         -> NoLExpr {"TryCatchFinallyNoLExpr"}
 			"do" NoLExpr Semi? "while" "(" NoLExpr ")"                              -> NoLExpr {"DoWhileNoLExpr"}
-			"for" "(" Enumerators ")" NoLExpr                                       -> NoLExpr {"BraceForNoLExpr"}
-			"for" "{" Enumerators "}" NoLExpr                                       -> NoLExpr {"CurlyBraceForNoLExpr"}
-			"for" "(" Enumerators ")" "yield" NoLExpr                               -> NoLExpr {"BraceYieldForNoLExpr"}
-			"for" "{" Enumerators "}" "yield" NoLExpr                               -> NoLExpr {"CurlyBraceYieldForNoLExpr"}
+			"for" "(" EnumeratorSemi+ ")" NoLExpr                                   -> NoLExpr {"ForNoLExpr"}
+			"for" "{" EnumeratorSemi+ "}" NoLExpr                                   -> NoLExpr {"ForNoLExpr"}
+			"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr                           -> NoLExpr {"ForYieldNoLExpr"}
+			"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr                           -> NoLExpr {"ForYieldNoLExpr"}
 			"throw" NoLExpr                                                         -> NoLExpr {"ThrowNoLExpr"}
 			"return" NoLExpr?                                                       -> NoLExpr {"ReturnNoLExpr"}
 			NoLExpr Ascription                                                      -> NoLExpr {"AscriptionNoLExpr", avoid}
@@ -161,22 +161,20 @@ exports
 		":" Annotation+ -> Ascription {"AnnotationAscription"}
 		":" "_" "*"     -> Ascription {"SequenceAscription"}
 		
-		Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
+		Pattern1 "<-" Expr Guard?       -> Generator {"Generator"}
+		"val" Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
 		
 		"if" Expr -> Guard {"Guard"}
 		
-		Generator                   -> Enumerators 
-		Generator ";" EnumeratorSeq -> Enumerators {"SemiEnumerators"}
-		Generator EnumeratorSeq     -> Enumerators {"Enumerators", layout("2.first.line > 1.last.line")}
-		
-		Enumerator                   -> EnumeratorSeq {"SingleEnumeratorSeq"}
-		Enumerator ";" EnumeratorSeq -> EnumeratorSeq {"SemiEnumeratorSeq"}
-		Enumerator EnumeratorSeq     -> EnumeratorSeq {"EnumeratorSeq", layout("2.first.line > 1.last.line")}
+		Enumerator ";" -> EnumeratorSemi {"SemiEnumeratorSemi", longest-match}
+		Enumerator EOL -> EnumeratorSemi {"EnumeratorSemi", enforce-newline, longest-match, prefer}
+		Enumerator EOP -> EnumeratorSemi {"EOPEnumeratorSemi", avoid}
+		Enumerator EOB -> EnumeratorSemi {"EOBEnumeratorSemi", avoid}
 		
 		Generator                    -> Enumerator
 		Guard                        -> Enumerator
-		Pattern1 "=" Expr            -> Enumerator {"Enumerator"}
-		"val" Pattern1 "=" Expr      -> Enumerator {"ValEnumerator"}
+		Pattern1 "=" Expr            -> Enumerator {"ValDef"}
+		"val" Pattern1 "=" Expr      -> Enumerator {"ValDef"}
 		
 		"case" Pattern Guard? "=>" CaseBlock -> CaseClause {"CaseClause"}
 		
