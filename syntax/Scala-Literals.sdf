@@ -48,16 +48,32 @@ exports
 		[\32-\126] / [\"\\]        -> StringElement
 		CharEscapeSeq              -> StringElement
 
-		("s" | "f" | "raw") "\"" ProcessedStringElement* "\"" -> ProcessedString
+		("s" | "f" | "raw") "\"" ProcessedStringElement* "\""                  -> ProcessedString
+		("s" | "f" | "raw") "\"\"\"" MultiLineProcessedStringElement "\"\"\""  -> ProcessedString
 
 
 		[\32-\126] / [\"\$\\] -> ProcessedStringElement
 		CharEscapeSeq         -> ProcessedStringElement
-		"$$"                  -> ProcessedStringElement
-		"${" [\0-\127]+ "}"   -> ProcessedStringElement
-		"$" IPlainId          -> ProcessedStringElement
+		Processing            -> ProcessedStringElement
 
-		(("\"")? ("\"")? CharNoDoubleQuote)* "\""* -> MultiLineChars
+		"$$"                        -> Processing
+		"${" ProcessingElement* "}" -> Processing
+		"$" IPlainId                -> Processing
+
+		"{" ProcessingElement* "}" -> ProcessingElement
+		[\0-\127] / [\{\}\"]       -> ProcessingElement
+		ProcessedString            -> ProcessingElement
+		StringLiteral              -> ProcessingElement
+
+		([\"]? [\"]? CharNoDoubleQuote)* [\"]* -> MultiLineChars
+
+		([\"]? [\"]? IMultiLineProcessedStringElement)* [\"]* -> MultiLineProcessedStringElement
+
+		Processing         -> IMultiLineProcessedStringElement
+		[\0-\127] / [\"\$] -> IMultiLineProcessedStringElement
+
+		[\"]      -> DoubleQuote
+		[\"] [\"] -> DoubleDoubleQuote
 
 		"'" IPlainId -> SymbolLiteral
 
@@ -66,6 +82,8 @@ exports
 		Literal -/- [0-9a-zA-Z]
 		"true" -/- [a-zA-Z0-9]
 		"false" -/- [a-zA-Z0-9]
+		DoubleQuote -/- [\"]
+		DoubleDoubleQuote -/- [\"]
 		
 	context-free syntax
 		IntegerLiteral       -> Literal {"Int"}

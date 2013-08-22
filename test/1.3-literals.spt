@@ -153,6 +153,52 @@ test $this processed string [[
 	s"What is $this"
 ]] parse to ProcessedString(_)
 
+test multiline processed string [[
+	s"""$line${" " * (lineWidth-line.toString.length)} ${if (a==b) "==" else "<>"} $a${" " * (width-a.length)} | $b"""
+]]
+
+test processed string processing spans multiple lines [[
+	s"${
+
+		bar
+
+	}"
+]]
+
+test processed string with curly brace in string in processing [[
+	s"${"}"}"
+]]
+
+test processed string deterministic end [[
+	s"Do not confuse this ${f()}"
+	else
+	s"${bar}"
+]] parse fails
+
+test [[
+	"""""""
+]]
+
+test [[
+	""""""""
+]]
+
+test [[
+	""""""""""
+]]
+
+test [[
+	s"""""""
+]]
+
+test [[
+	s""""""""
+]]
+
+test [[
+	s""""""""""
+]]
+
 test Symbol 'x [[
 	'x
 ]] parse to Symbol(_)
