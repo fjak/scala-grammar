@@ -18,7 +18,7 @@ exports
 			StableId                                              -> SimplePattern
 			StableId "(" Patterns ")"                             -> SimplePattern {"ConstructorPattern"}
 			"(" Patterns ")"                                      -> SimplePattern {"TuplePattern"}
-			StableId "(" (Patterns ",")? (VarId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
+			StableId "(" (Patterns ",")? (VarPlainId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
 		}
 		
 		> {
@@ -27,12 +27,12 @@ exports
 		}
 		
 		> {
-			VarId "@" Pattern3 -> Pattern2 {"PatternBinder"}
+			VarPlainId "@" Pattern3 -> Pattern2 {"PatternBinder"}
 			Pattern3           -> Pattern2
 		}
 		
 		> {
-			VarId ":" Type -> Pattern1 {"TypedPattern"}
+			VarPlainId ":" Type -> Pattern1 {"TypedPattern"}
 			"_" ":" Type   -> Pattern1 {"WildcardTypedPattern"}
 			Pattern2       -> Pattern1
 		}

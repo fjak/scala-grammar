@@ -12,7 +12,7 @@ lexical syntax
 	[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OpChar
 
 	%% Operators by precedence from low to high
-	IVarPlainId | ITypePlainId   -> LetterOp
+	VarPlainId | TypePlainId     -> LetterOp
 	[\|] OpChar*                 -> BarOp
 	[\^] OpChar*                 -> CircumflexOp
 	[\&] OpChar*                 -> AmpersandOp
@@ -52,8 +52,10 @@ lexical syntax
 	Op           -> IPlainId
 	IVarPlainId  -> IPlainId
 	ITypePlainId -> IPlainId
-	
-	IPlainId -> PlainId
+
+	IVarPlainId  -> VarPlainId
+	ITypePlainId -> TypePlainId
+	IPlainId     -> PlainId
 	
 	"abstract"  -> Keyword
 	"case"      -> Keyword
@@ -104,9 +106,10 @@ lexical syntax
 	">:"        -> Keyword
 	"#"         -> Keyword
 	"@"         -> Keyword
+
+	Keyword     -> VarPlainId {reject}
+	Keyword     -> TypePlainId {reject}
 	Keyword     -> PlainId {reject}
-	Keyword     -> LetterOp {reject}
-	Keyword     -> VarId {reject}
 
 	"-" -> MinusPrefix
 	"+"         -> Prefix
