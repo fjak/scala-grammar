@@ -149,6 +149,10 @@ test raw processed string [[
 	raw"a\nb"
 ]] parse to ProcessedString(_)
 
+test advanced processed string [[
+	json"{ name: $name, id: $id }"
+]]
+
 test $this processed string [[
 	s"What is $this"
 ]] parse to ProcessedString(_)

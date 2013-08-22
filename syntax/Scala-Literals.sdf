@@ -48,8 +48,8 @@ exports
 		[\32-\126] / [\"\\]        -> StringElement
 		CharEscapeSeq              -> StringElement
 
-		("s" | "f" | "raw") "\"" ProcessedStringElement* "\""                  -> ProcessedString
-		("s" | "f" | "raw") "\"\"\"" MultiLineProcessedStringElement "\"\"\""  -> ProcessedString
+		PlainId "\"" ProcessedStringElement* "\""                  -> ProcessedString
+		PlainId "\"\"\"" MultiLineProcessedStringElement "\"\"\""  -> ProcessedString
 
 
 		[\32-\126] / [\"\$\\] -> ProcessedStringElement
