@@ -23,7 +23,15 @@ lexical syntax
 	([\*] | [\/] | [\%]) OpChar* -> MultOp
 	[\#\?\@\\\~] OpChar*         -> SpecialOp
 
-	[\=] -> AssignOp {reject}
+	"="  -> AssignOp {reject}
+	"=>" -> AssignOp {reject}
+	":"  -> ColonOp  {reject}
+	"<-" -> BracketOp {reject}
+	"<:" -> BracketOp {reject}
+	"<%" -> BracketOp {reject}
+	">:" -> BracketOp {reject}
+	"#"  -> SpecialOp {reject}
+	"@"  -> SpecialOp {reject}
 	
 	OpChar+ -> Op
 	

@@ -70,3 +70,8 @@ test [[
 	if (cond)
 	  qual.foo = bar
 ]]
+
+test [[
+	if (c) () => foo()
+	else () => bar()
+]]
