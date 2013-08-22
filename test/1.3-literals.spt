@@ -133,13 +133,25 @@ test Stripped String [[
       |lines.""".stripMargin
 ]] parse to DesignatorExpr(String(_), Id("stripMargin"))
 
-test String substitution notation [[
+test simple processed string [[
 	s"Hello $name"
-]] parse to PlainSubstString(_)
+]] parse to ProcessedString(_)
 
-test String substitution with expressions [[
-	s" ${foo + bar + "another string"} and ${blork}${bark}"
-]] parse to SubstString(_, _, _, _)
+test advanced processed string [[
+	s" ${foo + "blo" + { "another string" } } and ${blork}${bark}"
+]] parse to ProcessedString(_)
+
+test float processed string [[
+	f"$name%s is $height%2.2f meters tall"
+]] parse to ProcessedString(_)
+
+test raw processed string [[
+	raw"a\nb"
+]] parse to ProcessedString(_)
+
+test $this processed string [[
+	s"What is $this"
+]] parse to ProcessedString(_)
 
 test Symbol 'x [[
 	'x

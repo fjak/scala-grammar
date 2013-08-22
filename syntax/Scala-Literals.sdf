@@ -31,10 +31,10 @@ exports
 		
 		"'" PrintableChar "'" -> CharacterLiteral
 		"'" CharEscapeSeq "'" -> CharacterLiteral
-		
-		[\32-\126] -> PrintableChar
-		[\0-\127] / [\"] -> CharNoDoubleQuote
-		[\32-\126] / [\\\"] -> PrintableCharNoDoubleQuoteOrBackspace
+
+		[\32-\126]          -> PrintableChar
+		[\0-\127] / [\"]    -> CharNoDoubleQuote
+
 		"\\b" | "\\t" | "\\n" | "\\f" | "\\r" | "\\\"" | "\\'" | "\\\\" -> CharEscapeSeq
 		"\\" [0-1]? [0-9]? [0-9]                                        -> CharEscapeSeq
 		"\\" Digit? Digit? Digit                                        -> CharEscapeSeq
@@ -45,24 +45,21 @@ exports
 		"\"" StringElement* "\""         -> StringLiteral
 		"\"\"\"" MultiLineChars "\"\"\"" -> StringLiteral
 
-		PrintableCharNoDoubleQuoteOrBackspace -> StringElement
-		CharEscapeSeq                         -> StringElement
-		
+		[\32-\126] / [\"\\]        -> StringElement
+		CharEscapeSeq              -> StringElement
+
+		("s" | "f" | "raw") "\"" ProcessedStringElement* "\"" -> ProcessedString
+
+
+		[\32-\126] / [\"\$\\] -> ProcessedStringElement
+		CharEscapeSeq         -> ProcessedStringElement
+		"$$"                  -> ProcessedStringElement
+		"${" [\0-\127]+ "}"   -> ProcessedStringElement
+		"$" IPlainId          -> ProcessedStringElement
+
 		(("\"")? ("\"")? CharNoDoubleQuote)* "\""* -> MultiLineChars
-		
+
 		"'" IPlainId -> SymbolLiteral
-		
-		CharEscapeSeq -> SubstStringCharEscapeSeq
-		"$$"          -> SubstStringCharEscapeSeq
-
-		[\32-\126] / [\\\"\$]    -> SubstStringElement
-		SubstStringCharEscapeSeq -> SubstStringElement
-		"$" PlainId              -> SubstStringElement
-
-		"s\"" SubstStringElement* "\"" -> PlainSubstString
-		"s\"" SubstStringElement* "${" -> SubstStringLeadIn
-		"}" SubstStringElement* "${"   -> SubstStringInner
-		"}" SubstStringElement* "\""   -> SubstStringLeadOut
 
 	lexical restrictions
 		IntegerLiteral -/- [0-9a-zA-Z]
@@ -78,11 +75,7 @@ exports
 		StringLiteral        -> Literal {"String"}
 		SymbolLiteral        -> Literal {"Symbol"}
 		"null"               -> Literal {"Null"}
-		SubstString          -> Literal
+		ProcessedString      -> Literal {"ProcessedString"}
 
-		PlainSubstString                                        -> SubstString {"PlainSubstString"}
-		SubstStringLeadIn Expr ISubstString* SubstStringLeadOut -> SubstString {"SubstString"}
-		SubstStringInner Expr -> ISubstString {"ISubstString"}
-		
 		"true"  -> BooleanLiteral {"True"}
 		"false" -> BooleanLiteral {"False"}
