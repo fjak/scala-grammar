@@ -82,6 +82,7 @@ lexical syntax
 	"implicit"  -> Keyword
 	"import"    -> Keyword
 	"lazy"      -> Keyword
+	"macro"     -> Keyword
 	"match"     -> Keyword
 	"new"       -> Keyword
 	"null"      -> Keyword
@@ -165,6 +166,7 @@ lexical restrictions
 	"implicit" -/- [a-zA-Z0-9\$\_]
 	"import"   -/- [a-zA-Z0-9\$\_]
 	"lazy"     -/- [a-zA-Z0-9\$\_]
+	"macro"    -/- [a-zA-Z0-9\$\_]
 	"match"    -/- [a-zA-Z0-9\$\_]
 	"new"      -/- [a-zA-Z0-9\$\_]
 	"null"     -/- [a-zA-Z0-9\$\_]

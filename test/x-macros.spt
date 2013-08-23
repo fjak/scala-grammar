@@ -1,0 +1,8 @@
+language Scala
+start symbol TemplateBody
+
+test macro definition [[
+{
+	def map[U](p: T => U): Queryable[U] = macro QImpl.map[T, U]
+}
+]]
