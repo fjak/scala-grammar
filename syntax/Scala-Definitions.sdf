@@ -44,9 +44,9 @@ exports
 		
 		"{" EarlyDefSemi* "}" "with" -> EarlyDefs {"EarlyDefs"}
 		
-		EarlyDef ";" -> EarlyDefSemi {"SemiEarlyDefSemi"}
-		EarlyDef EOL -> EarlyDefSemi {"EarlyDefSemi", enforce-newline, prefer}
-		EarlyDef EOB -> EarlyDefSemi {"EOBEarlyDefSemi", avoid}
+		EarlyDef SEMI -> EarlyDefSemi {"EarlyDefSemi"}
+		EarlyDef EOL  -> EarlyDefSemi {"EarlyDefSemi", enforce-newline, prefer}
+		EarlyDef EOB  -> EarlyDefSemi {"EarlyDefSemi", avoid}
 		
 		AnnotationSeq? Modifier* PatVarDef -> EarlyDef {"EarlyDef"}
 		

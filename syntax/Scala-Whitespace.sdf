@@ -5,9 +5,9 @@ module Scala-Whitespace
 
 exports
 	lexical syntax
-		[\ \t\n\r] -> LAYOUT
+		[\ \t\n\r]       -> LAYOUT
 		"//" ~[\n]* [\n] -> LAYOUT
-		BlockComment -> LAYOUT
+		BlockComment     -> LAYOUT
 
 		"/*" BlockCommentPart* "*/" -> BlockComment
 		~[\/\*]      -> BlockCommentPart
@@ -15,11 +15,13 @@ exports
 		Slash        -> BlockCommentPart
 		BlockComment -> BlockCommentPart
 
-		-> EOL
-		-> EOF
-		-> EOB
-		-> EOP
+		    -> EOL
+		    -> EOF
+		    -> EOB
+		    -> EOP
+		";" -> SEMI
 
+		[\n] -> Nl
 		[\*] -> Asterisk
 		[\/] -> Slash
 

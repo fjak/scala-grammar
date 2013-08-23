@@ -13,9 +13,7 @@ imports
 	
 exports
 	lexical syntax
-		";"  -> Semi
-		"\n" -> Nl
-		     -> EOC
+		-> EOC
 
 	context-free restrictions
 		EOC -/- ~[c]
@@ -69,7 +67,8 @@ exports
 			"try" Expr "catch" Expr                                              -> Expr {"TryCatchExpr"}
 			"try" Expr "finally" Expr                                            -> Expr {"TryFinallyExpr"}
 			"try" Expr "catch" Expr "finally" Expr                               -> Expr {"TryCatchFinallyExpr"}
-			"do" Expr Semi? "while" "(" Expr ")"                                 -> Expr {"DoWhileExpr"}
+			"do" Expr ";" "while" "(" Expr ")"                                   -> Expr {"DoWhileExpr"}
+			"do" Expr "while" "(" Expr ")"                                       -> Expr {"DoWhileExpr"}
 			"for" "(" EnumeratorSemi+ ")" Expr                                   -> Expr {"ForExpr"}
 			"for" "{" EnumeratorSemi+ "}" Expr                                   -> Expr {"ForExpr"}
 			"for" "(" EnumeratorSemi+ ")" "yield" Expr                           -> Expr {"ForYieldExpr"}
@@ -133,7 +132,8 @@ exports
 			"try" NoLExpr "catch" NoLExpr                                           -> NoLExpr {"TryCatchNoLExpr"}
 			"try" NoLExpr "finally" NoLExpr                                         -> NoLExpr {"TryFinallyNoLExpr"}
 			"try" NoLExpr "catch" NoLExpr "finally" NoLExpr                         -> NoLExpr {"TryCatchFinallyNoLExpr"}
-			"do" NoLExpr Semi? "while" "(" NoLExpr ")"                              -> NoLExpr {"DoWhileNoLExpr"}
+			"do" NoLExpr ";" "while" "(" NoLExpr ")"                                -> NoLExpr {"DoWhileNoLExpr"}
+			"do" NoLExpr "while" "(" NoLExpr ")"                                    -> NoLExpr {"DoWhileNoLExpr"}
 			"for" "(" EnumeratorSemi+ ")" NoLExpr                                   -> NoLExpr {"ForNoLExpr"}
 			"for" "{" EnumeratorSemi+ "}" NoLExpr                                   -> NoLExpr {"ForNoLExpr"}
 			"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr                           -> NoLExpr {"ForYieldNoLExpr"}
@@ -168,10 +168,10 @@ exports
 		
 		"if" Expr -> Guard {"Guard"}
 		
-		Enumerator ";" -> EnumeratorSemi {"SemiEnumeratorSemi", longest-match}
-		Enumerator EOL -> EnumeratorSemi {"EnumeratorSemi", enforce-newline, longest-match, prefer}
-		Enumerator EOP -> EnumeratorSemi {"EOPEnumeratorSemi", avoid}
-		Enumerator EOB -> EnumeratorSemi {"EOBEnumeratorSemi", avoid}
+		Enumerator SEMI -> EnumeratorSemi {"EnumeratorSemi", longest-match}
+		Enumerator EOL  -> EnumeratorSemi {"EnumeratorSemi", enforce-newline, longest-match, prefer}
+		Enumerator EOP  -> EnumeratorSemi {"EnumeratorSemi", avoid}
+		Enumerator EOB  -> EnumeratorSemi {"EnumeratorSemi", avoid}
 		
 		Generator                    -> Enumerator
 		Guard                        -> Enumerator
@@ -192,10 +192,10 @@ exports
 		BlockStatSemi* ResultExpr -> Block {"BlockWithResult", prefer}
 		BlockStatSemi*            -> Block {"BlockWithoutResult"}
 		
-		BlockStat EOL -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
-		BlockStat EOB -> BlockStatSemi {"EOBBlockStatSemi", avoid}
-		BlockStat ";" -> BlockStatSemi {"SemiBlockStatSemi", longest-match}
-		";"           -> BlockStatSemi {"EmptyBlockStat"}
+		BlockStat EOL   -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
+		BlockStat EOB   -> BlockStatSemi {"BlockStatSemi", avoid}
+		BlockStat SEMI  -> BlockStatSemi {"BlockStatSemi", longest-match}
+		SEMI            -> BlockStatSemi
 		
 		%% Only treat "special" expressions as ResultExpr to avoid ambiguity with BlockStatSemi
 		%% Expr1                                     -> ResultExpr

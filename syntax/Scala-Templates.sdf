@@ -11,8 +11,8 @@ exports
 		SelfInvocation -> ConstrExpr
 		ConstrBlock    -> ConstrExpr
 		
-		"{" SelfInvocation ";" BlockStatSemi? "}" -> ConstrBlock {"SemiConstrBlock"}
-		"{" SelfInvocation BlockStatSemi? "}"     -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
+		"{" SelfInvocation SEMI BlockStatSemi? "}" -> ConstrBlock {"SemiConstrBlock"}
+		"{" SelfInvocation BlockStatSemi? "}"      -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
 
 		"this" ArgumentExprsSeq -> SelfInvocation {"SelfInvocation"}
 			
@@ -41,10 +41,10 @@ exports
 		%% TemplateStat Expr TemplateStatSemis -> TemplateStatSemis {"MuchExprTemplateStatSemis", layout("1.last.line < 2.first.line && 2.last.line < 3.first.line")}
 		%% TemplateStat Expr                   -> TemplateStatSemis {"LastExprTemplateStat", layout("1.last.line < 2.first.line")}
 
-		";"              -> TemplateStatSemi {"EmptyTemplateStat"}
-		TemplateStat ";" -> TemplateStatSemi {"SemiTemplateStatSemi", longest-match}
-		TemplateStat EOL -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, longest-match, prefer}
-		TemplateStat EOB -> TemplateStatSemi {"EOBTemplateStatSemi", avoid}
+		SEMI              -> TemplateStatSemi
+		TemplateStat SEMI -> TemplateStatSemi {"TemplateStatSemi", longest-match}
+		TemplateStat EOL  -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, longest-match, prefer}
+		TemplateStat EOB  -> TemplateStatSemi {"TemplateStatSemi", avoid}
 		
 		AnnotationSeq? Modifier* Def -> TemplateStat {"DefTemplateStat"}
 		AnnotationSeq? Modifier* Dcl -> TemplateStat {"DclTemplateStat"}

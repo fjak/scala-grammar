@@ -10,23 +10,19 @@ imports
 exports	
 	context-free syntax
 		PackageDeclarationSemi* TopStatSemi+ -> CompilationUnit {"CompilationUnit"}
-		
-		%%TopStat                -> TopStatSeq {"SingleTopStatSeq"}
-		%%TopStat ";" TopStatSeq -> TopStatSeq {"SemiTopStatSeq"}
-		%%TopStat TopStatSeq     -> TopStatSeq {"TopStatSeq", layout("2.first.line > 1.last.line")}
-		
-		TopStat ";" -> TopStatSemi {"SemiTopStatSeq"}
-		TopStat EOL -> TopStatSemi {"TopStatSeq", enforce-newline, longest-match, prefer}
-		TopStat EOF -> TopStatSemi {"EOFTopStatSeq"}
-		TopStat EOB -> TopStatSemi {"EOBTopStatSeq", avoid}
+
+		TopStat SEMI -> TopStatSemi {"TopStatSemi"}
+		TopStat EOL  -> TopStatSemi {"TopStatSemi", enforce-newline, longest-match, prefer}
+		TopStat EOF  -> TopStatSemi {"TopStatSemi"}
+		TopStat EOB  -> TopStatSemi {"TopStatSemi", avoid}
 		
 		AnnotationSeq? Modifier* TmplDef -> TopStat {"TopTmplDef"}
 		Import                           -> TopStat
 		Packaging                        -> TopStat
 		PackageObject                    -> TopStat
 		
-		"package" QualId EOL -> PackageDeclarationSemi {"PackageDeclaration", enforce-newline}
-		"package" QualId ";" -> PackageDeclarationSemi {"SemiPackageDeclaration"}
+		"package" QualId EOL  -> PackageDeclarationSemi {"PackageDeclaration", enforce-newline}
+		"package" QualId SEMI -> PackageDeclarationSemi {"PackageDeclaration"}
 		
 		{Id "."}+ -> QualId {"QualId"}
 		

@@ -26,9 +26,9 @@ exports
 		
 		"{" RefineStatSemi* "}" -> Refinement {"Refinement"}
 		
-		RefineStat ";" -> RefineStatSemi {"SemiRefineStatSemi"}
-		RefineStat EOL -> RefineStatSemi {"RefineStatSemi", enforce-newline, prefer}
-		RefineStat EOB -> RefineStatSemi {"EOBRefineStatSemi", avoid}
+		RefineStat SEMI -> RefineStatSemi {"RefineStatSemi"}
+		RefineStat EOL  -> RefineStatSemi {"RefineStatSemi", enforce-newline, prefer}
+		RefineStat EOB  -> RefineStatSemi {"RefineStatSemi", avoid}
 		
 		Dcl            -> RefineStat
 		"type" TypeDef -> RefineStat {"TypeRefineStat"}
@@ -42,9 +42,9 @@ exports
 		
 		"forSome" "{" ExistentialDclSemi+ "}" -> ExistentialClause {"ExistentialClause"}
 		
-		ExistentialDcl ";" -> ExistentialDclSemi {"SemiExistentialDclSeq"}
-		ExistentialDcl EOL -> ExistentialDclSemi {"ExistentialDclSeq", enforce-newline, prefer}
-		ExistentialDcl EOB -> ExistentialDclSemi {"EOBExistentialDclSeq"}
+		ExistentialDcl SEMI -> ExistentialDclSemi {"ExistentialDclSemi"}
+		ExistentialDcl EOL  -> ExistentialDclSemi {"ExistentialDclSemi", enforce-newline, prefer}
+		ExistentialDcl EOB  -> ExistentialDclSemi {"ExistentialDclSemi"}
 		
 		"type" TypeDcl -> ExistentialDcl {"ExistentialType"}
 		"val"  ValDcl  -> ExistentialDcl {"ExistentialVal"}
