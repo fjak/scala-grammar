@@ -167,6 +167,14 @@ test new fqn class instantiation [[
 	new scala.collection.mutable.Map
 ]] parse to NewClassExpr(_)
 
+test operator name class instantiation [[
+	new scala.collection.immutable.::
+]]
+
+test stable id operator application [[
+	scala.collection.mutable.::()
+]]
+
 
 /* Blocks */
 test block [[

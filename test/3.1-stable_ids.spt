@@ -17,4 +17,8 @@ test super id [[
 	super.Type
 ]]
 
+test operators as stable id [[
+	some.qualified.operators.::
+]]
+
 

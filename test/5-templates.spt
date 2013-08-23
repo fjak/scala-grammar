@@ -69,3 +69,10 @@ test empty template statements [[
 	;;;
 }
 ]]
+
+test [[
+{
+	def ::[B >: A] (x: B): List[B] =
+		new scala.collection.immutable.::(x, this)
+}
+]]

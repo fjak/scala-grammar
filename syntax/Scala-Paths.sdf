@@ -24,7 +24,7 @@ exports
 		Prefix -> Path {reject} %% not 100% sure this is correct
 
 	context-free restrictions
-		StableId -/- [\.] . [a-zA-Z\$]
+		StableId -/- [\.] . [\33-\126] / [\{\,\`\_]
 
 	lexical restrictions
 		"this" -/- [a-zA-Z0-9\$\_]
