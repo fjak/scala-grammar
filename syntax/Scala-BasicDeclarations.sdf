@@ -30,14 +30,12 @@ exports
 		FunSig          -> FunDcl {"ProcDcl"}
 		FunSig ":" Type -> FunDcl {"FunDcl"}
 		
-		ConstructorName ImplicitParamClauses                    -> FunSig {"FunSig"}
-		ConstructorName FunTypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
+		ConstructorName ImplicitParamClauses                 -> FunSig {"FunSig"}
+		ConstructorName TypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
 
 		"this" -> ConstructorName {"ConstructorName"}
 		Id     -> ConstructorName
-		
-		"[" {TypeParam ","}+ "]" -> FunTypeParamClause {"FunTypeParamClause"}
-		
+
 		{Param ","}+ -> Params {"Params"}
 		
 		Annotation* Id (":" ParamType)?               -> Param {"Param"}

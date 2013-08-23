@@ -76,3 +76,9 @@ test [[
 		new scala.collection.immutable.::(x, this)
 }
 ]]
+
+test annotated function type params [[
+{
+	def f[@specialized(Unit) U] = foo
+}
+]]

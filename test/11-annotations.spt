@@ -1,0 +1,10 @@
+language Scala
+start symbol Annotation
+
+test [[
+	@tailRec
+]]
+
+test [[
+	@specialized(Unit)
+]]
