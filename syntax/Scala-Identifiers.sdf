@@ -126,6 +126,7 @@ lexical syntax
 	"!"         -> Prefix
 
 	"`" ~[\`]+ "`" -> FancyId
+	FancyId        -> PlainId
 
 lexical restrictions
 	Op -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
@@ -197,5 +198,4 @@ lexical restrictions
 	FancyId -/- [a-zA-Z0-9\_\$]
 
 context-free syntax
-	FancyId -> Id {"FancyId"}
 	PlainId -> Id {"Id"}

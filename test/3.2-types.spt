@@ -68,3 +68,11 @@ test wildcard type [[
 test [[
 	Some[Qualified.Type]
 ]]
+
+test fqn type [[
+	scala.reflect.bar.type
+]]
+
+test fancy id type [[
+	scala.reflect.`package`.type
+]]

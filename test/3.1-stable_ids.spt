@@ -21,4 +21,12 @@ test operators as stable id [[
 	some.qualified.operators.::
 ]]
 
+test fancy stable id end [[
+	scala.reflect.`package`
+]]
+
+test fancy stable id intermediate [[
+	foo.`fancy`.bar.baz
+]]
+
 
