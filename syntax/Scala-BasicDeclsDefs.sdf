@@ -61,8 +61,12 @@ exports
 		FunSig "=" "macro" StableId TypeArgs?          -> FunDef {"MacroFunDef"}
 		FunSig ":" Type "=" "macro" StableId TypeArgs? -> FunDef {"TypedMacroFunDef"}
 
-		Id ImplicitParamClauses                 -> FunSig {"FunSig"}
-		Id TypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
+		FunName ImplicitParamClauses                 -> FunSig {"FunSig"}
+		FunName TypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
+
+		%% TODO: investigate
+		"this" -> FunName {"ConstrName"}
+		Id     -> FunName
 
 		{Param ","}+ -> Params {"Params"}
 
