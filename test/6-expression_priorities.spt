@@ -82,7 +82,7 @@ test [[
 		  return
 		foo
 	}
-]] parse to BlockExpr(BlockWithoutResult([_, _]))
+]] parse to BlockExpr(Block([_, _]))
 
 test [[
 	if (c)

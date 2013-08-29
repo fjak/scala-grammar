@@ -17,7 +17,7 @@ exports
 		EOC -/- ~[c]
 
 
-	%% With Layout
+	%%%%% With Layout %%%%%%
 	context-free priorities
 		{
 			"_"                    -> Expr {"WildcardExpr"}
@@ -35,7 +35,7 @@ exports
 			BlockExpr           -> Expr
 			Expr "_"            -> Expr {"EtaExpansionExpr", left, layout("1.last.line == 2.first.line")}
 		}
-			
+
 		> Prefix Expr             -> Expr {"PrefixExpr", prefer}
 		> Expr SpecialOp Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr MultOp Expr        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
@@ -82,7 +82,7 @@ exports
 		> Prefix Expr      -> Expr {"PrefixExpr"}
 
 
-	%% Without Layout
+	%%%%% NO Layout %%%%%%
 	context-free priorities
 		{
 			"_"                    -> NoLExpr {"WildcardNoLExpr"}
@@ -147,7 +147,7 @@ exports
 		> Prefix NoLExpr      -> NoLExpr {"PrefixNoLExpr"}
 
 
-
+	%%%%% Common %%%%%%
 	context-free syntax
 		"(" NoLExprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
 		"(" (NoLExprs ",")? NoLExpr ":" "_" "*" ")"     -> ArgumentExprs {"SequenceArgumentExprs", prefer}
@@ -156,53 +156,51 @@ exports
 		ArgumentExprs ArgumentExprsSeq -> ArgumentExprsSeq {"ArgumentExprsSeq", layout("1.last.line == 2.first.line")}
 
 		{NoLExpr ","}+ -> NoLExprs {"Exprs"}
-		
+
 		":" InfixType   -> Ascription {"TypeAscription"}
 		":" Annotation+ -> Ascription {"AnnotationAscription"}
 		":" "_" "*"     -> Ascription {"SequenceAscription"}
-		
+
 		Pattern1 "<-" Expr Guard?       -> Generator {"Generator"}
 		"val" Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
-		
+
 		"if" Expr -> Guard {"Guard"}
-		
+
 		Enumerator SEMI -> EnumeratorSemi {"EnumeratorSemi", longest-match}
 		Enumerator EOL  -> EnumeratorSemi {"EnumeratorSemi", enforce-newline, longest-match, prefer}
 		Enumerator EOP  -> EnumeratorSemi {"EnumeratorSemi", avoid}
 		Enumerator EOB  -> EnumeratorSemi {"EnumeratorSemi", avoid}
-		
+
 		Generator                    -> Enumerator
 		Guard                        -> Enumerator
 		Pattern1 "=" Expr            -> Enumerator {"ValDef"}
 		"val" Pattern1 "=" Expr      -> Enumerator {"ValDef"}
-		
+
 		"case" Pattern Guard? "=>" CaseBlock -> CaseClause {"CaseClause"}
-		
+
 		"{" CaseClause+ "}" -> BlockExpr {"CaseBlockExpr"}
 		"{" Block "}"       -> BlockExpr {"BlockExpr"}
-		
+
 		Block              -> CaseBlock
 		CaseBlockStatSemi* -> CaseBlock {"CaseBlock", avoid}
 
 		BlockStatSemi      -> CaseBlockStatSemi
 		BlockStat EOC      -> CaseBlockStatSemi {"EOCBlockStatSemi", avoid}
 
-		BlockStatSemi* ResultExpr -> Block {"BlockWithResult", prefer}
-		BlockStatSemi*            -> Block {"BlockWithoutResult"}
-		
-		BlockStat EOL   -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
-		BlockStat EOB   -> BlockStatSemi {"BlockStatSemi", avoid}
-		BlockStat SEMI  -> BlockStatSemi {"BlockStatSemi", longest-match}
-		SEMI            -> BlockStatSemi
-		
-		%% Only treat "special" expressions as ResultExpr to avoid ambiguity with BlockStatSemi
-		%% Expr1                                     -> ResultExpr
+		BlockStatSemi* ResultExpr -> Block {"Block", prefer}
+		BlockStatSemi*            -> Block {"Block"}
+
 		Bindings "=>" Block                       -> ResultExpr {"BindingsResultExpr"}
 		"implicit" Id ":" CompoundType "=>" Block -> ResultExpr {"ImplicitResultExpr"}
 		Id ":" CompoundType "=>" Block            -> ResultExpr {"SimpleResultExpr"}
 		"_" ":" CompoundType "=>" Block           -> ResultExpr {"WildcardResultExpr"}
 		Id "=>" Block                             -> ResultExpr {"SpecialOneArgResultExpr"}
-		
+
+		BlockStat EOL   -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
+		BlockStat EOB   -> BlockStatSemi {"BlockStatSemi", avoid}
+		BlockStat SEMI  -> BlockStatSemi {"BlockStatSemi", longest-match}
+		SEMI            -> BlockStatSemi
+
 		Import                             -> BlockStat
 		Expr                               -> BlockStat
 		Annotation* LocalModifier* TmplDef -> BlockStat {"TmplDefBlockStat", prefer}
@@ -222,7 +220,7 @@ exports
 
 		Id (":" Type)?  -> Binding {"Binding"}
 		"_" (":" Type)? -> Binding {"WildCardBinding"}
-		
+
 		"(" {Binding ","}* ")" -> Bindings {"Bindings"}
 
 		"=" Expr -> Assignment {"Assignment"}
