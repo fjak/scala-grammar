@@ -1,13 +1,35 @@
-module Scala-Templates
+module Scala-ClassesObjects
 
 imports
+	Scala-BasicDeclsDefs
+	Scala-Expressions
 	Scala-Identifiers
 	Scala-Types
-	Scala-Expressions
-	Scala-Definitions
+	Scala-Whitespace
 
 exports
 	context-free syntax
+		"class" ClassDef          -> TmplDef {"Class"}
+		"case" "class" ClassDef   -> TmplDef {"CaseClass"}
+		"case" "object" ObjectDef -> TmplDef {"CaseObject"}
+		"object" ObjectDef        -> TmplDef {"Object"}
+		"trait" TraitDef          -> TmplDef {"Trait"}
+		
+		Id TypeParamClause? ConstrAnnotation* AccessModifier? ClassParamClauses ClassTemplateOpt -> ClassDef {"ClassDef"}
+		
+		Id ClassTemplateOpt -> ObjectDef {"ObjectDef"}
+		
+		"{" EarlyDefSemi* "}" "with" -> EarlyDefs {"EarlyDefs"}
+		
+		EarlyDef SEMI -> EarlyDefSemi {"EarlyDefSemi"}
+		EarlyDef EOL  -> EarlyDefSemi {"EarlyDefSemi", enforce-newline, prefer}
+		EarlyDef EOB  -> EarlyDefSemi {"EarlyDefSemi", avoid}
+		
+		AnnotationSeq? Modifier* PatVarDef -> EarlyDef {"EarlyDef"}
+		
+		Id TypeParamClause? TraitTemplateOpt -> TraitDef {"TraitDef"}
+		
+		
 		SelfInvocation -> ConstrExpr
 		ConstrBlock    -> ConstrExpr
 		
@@ -68,6 +90,3 @@ exports
 		                        -> TraitTemplateOpt {"EmptyTraitTemplateOpt"}
 		
 		EarlyDefs? TraitParents TemplateBody? -> TraitTemplate {"TraitTemplate"}
-		
-		
-		

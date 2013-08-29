@@ -1,16 +1,15 @@
 module Scala-Expressions
 
 imports
-	Scala-Whitespace
-	Scala-Literals
-	Scala-Paths
-	Scala-Types
 	Scala-Annotations
-	Scala-PatternMatching
+	Scala-BasicDeclsDefs
+	Scala-ClassesObjects
+	Scala-Literals
 	Scala-Modifiers
-	Scala-Imports
-	Scala-Templates
-	
+	Scala-PatternMatching
+	Scala-Types
+	Scala-Whitespace
+
 exports
 	lexical syntax
 		-> EOC

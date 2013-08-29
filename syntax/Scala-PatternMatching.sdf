@@ -1,10 +1,9 @@
 module Scala-PatternMatching
 
 imports
-	Scala-Paths
 	Scala-Literals
 	Scala-Types
-	
+
 exports
 	lexical syntax
 		PlainId -> InfixPatternOp

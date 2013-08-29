@@ -1,28 +1,65 @@
 module Scala-Types
 
 imports
-	Scala-Whitespace
-	Scala-Paths
 	Scala-Annotations
-	Scala-BasicDeclarations
+	Scala-BasicDeclsDefs
+	Scala-Identifiers
+	Scala-Whitespace
 
 exports
+	%% §3.1 Paths
 	context-free syntax
-		FunctionArgTypes "=>" Type  -> Type {"FunctionType", prefer}
-		InfixType                   -> Type
-		InfixType ExistentialClause -> Type {"ExistentialType"}
-		
-		SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
-		SimpleType "#" Id   -> SimpleType {"TypeProjection"}
-		StableId            -> SimpleType {"Type"}
+		Id              -> Path {prefer}
+		{PathElem "."}+ -> Path {"Path"}
+
+		PlainId                                -> PathElem
+		"this"                                 -> PathElem {"This"}
+		"super" ClassQualifier? "." PlainId    -> PathElem {"Super"}
+
+		PlainId                 -> StableIdElem
+		"this"                  -> StableIdElem {"StableThis"}
+		"super" ClassQualifier? -> StableIdElem {"StableSuper"}
+
+		Id                              -> StableId
+		{StableIdElem "."}+ "." PlainId -> StableId {"StableId"}
+
+		"[" PlainId "]" -> ClassQualifier {"ClassQualifier"}
+
+		Prefix -> Path {reject} %% not 100% sure this is correct
+
+	context-free restrictions
+		StableId -/- [\.] . [\33-\126] / [\{\,\`\_]
+
+	
+	%% §3.2 – Value Types
+	context-free syntax
+		%% §3.2.1 – Singleton Types
 		Path "." "type"     -> SimpleType {"SingletonType"}
-		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
-		"_" TypeBounds?     -> SimpleType {"WildcardType"}
 		
+		%% §3.2.2 – Type Projection
+		SimpleType "#" Id   -> SimpleType {"TypeProjection"}
+		
+		%% §3.2.3 – Type Designators
+		StableId            -> SimpleType {"Type"}
+		
+		%% §3.2.4 – Parameterized Types
+		SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
 		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
 		
+		%% §3.2.5 – Tuple Types
+		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
+		
+		%% §3.2.6 – Annotated Types
 		SimpleType             -> AnnotType
 		SimpleType Annotation+ -> AnnotType {"AnnotType", layout("1.last.line == 2.first.line")}
+		
+		%% §3.2.7 – Compound Types
+		AnnotType                   -> CompoundType
+		Refinement                  -> CompoundType
+		AnnotType Refinement        -> CompoundType {"RefinedType"}
+		AnnotType With+ Refinement? -> CompoundType {"CompoundType", layout("3.first.line - 2.last.line < num(2)")}
+		
+		"with" AnnotType -> With {"With"}
 		
 		"{" RefineStatSemi* "}" -> Refinement {"Refinement"}
 		
@@ -32,13 +69,21 @@ exports
 		
 		Dcl            -> RefineStat
 		"type" TypeDef -> RefineStat {"TypeRefineStat"}
-
-		AnnotType                   -> CompoundType
-		Refinement                  -> CompoundType
-		AnnotType Refinement        -> CompoundType {"RefinedType"}
-		AnnotType With+ Refinement? -> CompoundType {"CompoundType", layout("3.first.line - 2.last.line < num(2)")}
 		
-		"with" AnnotType -> With {"With"}
+		%% §3.2.8 – Infix Types
+		InfixType -> Type
+
+		CompoundType                -> InfixType
+		InfixType PlainId InfixType -> InfixType {"InfixType", left, layout("3.first.line - 2.last.line < num(2)")}
+		
+		%% §3.2.9 – Function Types
+		FunctionArgTypes "=>" Type  -> Type {"FunctionType", prefer}
+
+		InfixType                -> FunctionArgTypes
+		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType", prefer}
+		
+		%% §3.2.10 – Existential Types
+		InfixType ExistentialClause -> Type {"ExistentialType"}
 		
 		"forSome" "{" ExistentialDclSemi+ "}" -> ExistentialClause {"ExistentialClause"}
 		
@@ -49,16 +94,8 @@ exports
 		"type" TypeDcl -> ExistentialDcl {"ExistentialType"}
 		"val"  ValDcl  -> ExistentialDcl {"ExistentialVal"}
 		
-		CompoundType                -> InfixType
-		InfixType PlainId InfixType -> InfixType {"InfixType", left, layout("3.first.line - 2.last.line < num(2)")}
+		"_" TypeBounds?     -> SimpleType {"WildcardType"}
 
-		InfixType                -> FunctionArgTypes
-		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType", prefer}
-
-		Type      -> ParamType
-		"=>" Type -> ParamType {"ByNameParam"}
-		Type "*"  -> ParamType {"RepeatedParam"}
-		
 		">:" Type           -> TypeBounds {"LowerTypeBound"}
 		"<:" Type           -> TypeBounds {"UpperTypeBound"}
 		">:" Type "<:" Type -> TypeBounds {"LowerAndUpperTypeBound"}

@@ -1,0 +1,104 @@
+module Scala-BasicDeclsDefs
+
+imports
+	Scala-ClassesObjects
+	Scala-Expressions
+	Scala-Identifiers
+	Scala-Types
+
+exports
+	context-free syntax
+		%% §4 – Basic Declarations and Definitions
+		PatVarDef      -> Def
+		TmplDef        -> Def
+
+
+		%% §4.1 – Value Declarations and Definitions
+		"val" ValDcl                         -> Dcl {"ValDclDcl"}
+		{Id ","}+ ":" Type                   -> ValDcl {"ValDcl"}
+		"val" PatDef                         -> PatVarDef {"ValPatDef"}
+		{Pattern2 ","}+ (":" Type)? "=" Expr -> PatDef {"PatDef"}
+
+
+		%% §4.2 – Variable Declarations and Definitions
+		"var" VarDcl               -> Dcl {"VarDclDcl"}
+		"var" VarDef               -> PatVarDef {"VarPatDef"}
+		{Id ","}+ ":" Type         -> VarDcl {"VarDcl"}
+		PatDef                     -> VarDef
+		{Id ","}+ ":" Type "=" "_" -> VarDef {"WildcardVarDef", prefer}
+
+
+		%% §4.3 – Type Declarations and Type Aliases
+		"type" TypeDcl                                -> Dcl {"TypeDclDcl"}
+		Id TypeParamClause? (">:" Type)? ("<:" Type)? -> TypeDcl {"TypeDcl"}
+		"type" TypeDef                                -> Def {"TypeDefDef"}
+		Id TypeParamClause? "=" Type                  -> TypeDef {"TypeDef"}
+
+
+		%% §.4.4 – Type Parameters
+		"[" {VariantTypeParam ","}+ "]" -> TypeParamClause {"TypeParamClause"}
+
+		Annotation* TypeParam     -> VariantTypeParam {"VariantTypeParam"}
+		Annotation* "+" TypeParam -> VariantTypeParam {"PlusVariantTypeParam"}
+		Annotation* "-" TypeParam -> VariantTypeParam {"NegVariantTypeParam"}
+
+		Id  TypeParamClause? (">:" Type)? ("<:" Type)? TypeViewBound* TypeContextBound* -> TypeParam {"TypeParam"}
+		"_" TypeParamClause? (">:" Type)? ("<:" Type)? TypeViewBound* TypeContextBound* -> TypeParam {"WildcardTypeParam"}
+
+		"<%" Type -> TypeViewBound {"TypeViewBound"}
+		":" Type -> TypeContextBound {"TypeContextBound"}
+
+
+		%% §4.6 – Function Declarations and Definitions
+		"def" FunDcl    -> Dcl {"DefDclDcl"}
+		FunSig          -> FunDcl {"ProcDcl"}
+		FunSig ":" Type -> FunDcl {"FunDcl"}
+		"def" FunDef    -> Def {"FunDefDef"}
+
+		FunSig "=" Expr                                -> FunDef {"ShortFunDef"}
+		FunSig ":" Type "=" Expr                       -> FunDef {"FunDef"}
+		FunSig "{" Block "}"                           -> FunDef {"BlockFunDef", layout("2.first.line - 1.last.line < num(2)")}
+		FunSig "=" "macro" StableId TypeArgs?          -> FunDef {"MacroFunDef"}
+		FunSig ":" Type "=" "macro" StableId TypeArgs? -> FunDef {"TypedMacroFunDef"}
+		"this" ParamClause ParamClauses "=" ConstrExpr -> FunDef {"ThisExprFunDef"}
+		"this" ParamClause ParamClauses ConstrBlock    -> FunDef {"ThisBlockFunDef", layout("4.first.line - 3.last.line < num(2)")}
+
+		ConstructorName ImplicitParamClauses                 -> FunSig {"FunSig"}
+		ConstructorName TypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
+
+		{Param ","}+ -> Params {"Params"}
+
+		Annotation* Id (":" ParamType)?          -> Param {"Param"}
+		Annotation* Id (":" ParamType)? "=" Expr -> Param {"ParamWithDefVal"}
+
+		Type      -> ParamType
+		"=>" Type -> ParamType {"ByNameParam"}
+		Type "*"  -> ParamType {"RepeatedParam"}
+
+		"this" -> ConstructorName {"ConstructorName"}
+		Id     -> ConstructorName
+
+		ParamClauses? ImplicitParams? -> ImplicitParamClauses {"ImplicitParamClauses", layout("2.first.line - 1.last.line < num(2)")}
+
+		"(" "implicit" Params ")" -> ImplicitParams {"ImplicitParams"}
+
+		ParamClause              -> ParamClauses {"SingleParamClauses"}
+		ParamClause ParamClauses -> ParamClauses {"ParamClauses", layout("2.first.line - 1.last.line < num(2)")}
+
+		"(" Params? ")" -> ParamClause {"ParamClause"}
+
+
+		%% §4.7 – Import Clauses
+		"import" {ImportExpr ","}+ -> Import{"Import"}
+
+		StableId                     -> ImportExpr {"ImportExpr"}
+		StableId "." "_"             -> ImportExpr {"WildcardImportExpr"}
+		StableId "." ImportSelectors -> ImportExpr {"SelectorsImportExpr"}
+
+		"{" {ImportSelector ","}+ "}"         -> ImportSelectors {"ImportSelectors"}
+		"{" {ImportSelector ","}+ "," "_" "}" -> ImportSelectors {"ImportSelectorsWithWildcard"}
+		"{" "_" "}"                           -> ImportSelectors {"OnlyWildcardImportSelectors"}	
+
+		Id          -> ImportSelector {"ImportSelector"}
+		Id "=>" Id  -> ImportSelector {"MappedImportSelector"}
+		Id "=>" "_" -> ImportSelector {"WildcardImportSelector"}

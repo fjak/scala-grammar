@@ -8,16 +8,15 @@ exports
 		LocalModifier  -> Modifier
 		AccessModifier -> Modifier
 		"override"     -> Modifier {"OverrideModifier"}
-		
+
 		"abstract" -> LocalModifier {"AbstractModifier"}
 		"final"    -> LocalModifier {"FinalModifier"}
 		"sealed"   -> LocalModifier {"SealedModifier"}
 		"implicit" -> LocalModifier {"ImplicitModifier"}
 		"lazy"     -> LocalModifier {"LazyModifier"}
-		
+
 		"private" AccessQualifier?   -> AccessModifier {"PrivateModifier"}
 		"protected" AccessQualifier? -> AccessModifier {"ProtectedModifier"}
-		
+
 		"[" Id "]"     -> AccessQualifier {"AccessQualifier"}
 		"[" "this" "]" -> AccessQualifier {"ThisQualifier"}
-		

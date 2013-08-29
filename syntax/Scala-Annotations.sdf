@@ -1,6 +1,7 @@
 module Scala-Annotations
 
 imports
+	Scala-Expressions
 	Scala-Types
 
 exports

@@ -2,10 +2,10 @@
 module Scala-TopLevelDefinitions
 
 imports
+	Scala-BasicDeclsDefs
+	Scala-ClassesObjects
 	Scala-Identifiers
-	Scala-Imports
 	Scala-Whitespace
-	Scala-Templates
 
 exports	
 	context-free syntax

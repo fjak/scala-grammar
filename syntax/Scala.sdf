@@ -2,20 +2,17 @@ module Scala
 
 imports
 	Scala-Annotations
-	Scala-BasicDeclarations
-	Scala-Definitions
+	Scala-BasicDeclsDefs
+	Scala-ClassesObjects
 	Scala-Expressions
 	Scala-Identifiers
-	Scala-Imports
 	Scala-Literals
 	Scala-Modifiers
-	Scala-Paths
 	Scala-PatternMatching
-	Scala-Templates
 	Scala-TopLevelDefinitions
 	Scala-Types
 	Scala-Whitespace
-	
+
 exports
 	context-free start-symbols
 		CompilationUnit Annotation Block Expr NoLExpr Type StableId Path Import TemplateBody TemplateStat TypeParamClause Id

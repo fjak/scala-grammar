@@ -2,7 +2,6 @@ module Scala-Literals
 
 imports
 	Scala-Identifiers
-	Scala-Expressions
 
 exports
 	lexical syntax
