@@ -1,0 +1,14 @@
+language Scala
+start symbol CompilationUnit
+
+test only implicit parameters [[
+	class C (implicit i: Int)
+]]
+
+test many parameter lists with last implicit [[
+	class C (i: Int)(implicit x: Foo)
+]]
+
+test implicit / non-implicit ambiguity [[
+	class BufferedSource(inputStream: InputStream, bufferSize: Int)(implicit val codec: Codec) extends Source
+]]
