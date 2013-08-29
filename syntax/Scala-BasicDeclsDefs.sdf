@@ -60,11 +60,9 @@ exports
 		FunSig "{" Block "}"                           -> FunDef {"BlockFunDef", layout("2.first.line - 1.last.line < num(2)")}
 		FunSig "=" "macro" StableId TypeArgs?          -> FunDef {"MacroFunDef"}
 		FunSig ":" Type "=" "macro" StableId TypeArgs? -> FunDef {"TypedMacroFunDef"}
-		"this" ParamClause ParamClauses "=" ConstrExpr -> FunDef {"ThisExprFunDef"}
-		"this" ParamClause ParamClauses ConstrBlock    -> FunDef {"ThisBlockFunDef", layout("4.first.line - 3.last.line < num(2)")}
 
-		ConstructorName ImplicitParamClauses                 -> FunSig {"FunSig"}
-		ConstructorName TypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
+		Id ImplicitParamClauses                 -> FunSig {"FunSig"}
+		Id TypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
 
 		{Param ","}+ -> Params {"Params"}
 
@@ -74,9 +72,6 @@ exports
 		Type      -> ParamType
 		"=>" Type -> ParamType {"ByNameParam"}
 		Type "*"  -> ParamType {"RepeatedParam"}
-
-		"this" -> ConstructorName {"ConstructorName"}
-		Id     -> ConstructorName
 
 		ParamClauses? ImplicitParams? -> ImplicitParamClauses {"ImplicitParamClauses", layout("2.first.line - 1.last.line < num(2)")}
 

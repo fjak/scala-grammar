@@ -7,7 +7,6 @@ imports
 	Scala-Expressions
 	Scala-Identifiers
 	Scala-Literals
-	Scala-Modifiers
 	Scala-PatternMatching
 	Scala-TopLevelDefinitions
 	Scala-Types

@@ -1,3 +1,4 @@
+%% §5 Classes and Objects
 module Scala-ClassesObjects
 
 imports
@@ -9,84 +10,100 @@ imports
 
 exports
 	context-free syntax
-		"class" ClassDef          -> TmplDef {"Class"}
-		"case" "class" ClassDef   -> TmplDef {"CaseClass"}
-		"case" "object" ObjectDef -> TmplDef {"CaseObject"}
-		"object" ObjectDef        -> TmplDef {"Object"}
-		"trait" TraitDef          -> TmplDef {"Trait"}
-		
-		Id TypeParamClause? ConstrAnnotation* AccessModifier? ClassParamClauses ClassTemplateOpt -> ClassDef {"ClassDef"}
-		
-		Id ClassTemplateOpt -> ObjectDef {"ObjectDef"}
-		
+		%% §5.1 – Templates
+		EarlyDefs? ClassParents TemplateBody? -> ClassTemplate {"ClassTemplate"}
+		EarlyDefs? TraitParents TemplateBody? -> TraitTemplate {"TraitTemplate"}
+
+		Constr WithAnnotType*    -> ClassParents {"ClassParents"}
+		AnnotType WithAnnotType* -> TraitParents {"TraitParents"}
+
+		"with" AnnotType         -> WithAnnotType {"WithAnnotType"}
+
+		Id (":" Type)? "=>"  -> SelfType {"SelfType"}
+		"this" ":" Type "=>" -> SelfType {"ThisSelfType"}
+
+		%% TODO: Nl
+		Nl? "{" SelfType? TemplateStatSemi* "}" -> TemplateBody {"TemplateBody"}
+
+		%% §5.1.1 – Constructor Invocations
+		AnnotType ArgumentExprsSeq? -> Constr {"Constr"}
+
+		%% §5.1.6 – Early Definitions
 		"{" EarlyDefSemi* "}" "with" -> EarlyDefs {"EarlyDefs"}
-		
+
 		EarlyDef SEMI -> EarlyDefSemi {"EarlyDefSemi"}
 		EarlyDef EOL  -> EarlyDefSemi {"EarlyDefSemi", enforce-newline, prefer}
 		EarlyDef EOB  -> EarlyDefSemi {"EarlyDefSemi", avoid}
-		
-		AnnotationSeq? Modifier* PatVarDef -> EarlyDef {"EarlyDef"}
-		
-		Id TypeParamClause? TraitTemplateOpt -> TraitDef {"TraitDef"}
-		
-		
-		SelfInvocation -> ConstrExpr
-		ConstrBlock    -> ConstrExpr
-		
-		"{" SelfInvocation SEMI BlockStatSemi? "}" -> ConstrBlock {"SemiConstrBlock"}
-		"{" SelfInvocation BlockStatSemi? "}"      -> ConstrBlock {"ConstrBlock", layout("3.first.line > 2.last.line")}
 
-		"this" ArgumentExprsSeq -> SelfInvocation {"SelfInvocation"}
-			
-		%% TODO: Nl
-		Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
-		
+		AnnotationSeq? Modifier* PatVarDef -> EarlyDef {"EarlyDef"}
+
+
+		%% §5.2 – Modifiers
+		LocalModifier  -> Modifier
+		AccessModifier -> Modifier
+		"override"     -> Modifier {"OverrideModifier"}
+
+		"abstract" -> LocalModifier {"AbstractModifier"}
+		"final"    -> LocalModifier {"FinalModifier"}
+		"sealed"   -> LocalModifier {"SealedModifier"}
+		"implicit" -> LocalModifier {"ImplicitModifier"}
+		"lazy"     -> LocalModifier {"LazyModifier"}
+
+		"private" AccessQualifier?   -> AccessModifier {"PrivateModifier"}
+		"protected" AccessQualifier? -> AccessModifier {"ProtectedModifier"}
+
+		"[" Id "]"     -> AccessQualifier {"AccessQualifier"}
+		"[" "this" "]" -> AccessQualifier {"ThisQualifier"}
+
+
+		%% §5.3 – Class Definitions
+		"class" ClassDef -> TmplDef {"Class"}
+
+		Id TypeParamClause? ConstrAnnotation* AccessModifier? ClassParamClauses ClassTemplateOpt -> ClassDef {"ClassDef"}
+
 		ClassParamClause*                                      -> ClassParamClauses {"ClassParamClauses"}
 		ClassParamClause* "(" "implicit" {ClassParam ","}+ ")" -> ClassParamClauses {"ImplicitClassParamClauses", layout("2.first.line - 1.last.line < num(2)")}
-		
+
+		%% TODO: Nl
+		Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
+
 		Annotation* Id ":" ParamType Assignment?                 -> ClassParam {"ClassParam"}
 		Annotation* Modifier* "val" Id ":" ParamType Assignment? -> ClassParam {"ValClassParam"}
 		Annotation* Modifier* "var" Id ":" ParamType Assignment? -> ClassParam {"VarClassParam"}
-		
-		EarlyDefs? ClassParents TemplateBody? -> ClassTemplate {"ClassTemplate"}
-		
+
 		"extends" ClassTemplate -> ClassTemplateOpt {"ClassClassTemplateOpt"}
 		"extends" TemplateBody  -> ClassTemplateOpt {"TemplateClassTemplateOpt"}
 		TemplateBody            -> ClassTemplateOpt
 		                        -> ClassTemplateOpt {"EmptyClassTemplateOpt"}
-		%% TODO Nl              
-		Nl? "{" SelfType? TemplateStatSemi* "}" -> TemplateBody {"TemplateBody"}
-		
-		%% TemplateStat                        -> TemplateStatSemis {"LastTemplateStat", prefer}
-		%% TemplateStat ";" TemplateStatSemis  -> TemplateStatSemis {"SemiTemplateStatSemis"}
-		%% TemplateStat TemplateStatSemis      -> TemplateStatSemis {"TemplateStatSemis", layout("1.last.line < 2.first.line"), prefer}
-		%% TemplateStat Expr TemplateStatSemis -> TemplateStatSemis {"MuchExprTemplateStatSemis", layout("1.last.line < 2.first.line && 2.last.line < 3.first.line")}
-		%% TemplateStat Expr                   -> TemplateStatSemis {"LastExprTemplateStat", layout("1.last.line < 2.first.line")}
 
-		SEMI              -> TemplateStatSemi
-		TemplateStat SEMI -> TemplateStatSemi {"TemplateStatSemi", longest-match}
-		TemplateStat EOL  -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, longest-match, prefer}
-		TemplateStat EOB  -> TemplateStatSemi {"TemplateStatSemi", avoid}
-		
-		AnnotationSeq? Modifier* Def -> TemplateStat {"DefTemplateStat"}
-		AnnotationSeq? Modifier* Dcl -> TemplateStat {"DclTemplateStat"}
-		Import                       -> TemplateStat {"ImportTemplateStat"}
-		Expr                         -> TemplateStat {"ExprTemplateStat"}
-		
-		Id (":" Type)? "=>"  -> SelfType {"SelfType"}
-		"this" ":" Type "=>" -> SelfType {"ThisSelfType"}
-		
-		Constr WithAnnotType* -> ClassParents {"ClassParents"}
-		
-		AnnotType ArgumentExprsSeq? -> Constr {"Constr"}
-		
-		AnnotType WithAnnotType* -> TraitParents {"TraitParents"}
-		
-		"with" AnnotType -> WithAnnotType {"WithAnnotType"}
-		
+
+		%% §5.3.1 – Constructor Definitions
+		"this" ParamClause ParamClauses "=" ConstrExpr -> FunDef {"ThisExprFunDef"}
+		"this" ParamClause ParamClauses ConstrBlock    -> FunDef {"ThisBlockFunDef", layout("4.first.line - 3.last.line < num(2)")}
+
+		"this" ArgumentExprsSeq -> SelfInvocation {"SelfInvocation"}
+
+		SelfInvocation -> ConstrExpr
+		ConstrBlock    -> ConstrExpr
+
+		"{" SelfInvocation ";" BlockStatSemi* "}"  -> ConstrBlock {"ConstrBlock"}
+		"{" SelfInvocation BlockStatSemi* "}"      -> ConstrBlock {"ConstrBlock", layout("3.first.line - 2.last.line > num(0)")}
+
+		%% §5.3.2 – Case Classes
+		"case" "class" ClassDef   -> TmplDef {"CaseClass"}
+
+		%% §5.3.3 – Traits
+		"trait" TraitDef -> TmplDef {"Trait"}
+
+		Id TypeParamClause? TraitTemplateOpt -> TraitDef {"TraitDef"}
+
 		"extends" TraitTemplate -> TraitTemplateOpt {"TraitTraitTemplateOpt"}
 		"extends" TemplateBody  -> TraitTemplateOpt {"TemplateTraitTemplateOpt"}
 		TemplateBody            -> TraitTemplateOpt
 		                        -> TraitTemplateOpt {"EmptyTraitTemplateOpt"}
-		
-		EarlyDefs? TraitParents TemplateBody? -> TraitTemplate {"TraitTemplate"}
+
+		%% §5.4 – Object Definitions
+		"case" "object" ObjectDef -> TmplDef {"CaseObject"}
+		"object" ObjectDef        -> TmplDef {"Object"}
+
+		Id ClassTemplateOpt -> ObjectDef {"ObjectDef"}

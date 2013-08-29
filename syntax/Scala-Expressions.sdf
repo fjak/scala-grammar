@@ -5,7 +5,6 @@ imports
 	Scala-BasicDeclsDefs
 	Scala-ClassesObjects
 	Scala-Literals
-	Scala-Modifiers
 	Scala-PatternMatching
 	Scala-Types
 	Scala-Whitespace
@@ -211,7 +210,16 @@ exports
 		Annotation* "implicit" Def         -> BlockStat {"ImplicitDefBlockStat"}
 		Annotation* "lazy" Def             -> BlockStat {"LazyDefBlockStat"}
 
-			
+		SEMI              -> TemplateStatSemi
+		TemplateStat SEMI -> TemplateStatSemi {"TemplateStatSemi", longest-match}
+		TemplateStat EOL  -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, longest-match, prefer}
+		TemplateStat EOB  -> TemplateStatSemi {"TemplateStatSemi", avoid}
+
+		AnnotationSeq? Modifier* Def -> TemplateStat {"DefTemplateStat"}
+		AnnotationSeq? Modifier* Dcl -> TemplateStat {"DclTemplateStat"}
+		Import                       -> TemplateStat {"ImportTemplateStat"}
+		Expr                         -> TemplateStat {"ExprTemplateStat"}
+
 		Id (":" Type)?  -> Binding {"Binding"}
 		"_" (":" Type)? -> Binding {"WildCardBinding"}
 		
