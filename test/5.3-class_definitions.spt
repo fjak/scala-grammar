@@ -1,0 +1,91 @@
+language scala
+start symbol TmplDef
+
+test simplest class [[
+	class C
+]]
+
+test polymorphic class [[
+	class C[T]
+]]
+
+test class with primary constructor [[
+	class C[T](i: Int)
+]]
+
+test class with annotated primary constructor [[
+	class Foo[Type] @deprecated("do not use!", "1.1") (i: Int)
+]]
+
+test class with access modified primary constructor [[
+	class Foo[Type] private (i: Int)
+]]
+
+test class with annotated implicit primary constructor [[
+	class C @annot
+]]
+
+test class with access modified implicit primary constructor [[
+	class C protected
+]]
+
+test long class definition [[
+	class Foo[Type] @SerialVersionUID(1L) @deprecated("do not use!", "1.1") private (i: Int) extends { val v = 42 } with Bar(3) with Baz {}
+]]
+
+
+// layout tests
+
+test two param lists on same line class [[
+	class C(i: Int)(c: Char)
+]]
+
+test two param lists on different lines [[
+	class C
+	  (i: Int)
+	  (c: Char)
+]]
+
+test type parameter no layout [[
+	class C
+
+	[T]
+	(i: Char)
+]]
+
+test invalid layout class definition [[
+	class C
+	
+	(i: Int)
+]] parse fails
+
+test invalid layout class definition 2 [[
+	class C
+	  (i: Int)
+	  
+	  (x: Foo)
+]] parse fails
+
+test extends no layout [[
+	class C
+	
+	extends
+	
+	Bar
+]]
+
+test TemplateBody layout fail [[
+	class C
+	
+	{}
+]] parse fails
+
+test long class definition layout fail [[
+	class Foo[Type] @SerialVersionUID(1L)
+	@deprecated("do not use!", "1.1") private (i: Int) extends { val v = 42 } with Bar(3) with Baz {}
+]] parse fails
+
+test long class definition layout fail 2 [[
+	class Foo[Type] @SerialVersionUID(1L) @deprecated("do not use!", "1.1")
+	  private (i: Int) extends { val v = 42 } with Bar(3) with Baz {}
+]] parse fails

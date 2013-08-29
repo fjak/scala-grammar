@@ -59,13 +59,16 @@ exports
 		%% §5.3 – Class Definitions
 		"class" ClassDef -> TmplDef {"Class"}
 
-		Id TypeParamClause? ConstrAnnotation* AccessModifier? ClassParamClauses ClassTemplateOpt -> ClassDef {"ClassDef"}
+		Morphism ConstrAnnotation* AccessModifier? ClassParamClauses? ClassTemplateOpt -> ClassDef {"ClassDef", layout("4.first.line - 1.last.line < num(2)")}
 
-		ClassParamClause*                                      -> ClassParamClauses {"ClassParamClauses"}
-		ClassParamClause* "(" "implicit" {ClassParam ","}+ ")" -> ClassParamClauses {"ImplicitClassParamClauses", layout("2.first.line - 1.last.line < num(2)")}
+		Id                  -> Morphism
+		Id TypeParamClause  -> Morphism {"Polymorph"}
 
-		%% TODO: Nl
-		Nl? "(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
+		ClassParamClause                                       -> ClassParamClauses
+		"(" "implicit" {ClassParam ","}+ ")"                   -> ClassParamClauses {"ImplicitClassParamClause"}
+		ClassParamClause ClassParamClauses                     -> ClassParamClauses {"ClassParamClauses", layout("2.first.line - 1.last.line < num(2)")}
+
+		"(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
 
 		Annotation* Id ":" ParamType Assignment?                 -> ClassParam {"ClassParam"}
 		Annotation* Modifier* "val" Id ":" ParamType Assignment? -> ClassParam {"ValClassParam"}
