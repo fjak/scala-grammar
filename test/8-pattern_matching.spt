@@ -78,3 +78,10 @@ test literal -1 matching [[
 		case -1 =>
 	}
 ]]
+
+test no layout guards [[
+	v match {
+		case a if p()
+			&& p2() => f()
+	}
+]]

@@ -164,7 +164,7 @@ exports
 		Pattern1 "<-" Expr Guard?       -> Generator {"Generator"}
 		"val" Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
 
-		"if" Expr -> Guard {"Guard"}
+		"if" NoLExpr -> Guard {"Guard"}
 
 		Enumerator SEMI -> EnumeratorSemi {"EnumeratorSemi", longest-match}
 		Enumerator EOL  -> EnumeratorSemi {"EnumeratorSemi", enforce-newline, longest-match, prefer}
