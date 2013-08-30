@@ -73,6 +73,14 @@ test Float5 [[
 	.1
 ]] parse to Float(_)
 
+test Float6 [[
+	1.2e-10f
+]] parse to Float(_)
+
+test Float7 [[
+	-2.1e+100d
+]] parse to Float(_)
+
 test boolean true [[
 	true
 ]] parse to True()

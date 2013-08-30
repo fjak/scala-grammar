@@ -78,6 +78,7 @@ exports
 
 	lexical restrictions
 		IntegerLiteral -/- [0-9a-zA-Z]
+		FloatingPointLiteral -/- [0-9a-zA-Z]
 		Literal -/- [0-9a-zA-Z]
 		"true" -/- [a-zA-Z0-9]
 		"false" -/- [a-zA-Z0-9]
