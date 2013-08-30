@@ -48,3 +48,10 @@ test [[
 		this(false) println("Hello")
 	}
 ]] parse fails
+
+test [[
+	def this(sz: Int) = this {
+		require(sz >= 0)
+		new ArraySeq[T](sz)
+	}
+]]
