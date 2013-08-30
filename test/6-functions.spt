@@ -41,3 +41,10 @@ test block function with one parameter (special notation) [[
 	  x
 	}
 ]]
+
+test [[
+	{ _ =>
+		val res = f()
+		res
+	}
+]]

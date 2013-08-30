@@ -192,9 +192,8 @@ exports
 
 		Bindings "=>" Block                       -> ResultExpr {"BindingsResultExpr"}
 		"implicit" Id ":" CompoundType "=>" Block -> ResultExpr {"ImplicitResultExpr"}
-		Id ":" CompoundType "=>" Block            -> ResultExpr {"SimpleResultExpr"}
-		"_" ":" CompoundType "=>" Block           -> ResultExpr {"WildcardResultExpr"}
-		Id "=>" Block                             -> ResultExpr {"SpecialOneArgResultExpr"}
+		Id (":" CompoundType)? "=>" Block         -> ResultExpr {"SimpleResultExpr"}
+		"_" (":" CompoundType)? "=>" Block        -> ResultExpr {"WildcardResultExpr"}
 
 		BlockStat EOL   -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
 		BlockStat EOB   -> BlockStatSemi {"BlockStatSemi", avoid}
