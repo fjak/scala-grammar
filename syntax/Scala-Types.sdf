@@ -94,7 +94,7 @@ exports
 		"type" TypeDcl -> ExistentialDcl {"ExistentialType"}
 		"val"  ValDcl  -> ExistentialDcl {"ExistentialVal"}
 		
-		"_" TypeBounds?     -> SimpleType {"WildcardType"}
+		"_" TypeBounds?     -> SimpleType {"WildcardType", avoid}
 
 		">:" Type           -> TypeBounds {"LowerTypeBound"}
 		"<:" Type           -> TypeBounds {"UpperTypeBound"}

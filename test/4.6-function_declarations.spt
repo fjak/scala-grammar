@@ -56,6 +56,6 @@ test param clauses layout [[
 	(k: Int)
 ]] parse fails
 
-test [[
+test avoid wildcard type [[
 	def drainTasksTo(c: Collection[ _ >: ForkJoinTask[_]])
 ]]
