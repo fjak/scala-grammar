@@ -11,33 +11,33 @@ exports
 
 	context-free priorities
 		{
-			"_"                                                   -> SimplePattern {"WildcardPattern"}
-			%% VarId                                                 -> SimplePattern {"VariablePattern"}
-			Literal                                               -> SimplePattern {"LiteralPattern"}
-			StableId                                              -> SimplePattern
-			StableId "(" Patterns ")"                             -> SimplePattern {"ConstructorPattern"}
-			"(" Patterns ")"                                      -> SimplePattern {"TuplePattern"}
+			"_"                                                        -> SimplePattern {"WildcardPattern"}
+			%% VarId                                                      -> SimplePattern {"VariablePattern"}
+			Literal                                                    -> SimplePattern {"LiteralPattern"}
+			StableId                                                   -> SimplePattern
+			StableId "(" Patterns ")"                                  -> SimplePattern {"ConstructorPattern"}
+			"(" Patterns ")"                                           -> SimplePattern {"TuplePattern"}
 			StableId "(" (Patterns ",")? (VarPlainId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
 		}
 		
 		> {
 			Pattern3 InfixPatternOp Pattern3 -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			SimplePattern -> Pattern3
+			SimplePattern                    -> Pattern3
 		}
 		
 		> {
 			VarPlainId "@" Pattern3 -> Pattern2 {"PatternBinder"}
-			Pattern3           -> Pattern2
+			Pattern3                -> Pattern2
 		}
 		
 		> {
 			VarPlainId ":" Type -> Pattern1 {"TypedPattern"}
-			"_" ":" Type   -> Pattern1 {"WildcardTypedPattern"}
-			Pattern2       -> Pattern1
+			"_" ":" Type        -> Pattern1 {"WildcardTypedPattern"}
+			Pattern2            -> Pattern1
 		}
 		
 		> {
-			Pattern1 -> Pattern
+			Pattern1            -> Pattern {longest-match}
 			Pattern "|" Pattern -> Pattern {"DisjunctPattern", left}
 		}
 	

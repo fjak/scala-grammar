@@ -15,4 +15,4 @@ imports
 
 exports
 	context-free start-symbols
-		Annotation Block CompilationUnit Def Dcl Expr Id Import NoLExpr Path StableId TemplateBody TemplateStat TmplDef Type TypeParamClause
+		Annotation Block CompilationUnit Def Dcl Expr Id Import NoLExpr Path Pattern StableId TemplateBody TemplateStat TmplDef Type TypeParamClause

@@ -1,0 +1,6 @@
+language Scala
+start symbol Pattern
+
+test [[
+	_: Import | _: ClassDef | _: TypeDef | EmptyTree
+]]
