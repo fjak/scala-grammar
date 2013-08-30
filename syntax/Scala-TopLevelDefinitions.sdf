@@ -13,8 +13,8 @@ exports
 
 		TopStat SEMI -> TopStatSemi {"TopStatSemi"}
 		TopStat EOL  -> TopStatSemi {"TopStatSemi", enforce-newline, longest-match, prefer}
-		TopStat EOF  -> TopStatSemi {"TopStatSemi"}
-		TopStat EOB  -> TopStatSemi {"TopStatSemi", avoid}
+		TopStat EOF  -> TopStatSemi {"TopStatSemi", longest-match}
+		TopStat EOB  -> TopStatSemi {"TopStatSemi", longest-match, avoid}
 		
 		AnnotationSeq? Modifier* TmplDef -> TopStat {"TopTmplDef"}
 		Import                           -> TopStat

@@ -89,3 +89,11 @@ test [[
 	  if (c) t
 	  else f
 ]] parse to IfExpr(_, _)
+
+
+test [[
+	{
+		val v = 42
+		t &&
+			t}
+]]

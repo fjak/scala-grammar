@@ -196,7 +196,7 @@ exports
 		"_" (":" CompoundType)? "=>" Block        -> ResultExpr {"WildcardResultExpr"}
 
 		BlockStat EOL   -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
-		BlockStat EOB   -> BlockStatSemi {"BlockStatSemi", avoid}
+		BlockStat EOB   -> BlockStatSemi {"BlockStatSemi", longest-match, avoid}
 		BlockStat SEMI  -> BlockStatSemi {"BlockStatSemi", longest-match}
 		SEMI            -> BlockStatSemi
 
@@ -210,7 +210,7 @@ exports
 		SEMI              -> TemplateStatSemi
 		TemplateStat SEMI -> TemplateStatSemi {"TemplateStatSemi", longest-match}
 		TemplateStat EOL  -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, longest-match, prefer}
-		TemplateStat EOB  -> TemplateStatSemi {"TemplateStatSemi", avoid}
+		TemplateStat EOB  -> TemplateStatSemi {"TemplateStatSemi", longest-match, avoid}
 
 		AnnotationSeq? Modifier* Def -> TemplateStat {"DefTemplateStat"}
 		AnnotationSeq? Modifier* Dcl -> TemplateStat {"DclTemplateStat"}
