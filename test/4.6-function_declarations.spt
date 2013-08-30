@@ -1,10 +1,61 @@
 language Scala
-start symbol TemplateStat
+start symbol Dcl
 
-test procedure declaration [[
+test simplest declaration [[
+	def f
+]]
+
+test empty parameter list declaration [[
 	def f()
 ]]
 
-test procedure definition [[
-	def f() {}
+test type-paramed declaration [[
+	def f[A]
+]]
+
+test empty parameter list type-paramed declaration [[
+	def f[A]()
+]]
+
+test map declaration [[
+	def map[A](l: List[A])(f: A => B): List[B]
+]]
+
+test annotated function type params [[
+	def f[@specialized(Unit) U]
+]]
+
+test implicit param clause last [[
+	def f(implicit i: Int)(j: Int)
+]] parse fails
+
+test no val/var for parameters [[
+	def f(val i: Int)
+]] parse fails
+
+test no implicit in between [[
+	def f(i: Int, implicit val j: Int)
+]] parse fails
+
+test multi line param clauses [[
+	def f
+	(i: Int)
+	(j: Int)
+]]
+
+test two lines after function name fail [[
+	def f
+
+	(i: Int)
+]] parse fails
+
+test param clauses layout [[
+	def f(i: Int)
+	(j: Int)
+
+	(k: Int)
+]] parse fails
+
+test [[
+	def drainTasksTo(c: Collection[ _ >: ForkJoinTask[_]])
 ]]

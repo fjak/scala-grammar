@@ -1,0 +1,50 @@
+language Scala
+start symbol Def
+
+test [[
+	def this() = this(42)
+]]
+
+test [[
+	def this(d: Boolean, f: Boolean) {
+		this(ThreadPoolConfig.corePoolSize, ThreadPoolConfig.maxPoolSize, d, f)
+	}
+]]
+
+test [[
+	def this(d: Boolean) {
+		this(d, true) // default is fair
+	}
+]]
+
+test [[
+	def this() {
+   		this(false) // default is non-daemon
+	}
+]]
+
+test [[
+	def this() {
+		this(false)
+		println("Hello")
+	}
+]]
+
+test [[
+	def this() {
+		this(false) ; println("Hello")
+	}
+]]
+
+test [[
+	def this() {
+		this(false);
+		println("Hello")
+	}
+]]
+
+test [[
+	def this() {
+		this(false) println("Hello")
+	}
+]] parse fails

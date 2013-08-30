@@ -50,42 +50,30 @@ exports
 
 
 		%% §4.6 – Function Declarations and Definitions
-		"def" FunDcl    -> Dcl {"DefDclDcl"}
-		FunSig          -> FunDcl {"ProcDcl"}
-		FunSig ":" Type -> FunDcl {"FunDcl"}
-		"def" FunDef    -> Def {"FunDefDef"}
+		"def" FunDcl                         -> Dcl {"FunDclDcl"}
+		FunSig ":" Type                      -> FunDcl {"FunDcl"}
+		"def" FunDef                         -> Def {"FunDefDef"}
+		FunSig (":" Type)? "=" Expr          -> FunDef {"FunDef"}
+		Id TypeParamClause? ParamClauses?    -> FunSig {"FunSig", layout("3.first.line - 1.last.line < num(2)")}
+		%% Annotations are allowed for function type parameters according to scalac v2.10.0*,
+		%% so TypeParamClause is used here instead of FunTypeParamClause
+		%% "[" {TypeParam ","}+ "]"             -> FunTypeParamClause {"FunTypeParamClause"}
 
-		FunSig "=" Expr                                -> FunDef {"ShortFunDef"}
-		FunSig ":" Type "=" Expr                       -> FunDef {"FunDef"}
-		FunSig "{" Block "}"                           -> FunDef {"BlockFunDef", layout("2.first.line - 1.last.line < num(2)")}
-		FunSig "=" "macro" StableId TypeArgs?          -> FunDef {"MacroFunDef"}
-		FunSig ":" Type "=" "macro" StableId TypeArgs? -> FunDef {"TypedMacroFunDef"}
+		ParamClause                     -> ParamClauses
+		"(" "implicit" {Param ","}+ ")" -> ParamClauses {"ImplicitParamClause"}
+		ParamClause ParamClauses        -> ParamClauses {"ParamClauses", layout("2.first.line - 1.last.line < num(2)")}
 
-		FunName ImplicitParamClauses                 -> FunSig {"FunSig"}
-		FunName TypeParamClause ImplicitParamClauses -> FunSig {"FunWithTypeParamsSig"}
+		"(" {Param ","}* ")" -> ParamClause {"ParamClause"}
 
-		%% TODO: investigate
-		"this" -> FunName {"ConstrName"}
-		Id     -> FunName
-
-		{Param ","}+ -> Params {"Params"}
-
-		Annotation* Id (":" ParamType)?          -> Param {"Param"}
-		Annotation* Id (":" ParamType)? "=" Expr -> Param {"ParamWithDefVal"}
+		Annotation* Id (":" ParamType)? ("=" Expr)? -> Param {"Param"}
 
 		Type      -> ParamType
 		"=>" Type -> ParamType {"ByNameParam"}
 		Type "*"  -> ParamType {"RepeatedParam"}
 
-		ParamClauses? ImplicitParams? -> ImplicitParamClauses {"ImplicitParamClauses", layout("2.first.line - 1.last.line < num(2)")}
-
-		"(" "implicit" Params ")" -> ImplicitParams {"ImplicitParams"}
-
-		ParamClause              -> ParamClauses {"SingleParamClauses"}
-		ParamClause ParamClauses -> ParamClauses {"ParamClauses", layout("2.first.line - 1.last.line < num(2)")}
-
-		"(" Params? ")" -> ParamClause {"ParamClause"}
-
+		%% §4.6.3 – Procedures
+		FunSig               -> FunDcl {"ProcDcl"}
+		FunSig "{" Block "}" -> FunDef {"ProcDef", layout("2.first.line - 1.last.line < num(2)")}
 
 		%% §4.7 – Import Clauses
 		"import" {ImportExpr ","}+ -> Import{"Import"}

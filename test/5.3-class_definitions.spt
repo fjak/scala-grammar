@@ -33,6 +33,22 @@ test long class definition [[
 	class Foo[Type] @SerialVersionUID(1L) @deprecated("do not use!", "1.1") private (i: Int) extends { val v = 42 } with Bar(3) with Baz {}
 ]]
 
+test simple class constructor [[
+	class C(i: Int, s: String)
+]]
+
+test val / var class constructor [[
+	class C(val i: Int, var s: String)
+]]
+
+test default parameter class constructor [[
+	class C(i: Int = 42)
+]]
+
+test multiple param lists class constructor [[
+	class C(i: Int)(s: String)
+]]
+
 
 // layout tests
 

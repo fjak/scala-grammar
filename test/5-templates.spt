@@ -77,8 +77,20 @@ test [[
 }
 ]]
 
-test annotated function type params [[
+test id self type [[
 {
-	def f[@specialized(Unit) U] = foo
+	foo => bar
+}
+]] parse to SelfTypeTemplateBody(_, _, _)
+
+test this self type [[
+{
+	this: Type =>
 }
 ]]
+
+test wildcard self type [[
+{
+	_: Type =>
+}
+]] parse to SelfTypeTemplateBody(_, _, _)

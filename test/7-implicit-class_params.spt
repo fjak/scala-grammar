@@ -2,13 +2,21 @@ language Scala
 start symbol CompilationUnit
 
 test only implicit parameters [[
-	class C (implicit i: Int)
+	class C(implicit i: Int)
 ]]
 
 test many parameter lists with last implicit [[
-	class C (i: Int)(implicit x: Foo)
+	class C(i: Int)(implicit x: Foo)
 ]]
 
 test implicit / non-implicit ambiguity [[
 	class BufferedSource(inputStream: InputStream, bufferSize: Int)(implicit val codec: Codec) extends Source
 ]]
+
+test intermediate implicit for constructor [[
+	class C(a: Int, implicit val b: Int)
+]]
+
+test implicit clause last [[
+	class C(implicit i: Int)(j: Int)
+]] parse fails

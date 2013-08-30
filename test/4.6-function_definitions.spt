@@ -1,0 +1,38 @@
+language Scala
+start symbol Def
+
+test simplest function definition [[
+	def f = 42
+]]
+
+test typed id function [[
+	def f[A](x: A) = x
+]]
+
+test untyped id function [[
+	def f(x: Any) = x
+]]
+
+test map definition [[
+	def map[A](l: List[A])(f: A => B) = l.map(f _)
+]]
+
+test procedure definition [[
+	def f() {}
+]]
+
+test no layout with no params and definition [[
+	def f
+	
+	=
+		
+	42
+]]
+
+test no layout with params and definition [[
+	def f(i: Int)
+	
+	=
+		
+	42
+]]

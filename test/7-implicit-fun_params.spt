@@ -1,0 +1,18 @@
+language Scala
+start symbol TemplateStat
+
+test [[
+	def f(implicit i: Int)
+]]
+
+test [[
+	def f(i: Int)(implicit j: Int)
+]]
+
+test [[
+	def f(i: Int, implicit j: Bar)
+]] parse fails
+
+test [[
+	def f(implicit i: Int)(j: Int)
+]] parse fails

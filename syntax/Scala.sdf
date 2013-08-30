@@ -7,6 +7,7 @@ imports
 	Scala-Expressions
 	Scala-Identifiers
 	Scala-Literals
+	Scala-Macros
 	Scala-PatternMatching
 	Scala-TopLevelDefinitions
 	Scala-Types
@@ -14,4 +15,4 @@ imports
 
 exports
 	context-free start-symbols
-		Annotation Block CompilationUnit Expr Id Import NoLExpr Path StableId TemplateBody TemplateStat TmplDef Type TypeParamClause
+		Annotation Block CompilationUnit Def Dcl Expr Id Import NoLExpr Path StableId TemplateBody TemplateStat TmplDef Type TypeParamClause

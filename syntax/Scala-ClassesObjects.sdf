@@ -21,9 +21,11 @@ exports
 
 		Id (":" Type)? "=>"  -> SelfType {"SelfType"}
 		"this" ":" Type "=>" -> SelfType {"ThisSelfType"}
+		"_" ":" Type "=>"    -> SelfType {"WildcardSelfType"}
 
 		%% TODO: Nl
-		Nl? "{" SelfType? TemplateStatSemi* "}" -> TemplateBody {"TemplateBody"}
+		Nl? "{" SelfType TemplateStatSemi* "}" -> TemplateBody {"SelfTypeTemplateBody", prefer}
+		Nl? "{" TemplateStatSemi* "}"          -> TemplateBody {"TemplateBody"}
 
 		%% §5.1.1 – Constructor Invocations
 		AnnotType ArgumentExprsSeq? -> Constr {"Constr"}
@@ -65,7 +67,7 @@ exports
 		Id TypeParamClause  -> Morphism {"Polymorph"}
 
 		ClassParamClause                                       -> ClassParamClauses
-		"(" "implicit" {ClassParam ","}+ ")"                   -> ClassParamClauses {"ImplicitClassParamClause"}
+		"(" "implicit" {ClassParam ","}+ ")"                   -> ClassParamClauses {"ImplicitClassParamClause", prefer}
 		ClassParamClause ClassParamClauses                     -> ClassParamClauses {"ClassParamClauses", layout("2.first.line - 1.last.line < num(2)")}
 
 		"(" {ClassParam ","}* ")" -> ClassParamClause {"ClassParamClause"}
@@ -81,8 +83,8 @@ exports
 
 
 		%% §5.3.1 – Constructor Definitions
-		"this" ParamClause ParamClauses "=" ConstrExpr -> FunDef {"ThisExprFunDef"}
-		"this" ParamClause ParamClauses ConstrBlock    -> FunDef {"ThisBlockFunDef", layout("4.first.line - 3.last.line < num(2)")}
+		"this" ParamClauses "=" ConstrExpr -> FunDef {"ThisExprFunDef"}
+		"this" ParamClauses ConstrBlock    -> FunDef {"ThisBlockFunDef", layout("3.first.line - 2.last.line < num(2)")}
 
 		"this" ArgumentExprsSeq -> SelfInvocation {"SelfInvocation"}
 
@@ -90,7 +92,8 @@ exports
 		ConstrBlock    -> ConstrExpr
 
 		"{" SelfInvocation ";" BlockStatSemi* "}"  -> ConstrBlock {"ConstrBlock"}
-		"{" SelfInvocation BlockStatSemi* "}"      -> ConstrBlock {"ConstrBlock", layout("3.first.line - 2.last.line > num(0)")}
+		"{" SelfInvocation "}"                     -> ConstrBlock {"ConstrBlock"}
+		"{" SelfInvocation BlockStatSemi+ "}"      -> ConstrBlock {"ConstrBlock", layout("3.first.line - 2.last.line > num(0)")}
 
 		%% §5.3.2 – Case Classes
 		"case" "class" ClassDef   -> TmplDef {"CaseClass"}
