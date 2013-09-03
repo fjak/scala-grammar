@@ -9,6 +9,7 @@ imports
 
 exports	
 	context-free syntax
+		-> CompilationUnit {"EmptyCompilationUnit"}
 		PackageDeclarationSemi* TopStatSemi+ -> CompilationUnit {"CompilationUnit"}
 
 		TopStat SEMI -> TopStatSemi {"TopStatSemi"}
