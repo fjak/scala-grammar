@@ -28,7 +28,7 @@ exports
 		Prefix -> Path {reject} %% not 100% sure this is correct
 
 	context-free restrictions
-		StableId -/- [\.] . [\33-\126] / [\{\,\`\_]
+		StableId -/- [\.] . [\33-\126] / [\{\,\_]
 
 	
 	%% §3.2 – Value Types

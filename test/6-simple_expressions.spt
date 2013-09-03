@@ -175,6 +175,14 @@ test stable id operator application [[
 	scala.collection.mutable.::()
 ]]
 
+test fqn fancy id class instantiation [[
+	new r.`@`
+]]
+
+test two element path class instantiation [[
+	new mutable.Map
+]]
+
 
 /* Blocks */
 test block [[
