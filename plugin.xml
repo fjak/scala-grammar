@@ -1,12 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-
 <plugin>
-       <extension point="org.eclipse.imp.runtime.languageDescription">
-          <language extensions="scala" description="Scala" language="Scala" derivedFrom="DynamicRoot" validator="de.fjak.spoofax.scala.ScalaValidator" validatorClass="de.fjak.spoofax.scala.ScalaValidator"></language>
-       </extension>
-       <extension id="de.fjak.spoofax.scala.parser" name="Scala Parser" point="org.eclipse.imp.runtime.parser">
-          <parser class="de.fjak.spoofax.scala.ScalaParseController" language="Scala">
-          </parser>
-       </extension>    
-    </plugin>
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="scala"
+            description="Scala"
+            language="Scala"
+            derivedFrom="DynamicRoot"
+            validator="de.fjak.spoofax.scala.ScalaValidator"
+            validatorClass="de.fjak.spoofax.scala.ScalaValidator"
+      ></language>
+   </extension>
+   <extension
+         id="de.fjak.spoofax.scala.parser"
+         name="Scala Parser"
+         point="org.eclipse.imp.runtime.parser">
+      <parser
+            class="de.fjak.spoofax.scala.ScalaParseController"
+            language="Scala">
+      </parser>
+   </extension>    
+</plugin>

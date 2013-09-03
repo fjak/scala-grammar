@@ -1,6 +1,6 @@
 module Scala.main
 
-imports Scala-Builders Scala-Refactorings Scala-Colorer Scala-Completions Scala-Folding Scala-Outliner Scala-References Scala-Syntax
+imports Scala-Builders Scala-Refactorings Scala-Colorer Scala-Completions Scala-Folding Scala-References Scala-Syntax
 
 language General properties
                   

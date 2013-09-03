@@ -1,20 +1,13 @@
 module names
 
 imports
-  lib/analysis-library.generated
-  lib/analysis-library-internal.generated
-  lib/index-library.generated
-
-imports
+  lib/runtime/nbl/-
+  lib/runtime/task/-
+  lib/runtime/types/-
+  lib/runtime/editor/-
   include/Scala
 
 
 signature
-  constructors
-    Type        : DefDataKind
-    Import      : DefDataKind
-    Transitive  : ImportAnno
-    CurrentFile : ImportAnno
-
   constructors
     

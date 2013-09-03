@@ -1,0 +1,11 @@
+module editor/Scala-Outliner
+
+imports
+  include/Scala
+  lib/runtime/editor/outline-library
+  lib/runtime/editor/origins
+  editor/Scala-Outliner.generated
+
+rules
+  
+  outline-expand-to-level = !3

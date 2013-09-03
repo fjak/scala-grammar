@@ -12,13 +12,15 @@ include/Scala.tbl
 include/scala.rtree
 include/scala.ctree
 include/scala.ctree.dep
+include/scala.jar
 include/scala-java.jar
 editor/java/trans
-editor/Scala-*.generated.esv
+editor/Scala-*.generated.*
 syntax/Scala*.generated.esv
-syntax/Scala*.generated.pp
+syntax/Scala.generated.pp
 .settings/org.eclipse.jdt.core.prefs
 utils
+lib/runtime
 lib/*.generated.str
 lib-refactoring/*.generated.str
 doc
