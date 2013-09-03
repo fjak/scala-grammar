@@ -61,10 +61,10 @@ exports
 			"if" "(" NoLExpr ")" Expr "else" Expr                                -> Expr {"IfElseExpr"}
 			"if" "(" NoLExpr ")" Expr ";" "else" Expr                            -> Expr {"IfElseExpr"}
 			"while" "(" NoLExpr ")" Expr                                         -> Expr {"WhileExpr"}
-			"try" Expr                                                           -> Expr {"TryExpr"}
+			"try" Expr                                                           -> Expr {"TryExpr", prefer}
 			"try" Expr "catch" Expr                                              -> Expr {"TryCatchExpr"}
 			"try" Expr "finally" Expr                                            -> Expr {"TryFinallyExpr"}
-			"try" Expr "catch" Expr "finally" Expr                               -> Expr {"TryCatchFinallyExpr"}
+			"try" Expr "catch" Expr "finally" Expr                               -> Expr {"TryCatchFinallyExpr", avoid}
 			"do" Expr ";" "while" "(" Expr ")"                                   -> Expr {"DoWhileExpr"}
 			"do" Expr "while" "(" Expr ")"                                       -> Expr {"DoWhileExpr"}
 			"for" "(" EnumeratorSemi+ ")" Expr                                   -> Expr {"ForExpr"}

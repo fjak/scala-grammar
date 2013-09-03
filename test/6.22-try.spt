@@ -40,3 +40,23 @@ test try catch {} finally [[
 test try catch finally [[
 	try foo() catch onInterrupt(()) finally cleanup()
 ]] parse to TryCatchFinallyExpr(_, _, _)
+
+test [[
+	try try try 10
+]] parse to TryExpr(TryExpr(TryExpr(_)))
+
+test [[
+	try try try 10 catch { case e => 20 } finally 30
+]] parse to TryExpr(TryExpr(TryCatchFinallyExpr(_, _, _)))
+
+test [[
+	try try try 10 catch { case e => 20 } finally 30 finally 40
+]] parse to TryExpr(TryFinallyExpr(TryCatchFinallyExpr(_, _, _), _))
+
+test [[
+	try try try 10 catch { case e => 20 } finally 30 finally 40 finally 50
+]] parse to TryFinallyExpr(TryFinallyExpr(TryCatchFinallyExpr(_, _, _), _), _)
+
+test [[
+	try try try 10 finally 50
+]] parse to TryExpr(TryExpr(TryFinallyExpr(_, _)))
