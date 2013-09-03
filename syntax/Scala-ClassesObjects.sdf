@@ -33,9 +33,9 @@ exports
 		%% §5.1.6 – Early Definitions
 		"{" EarlyDefSemi* "}" "with" -> EarlyDefs {"EarlyDefs"}
 
-		EarlyDef SEMI -> EarlyDefSemi {"EarlyDefSemi"}
-		EarlyDef EOL  -> EarlyDefSemi {"EarlyDefSemi", enforce-newline, prefer}
-		EarlyDef EOB  -> EarlyDefSemi {"EarlyDefSemi", avoid}
+		EarlyDef SEMI -> EarlyDefSemi {"EarlyDefSemi", longest-match}
+		EarlyDef EOL  -> EarlyDefSemi {"EarlyDefSemi", enforce-newline, longest-match, prefer}
+		EarlyDef EOB  -> EarlyDefSemi {"EarlyDefSemi", longest-match, avoid}
 
 		AnnotationSeq? Modifier* PatVarDef -> EarlyDef {"EarlyDef"}
 

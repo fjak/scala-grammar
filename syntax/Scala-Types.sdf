@@ -63,9 +63,9 @@ exports
 		
 		"{" RefineStatSemi* "}" -> Refinement {"Refinement"}
 		
-		RefineStat SEMI -> RefineStatSemi {"RefineStatSemi"}
-		RefineStat EOL  -> RefineStatSemi {"RefineStatSemi", enforce-newline, prefer}
-		RefineStat EOB  -> RefineStatSemi {"RefineStatSemi", avoid}
+		RefineStat SEMI -> RefineStatSemi {"RefineStatSemi", longest-match}
+		RefineStat EOL  -> RefineStatSemi {"RefineStatSemi", enforce-newline, longest-match, prefer}
+		RefineStat EOB  -> RefineStatSemi {"RefineStatSemi", longest-match, avoid}
 		
 		Dcl            -> RefineStat
 		"type" TypeDef -> RefineStat {"TypeRefineStat"}
@@ -87,9 +87,9 @@ exports
 		
 		"forSome" "{" ExistentialDclSemi+ "}" -> ExistentialClause {"ExistentialClause"}
 		
-		ExistentialDcl SEMI -> ExistentialDclSemi {"ExistentialDclSemi"}
-		ExistentialDcl EOL  -> ExistentialDclSemi {"ExistentialDclSemi", enforce-newline, prefer}
-		ExistentialDcl EOB  -> ExistentialDclSemi {"ExistentialDclSemi"}
+		ExistentialDcl SEMI -> ExistentialDclSemi {"ExistentialDclSemi", longest-match}
+		ExistentialDcl EOL  -> ExistentialDclSemi {"ExistentialDclSemi", enforce-newline, longest-match, prefer}
+		ExistentialDcl EOB  -> ExistentialDclSemi {"ExistentialDclSemi", longest-match}
 		
 		"type" TypeDcl -> ExistentialDcl {"ExistentialType"}
 		"val"  ValDcl  -> ExistentialDcl {"ExistentialVal"}

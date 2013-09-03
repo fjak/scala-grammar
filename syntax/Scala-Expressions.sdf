@@ -168,8 +168,8 @@ exports
 
 		Enumerator SEMI -> EnumeratorSemi {"EnumeratorSemi", longest-match}
 		Enumerator EOL  -> EnumeratorSemi {"EnumeratorSemi", enforce-newline, longest-match, prefer}
-		Enumerator EOP  -> EnumeratorSemi {"EnumeratorSemi", avoid}
-		Enumerator EOB  -> EnumeratorSemi {"EnumeratorSemi", avoid}
+		Enumerator EOP  -> EnumeratorSemi {"EnumeratorSemi", longest-match, avoid}
+		Enumerator EOB  -> EnumeratorSemi {"EnumeratorSemi", longest-match, avoid}
 
 		Generator                    -> Enumerator
 		Guard                        -> Enumerator
