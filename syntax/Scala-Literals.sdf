@@ -10,13 +10,13 @@ exports
 		OctalNumeral ("L" | "l")?   -> IntegerLiteral {prefer}
 		"-" IntegerLiteral          -> IntegerLiteral
 		
-		[0] | NonZeroDigit Digit* -> DecimalNumeral {"Decimal"}
-		"0x" HexDigit+ -> HexNumeral {"HexNumeral"}
-		[0] OctalDigit+ -> OctalNumeral {"Octal"}
-		[0-9]       -> Digit {"Digit"}
-		[1-9]       -> NonZeroDigit {"NonZeroDigit"}
-		[0-7]       -> OctalDigit {"OctalDigit"}
-		[0-9A-Fa-f] -> HexDigit {"HexDigit"}
+		[0] | NonZeroDigit Digit* -> DecimalNumeral
+		"0x" HexDigit+ -> HexNumeral
+		[0] OctalDigit+ -> OctalNumeral
+		[0-9]       -> Digit
+		[1-9]       -> NonZeroDigit
+		[0-7]       -> OctalDigit
+		[0-9A-Fa-f] -> HexDigit
 		
 		Digit+ "." Digit+ ExponentPart? FloatType? -> FloatingPointLiteral
 		"." Digit+ ExponentPart? FloatType?        -> FloatingPointLiteral
