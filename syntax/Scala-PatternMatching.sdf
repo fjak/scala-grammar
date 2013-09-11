@@ -19,33 +19,40 @@ exports
 			"(" Patterns ")"                                           -> SimplePattern {"TuplePattern"}
 			StableId "(" (Patterns ",")? (VarPlainId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
 		}
-		
+
 		> {
 			Pattern3 InfixPatternOp Pattern3 -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 			SimplePattern                    -> Pattern3
 		}
-		
+
 		> {
 			VarPlainId "@" Pattern3 -> Pattern2 {"PatternBinder"}
 			Pattern3                -> Pattern2
 		}
-		
+
 		> {
 			VarPlainId ":" Type -> Pattern1 {"TypedPattern"}
 			"_" ":" Type        -> Pattern1 {"WildcardTypedPattern"}
 			Pattern2            -> Pattern1
 		}
-		
+
 		> {
 			Pattern1            -> Pattern {longest-match}
 			Pattern "|" Pattern -> Pattern {"DisjunctPattern", left}
 		}
-	
+
+	%%%%% Repeat priorities in context-free syntax for correct PPTable generation %%%%%
+	context-free syntax
+		"_"                                                        -> SimplePattern {"WildcardPattern"}
+		Literal                                                    -> SimplePattern {"LiteralPattern"}
+		StableId "(" Patterns ")"                                  -> SimplePattern {"ConstructorPattern"}
+		"(" Patterns ")"                                           -> SimplePattern {"TuplePattern"}
+		StableId "(" (Patterns ",")? (VarPlainId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
+		Pattern3 InfixPatternOp Pattern3                           -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		VarPlainId "@" Pattern3                                    -> Pattern2 {"PatternBinder"}
+		VarPlainId ":" Type                                        -> Pattern1 {"TypedPattern"}
+		"_" ":" Type                                               -> Pattern1 {"WildcardTypedPattern"}
+		Pattern "|" Pattern                                        -> Pattern {"DisjunctPattern", left}
+
 	context-free syntax
 		{Pattern ","}* -> Patterns {"Patterns"}
-		
-		
-		
-		
-		
-		
