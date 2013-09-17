@@ -74,3 +74,9 @@ rules // Debugging
 		
 	debug-reanalyze = 
 		analysis-debug-reanalyze(|<language>)
+
+	prettyprint:
+		(selected, position, ast, path, project-path) -> (filename, text)
+		where
+			filename := <guarantee-extension(|"pp.scala")> path ;
+			text     := <pp-scala-string> selected

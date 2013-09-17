@@ -23,5 +23,6 @@ builders
   builder  : "Show index (all)"       = debug-show-index-all (openeditor) (meta)                  
   builder  : "Show tasks (selection)" = debug-show-tasks-selection (openeditor) (meta)            
   builder  : "Reset and reanalyze"    = debug-reanalyze (meta)                                    
+  builder  : "Pretty-print"           = prettyprint (openeditor) (realtime) (meta) (source)
                                                                                                   
   on save  : editor-save                                                                          
