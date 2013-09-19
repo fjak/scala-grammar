@@ -24,8 +24,8 @@ exports
 		"_" ":" Type "=>"    -> SelfType {"WildcardSelfType"}
 
 		%% TODO: Nl
-		Nl? "{" SelfType TemplateStatSemi* "}" -> TemplateBody {"SelfTypeTemplateBody", prefer}
-		Nl? "{" TemplateStatSemi* "}"          -> TemplateBody {"TemplateBody"}
+		"{" SelfType TemplateStatSemi* "}" -> TemplateBody {"SelfTypeTemplateBody", prefer}
+		"{" TemplateStatSemi* "}"          -> TemplateBody {"TemplateBody"}
 
 		%% §5.1.1 – Constructor Invocations
 		AnnotType ArgumentExprsSeq? -> Constr {"Constr"}

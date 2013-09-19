@@ -81,7 +81,7 @@ test id self type [[
 {
 	foo => bar
 }
-]] parse to SelfTypeTemplateBody(_, _, _)
+]] parse to SelfTypeTemplateBody(_, _)
 
 test this self type [[
 {
@@ -93,4 +93,4 @@ test wildcard self type [[
 {
 	_: Type =>
 }
-]] parse to SelfTypeTemplateBody(_, _, _)
+]] parse to SelfTypeTemplateBody(_, _)
