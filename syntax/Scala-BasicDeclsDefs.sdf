@@ -8,6 +8,11 @@ imports
 
 exports
 	context-free syntax
+		%% Extracted to avoid optional lexical syntax:
+		%%     (":" Type)?
+		":" Type      -> Typed {"Typed"}
+		":" ParamType -> ParamTyped {"ParamTyped"}
+
 		%% §4 – Basic Declarations and Definitions
 		PatVarDef      -> Def
 		TmplDef        -> Def
@@ -17,7 +22,7 @@ exports
 		"val" ValDcl                         -> Dcl {"ValDclDcl"}
 		{Id ","}+ ":" Type                   -> ValDcl {"ValDcl"}
 		"val" PatDef                         -> PatVarDef {"ValPatDef"}
-		{Pattern2 ","}+ (":" Type)? "=" Expr -> PatDef {"PatDef"}
+		{Pattern2 ","}+ Typed? "=" Expr      -> PatDef {"PatDef"}
 
 
 		%% §4.2 – Variable Declarations and Definitions
@@ -29,10 +34,10 @@ exports
 
 
 		%% §4.3 – Type Declarations and Type Aliases
-		"type" TypeDcl                                -> Dcl {"TypeDclDcl"}
-		Id TypeParamClause? (">:" Type)? ("<:" Type)? -> TypeDcl {"TypeDcl"}
-		"type" TypeDef                                -> Def {"TypeDefDef"}
-		Id TypeParamClause? "=" Type                  -> TypeDef {"TypeDef"}
+		"type" TypeDcl                                      -> Dcl {"TypeDclDcl"}
+		Id TypeParamClause? LowerBoundType? UpperBoundType? -> TypeDcl {"TypeDcl"}
+		"type" TypeDef                                      -> Def {"TypeDefDef"}
+		Id TypeParamClause? "=" Type                        -> TypeDef {"TypeDef"}
 
 
 		%% §.4.4 – Type Parameters
@@ -42,18 +47,20 @@ exports
 		Annotation* "+" TypeParam -> VariantTypeParam {"PlusVariantTypeParam"}
 		Annotation* "-" TypeParam -> VariantTypeParam {"NegVariantTypeParam"}
 
-		Id  TypeParamClause? (">:" Type)? ("<:" Type)? TypeViewBound* TypeContextBound* -> TypeParam {"TypeParam"}
-		"_" TypeParamClause? (">:" Type)? ("<:" Type)? TypeViewBound* TypeContextBound* -> TypeParam {"WildcardTypeParam"}
+		Id  TypeParamClause? LowerBoundType? UpperBoundType? TypeViewBound* TypeContextBound* -> TypeParam {"TypeParam"}
+		"_" TypeParamClause? LowerBoundType? UpperBoundType? TypeViewBound* TypeContextBound* -> TypeParam {"WildcardTypeParam"}
 
+		">:" Type -> LowerBoundType {"LowerBoundType"}
+		"<:" Type -> UpperBoundType {"UpperBoundType"}
 		"<%" Type -> TypeViewBound {"TypeViewBound"}
-		":" Type -> TypeContextBound {"TypeContextBound"}
+		":" Type  -> TypeContextBound {"TypeContextBound"}
 
 
 		%% §4.6 – Function Declarations and Definitions
 		"def" FunDcl                         -> Dcl {"FunDclDcl"}
 		FunSig ":" Type                      -> FunDcl {"FunDcl"}
 		"def" FunDef                         -> Def {"FunDefDef"}
-		FunSig (":" Type)? "=" Expr          -> FunDef {"FunDef"}
+		FunSig Typed? "=" Expr               -> FunDef {"FunDef"}
 		Id TypeParamClause? ParamClauses?    -> FunSig {"FunSig", layout("3.first.line - 1.last.line < num(2)")}
 		%% Annotations are allowed for function type parameters according to scalac v2.10.0*,
 		%% so TypeParamClause is used here instead of FunTypeParamClause
@@ -65,7 +72,7 @@ exports
 
 		"(" {Param ","}* ")" -> ParamClause {"ParamClause"}
 
-		Annotation* Id (":" ParamType)? ("=" Expr)? -> Param {"Param"}
+		Annotation* Id ParamTyped? Assignment? -> Param {"Param"}
 
 		Type      -> ParamType
 		"=>" Type -> ParamType {"ByNameParam"}

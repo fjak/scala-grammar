@@ -19,7 +19,7 @@ exports
 
 		"with" AnnotType         -> WithAnnotType {"WithAnnotType"}
 
-		Id (":" Type)? "=>"  -> SelfType {"SelfType"}
+		Id Typed? "=>"       -> SelfType {"SelfType"}
 		"this" ":" Type "=>" -> SelfType {"ThisSelfType"}
 		"_" ":" Type "=>"    -> SelfType {"WildcardSelfType"}
 
