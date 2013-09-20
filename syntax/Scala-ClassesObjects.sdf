@@ -10,7 +10,7 @@ imports
 
 exports
 	context-free syntax
-		%% §5.1 – Templates
+		%% §5.1 - Templates
 		EarlyDefs? ClassParents TemplateBody? -> ClassTemplate {"ClassTemplate"}
 		EarlyDefs? TraitParents TemplateBody? -> TraitTemplate {"TraitTemplate"}
 
@@ -27,10 +27,10 @@ exports
 		"{" SelfType TemplateStatSemi* "}" -> TemplateBody {"SelfTypeTemplateBody", prefer}
 		"{" TemplateStatSemi* "}"          -> TemplateBody {"TemplateBody"}
 
-		%% §5.1.1 – Constructor Invocations
+		%% §5.1.1 - Constructor Invocations
 		AnnotType ArgumentExprsSeq? -> Constr {"Constr"}
 
-		%% §5.1.6 – Early Definitions
+		%% §5.1.6 - Early Definitions
 		"{" EarlyDefSemi* "}" "with" -> EarlyDefs {"EarlyDefs"}
 
 		EarlyDef SEMI -> EarlyDefSemi {"EarlyDefSemi", longest-match}
@@ -40,7 +40,7 @@ exports
 		AnnotationSeq? Modifier* PatVarDef -> EarlyDef {"EarlyDef"}
 
 
-		%% §5.2 – Modifiers
+		%% §5.2 - Modifiers
 		LocalModifier  -> Modifier
 		AccessModifier -> Modifier
 		"override"     -> Modifier {"OverrideModifier"}
@@ -58,7 +58,7 @@ exports
 		"[" "this" "]" -> AccessQualifier {"ThisQualifier"}
 
 
-		%% §5.3 – Class Definitions
+		%% §5.3 - Class Definitions
 		"class" ClassDef -> TmplDef {"Class"}
 
 		Morphism ConstrAnnotation* AccessModifier? ClassParamClauses? ClassTemplateOpt -> ClassDef {"ClassDef", layout("4.first.line - 1.last.line < num(2)")}
@@ -82,7 +82,7 @@ exports
 		                        -> ClassTemplateOpt {"EmptyClassTemplateOpt"}
 
 
-		%% §5.3.1 – Constructor Definitions
+		%% §5.3.1 - Constructor Definitions
 		"this" ParamClauses "=" ConstrExpr -> FunDef {"ThisExprFunDef"}
 		"this" ParamClauses ConstrBlock    -> FunDef {"ThisBlockFunDef", layout("3.first.line - 2.last.line < num(2)")}
 
@@ -96,10 +96,10 @@ exports
 		"{" SelfInvocation "}"                     -> ConstrBlock {"ConstrBlock"}
 		"{" SelfInvocation BlockStatSemi+ "}"      -> ConstrBlock {"ConstrBlock", layout("3.first.line - 2.last.line > num(0)")}
 
-		%% §5.3.2 – Case Classes
+		%% §5.3.2 - Case Classes
 		"case" "class" ClassDef   -> TmplDef {"CaseClass"}
 
-		%% §5.3.3 – Traits
+		%% §5.3.3 - Traits
 		"trait" TraitDef -> TmplDef {"Trait"}
 
 		Id TypeParamClause? TraitTemplateOpt -> TraitDef {"TraitDef"}
@@ -109,7 +109,7 @@ exports
 		TemplateBody            -> TraitTemplateOpt
 		                        -> TraitTemplateOpt {"EmptyTraitTemplateOpt"}
 
-		%% §5.4 – Object Definitions
+		%% §5.4 - Object Definitions
 		"case" "object" ObjectDef -> TmplDef {"CaseObject"}
 		"object" ObjectDef        -> TmplDef {"Object"}
 

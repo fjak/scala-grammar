@@ -13,19 +13,19 @@ exports
 		":" Type      -> Typed {"Typed"}
 		":" ParamType -> ParamTyped {"ParamTyped"}
 
-		%% §4 – Basic Declarations and Definitions
+		%% §4 - Basic Declarations and Definitions
 		PatVarDef      -> Def
 		TmplDef        -> Def
 
 
-		%% §4.1 – Value Declarations and Definitions
+		%% §4.1 - Value Declarations and Definitions
 		"val" ValDcl                         -> Dcl {"ValDclDcl"}
 		{Id ","}+ ":" Type                   -> ValDcl {"ValDcl"}
 		"val" PatDef                         -> PatVarDef {"ValPatDef"}
 		{Pattern2 ","}+ Typed? "=" Expr      -> PatDef {"PatDef"}
 
 
-		%% §4.2 – Variable Declarations and Definitions
+		%% §4.2 - Variable Declarations and Definitions
 		"var" VarDcl               -> Dcl {"VarDclDcl"}
 		"var" VarDef               -> PatVarDef {"VarPatDef"}
 		{Id ","}+ ":" Type         -> VarDcl {"VarDcl"}
@@ -33,14 +33,14 @@ exports
 		{Id ","}+ ":" Type "=" "_" -> VarDef {"WildcardVarDef", prefer}
 
 
-		%% §4.3 – Type Declarations and Type Aliases
+		%% §4.3 - Type Declarations and Type Aliases
 		"type" TypeDcl                                      -> Dcl {"TypeDclDcl"}
 		Id TypeParamClause? LowerBoundType? UpperBoundType? -> TypeDcl {"TypeDcl"}
 		"type" TypeDef                                      -> Def {"TypeDefDef"}
 		Id TypeParamClause? "=" Type                        -> TypeDef {"TypeDef"}
 
 
-		%% §.4.4 – Type Parameters
+		%% §.4.4 - Type Parameters
 		"[" {VariantTypeParam ","}+ "]" -> TypeParamClause {"TypeParamClause"}
 
 		Annotation* TypeParam     -> VariantTypeParam {"VariantTypeParam"}
@@ -56,7 +56,7 @@ exports
 		":" Type  -> TypeContextBound {"TypeContextBound"}
 
 
-		%% §4.6 – Function Declarations and Definitions
+		%% §4.6 - Function Declarations and Definitions
 		"def" FunDcl                         -> Dcl {"FunDclDcl"}
 		FunSig ":" Type                      -> FunDcl {"FunDcl"}
 		"def" FunDef                         -> Def {"FunDefDef"}
@@ -78,11 +78,11 @@ exports
 		"=>" Type -> ParamType {"ByNameParam"}
 		Type "*"  -> ParamType {"RepeatedParam"}
 
-		%% §4.6.3 – Procedures
+		%% §4.6.3 - Procedures
 		FunSig               -> FunDcl {"ProcDcl"}
 		FunSig "{" Block "}" -> FunDef {"ProcDef", layout("2.first.line - 1.last.line < num(2)")}
 
-		%% §4.7 – Import Clauses
+		%% §4.7 - Import Clauses
 		"import" {ImportExpr ","}+ -> Import{"Import"}
 
 		StableId                     -> ImportExpr {"ImportExpr"}

@@ -31,29 +31,29 @@ exports
 		StableId -/- [\.] . [\33-\126] / [\{\,\_]
 
 	
-	%% §3.2 – Value Types
+	%% §3.2 - Value Types
 	context-free syntax
-		%% §3.2.1 – Singleton Types
+		%% §3.2.1 - Singleton Types
 		Path "." "type"     -> SimpleType {"SingletonType"}
 		
-		%% §3.2.2 – Type Projection
+		%% §3.2.2 - Type Projection
 		SimpleType "#" Id   -> SimpleType {"TypeProjection"}
 		
-		%% §3.2.3 – Type Designators
+		%% §3.2.3 - Type Designators
 		StableId            -> SimpleType {"Type"}
 		
-		%% §3.2.4 – Parameterized Types
+		%% §3.2.4 - Parameterized Types
 		SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
 		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
 		
-		%% §3.2.5 – Tuple Types
+		%% §3.2.5 - Tuple Types
 		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
 		
-		%% §3.2.6 – Annotated Types
+		%% §3.2.6 - Annotated Types
 		SimpleType             -> AnnotType
 		SimpleType Annotation+ -> AnnotType {"AnnotType", layout("1.last.line == 2.first.line")}
 		
-		%% §3.2.7 – Compound Types
+		%% §3.2.7 - Compound Types
 		AnnotType                   -> CompoundType
 		Refinement                  -> CompoundType
 		AnnotType Refinement        -> CompoundType {"RefinedType"}
@@ -70,19 +70,19 @@ exports
 		Dcl            -> RefineStat
 		"type" TypeDef -> RefineStat {"TypeRefineStat"}
 		
-		%% §3.2.8 – Infix Types
+		%% §3.2.8 - Infix Types
 		InfixType -> Type
 
 		CompoundType                -> InfixType
 		InfixType PlainId InfixType -> InfixType {"InfixType", left, layout("3.first.line - 2.last.line < num(2)")}
 		
-		%% §3.2.9 – Function Types
+		%% §3.2.9 - Function Types
 		FunctionArgTypes "=>" Type  -> Type {"FunctionType", prefer}
 
 		InfixType                -> FunctionArgTypes
 		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType", prefer}
 		
-		%% §3.2.10 – Existential Types
+		%% §3.2.10 - Existential Types
 		InfixType ExistentialClause -> Type {"ExistentialType"}
 		
 		"forSome" "{" ExistentialDclSemi+ "}" -> ExistentialClause {"ExistentialClause"}
