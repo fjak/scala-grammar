@@ -1,0 +1,22 @@
+#!/usr/bin/bash
+
+base=$(cd `dirname "$0"`; pwd -P)
+lang="Scala"
+
+if [ -z "$1" ]
+then
+	target="."
+else
+	target="$1"
+fi
+target=$(cd `dirname "$target"`; pwd -P)
+
+def_target="$target/$lang.def"
+pp_target="$target/$lang.pp"
+str_target="$target/$lang.str"
+
+pushd "$base" > /dev/null
+rake pp > "$pp_target"
+rake def > "$def_target"
+rake str > "$str_target"
+popd > /dev/null
