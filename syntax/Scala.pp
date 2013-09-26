@@ -15,7 +15,7 @@
 	DesignatorExpr -- H hs=0 [_1 "." _2],
 	IfElseExpr -- V [H ["if" "(" _1 ")" _2] H ["else" _3]],
 	ImplicitResultExpr -- V hs=4 [H ["implicit" _1 ":" _2 "=>"] _3],
-	Import   -- H [KW["import"] H [_1]],
+	Import   -- H [KW["import"] H hs=0 [_1]],
 	LowerBoundType -- ">:" _1,
 	MatchExpr -- H [_1 "match" V ["{" _2 "}"]],
 	PackageDeclaration -- H [KW["package"] H hs=0 [_1 _2]],
