@@ -85,66 +85,66 @@ exports
 	%%%%% NO Layout %%%%%%
 	context-free priorities
 		{
-			"_"                    -> NoLExpr {"WildcardNoLExpr"}
+			"_"                    -> NoLExpr {"WildcardExpr"}
 			Literal                -> NoLExpr {prefer}
 			Path                   -> NoLExpr
-			NoLExpr ArgumentExprs  -> NoLExpr {"AppNoLExpr"}
-			NoLExpr BlockExpr      -> NoLExpr {"BlockAppNoLExpr"}
-			"(" {NoLExpr ","}* ")" -> NoLExpr {"TupleNoLExpr"}
+			NoLExpr ArgumentExprs  -> NoLExpr {"AppExpr"}
+			NoLExpr BlockExpr      -> NoLExpr {"BlockAppExpr"}
+			"(" {NoLExpr ","}* ")" -> NoLExpr {"TupleExpr"}
 			NoLExpr TypeArgs       -> NoLExpr {"TypeApplication"}
 		}
 
 		> {
-			"new" ClassTemplate -> NoLExpr {"NewClassNoLExpr", prefer}
-			"new" TemplateBody  -> NoLExpr {"NewTemplateNoLExpr", prefer}
+			"new" ClassTemplate -> NoLExpr {"NewClassExpr", prefer}
+			"new" TemplateBody  -> NoLExpr {"NewTemplateExpr", prefer}
 			BlockExpr           -> NoLExpr
-			NoLExpr "_"         -> NoLExpr {"EtaExpansionNoLExpr", left}
+			NoLExpr "_"         -> NoLExpr {"EtaExpansionExpr", left}
 		}
 
-		> Prefix NoLExpr               -> NoLExpr {"PrefixNoLExpr", prefer}
-		> NoLExpr SpecialOp NoLExpr    -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr MultOp NoLExpr       -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr SumOp NoLExpr        -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr ColonOp NoLExpr      -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr AssignOp NoLExpr     -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr BracketOp NoLExpr    -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr AmpersandOp NoLExpr  -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr CircumflexOp NoLExpr -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr BarOp NoLExpr        -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr LetterOp NoLExpr     -> NoLExpr {"InfixNoLExpr", left}
-		> NoLExpr Id                   -> NoLExpr {"PostfixNoLExpr", avoid}
-		> NoLExpr Id                   -> NoLExpr {"PostfixNoLExpr", avoid}
-		> NoLExpr "match" "{" CaseClause+ "}" -> NoLExpr {"MatchNoLExpr"}
-		> NoLExpr ArgumentExprs "=" NoLExpr   -> NoLExpr {"AccessAssignmentNoLExpr", non-assoc}
-		<0> > NoLExpr "." Id "=" NoLExpr      -> NoLExpr {"DesignatorAssignmentNoLExpr", non-assoc}
+		> Prefix NoLExpr               -> NoLExpr {"PrefixExpr", prefer}
+		> NoLExpr SpecialOp NoLExpr    -> NoLExpr {"InfixExpr", left}
+		> NoLExpr MultOp NoLExpr       -> NoLExpr {"InfixExpr", left}
+		> NoLExpr SumOp NoLExpr        -> NoLExpr {"InfixExpr", left}
+		> NoLExpr ColonOp NoLExpr      -> NoLExpr {"InfixExpr", left}
+		> NoLExpr AssignOp NoLExpr     -> NoLExpr {"InfixExpr", left}
+		> NoLExpr BracketOp NoLExpr    -> NoLExpr {"InfixExpr", left}
+		> NoLExpr AmpersandOp NoLExpr  -> NoLExpr {"InfixExpr", left}
+		> NoLExpr CircumflexOp NoLExpr -> NoLExpr {"InfixExpr", left}
+		> NoLExpr BarOp NoLExpr        -> NoLExpr {"InfixExpr", left}
+		> NoLExpr LetterOp NoLExpr     -> NoLExpr {"InfixExpr", left}
+		> NoLExpr Id                   -> NoLExpr {"PostfixExpr", avoid}
+		> NoLExpr Id                   -> NoLExpr {"PostfixExpr", avoid}
+		> NoLExpr "match" "{" CaseClause+ "}" -> NoLExpr {"MatchExpr"}
+		> NoLExpr ArgumentExprs "=" NoLExpr   -> NoLExpr {"AccessAssignmentExpr", non-assoc}
+		<0> > NoLExpr "." Id "=" NoLExpr      -> NoLExpr {"DesignatorAssignmentExpr", non-assoc}
 		<0> > {
-			Bindings "=>" NoLExpr                                                   -> NoLExpr {"FunNoLExpr", prefer}
-			Id "=>" NoLExpr                                                         -> NoLExpr {"IdFunNoLExpr", prefer}
-			"implicit" Id "=>" NoLExpr                                              -> NoLExpr {"ImplicitFunNoLExpr", prefer}
-			"_" "=>" NoLExpr                                                        -> NoLExpr {"WildcardFunNoLExpr", prefer}
-			"if" "(" NoLExpr ")" NoLExpr                                            -> NoLExpr {"IfNoLExpr", prefer}
-			"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr                             -> NoLExpr {"IfElseNoLExpr"}
-			"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr                         -> NoLExpr {"IfElseNoLExpr"}
-			"while" "(" NoLExpr ")" NoLExpr                                         -> NoLExpr {"WhileNoLExpr"}
-			"try" NoLExpr                                                           -> NoLExpr {"TryNoLExpr"}
-			"try" NoLExpr "catch" NoLExpr                                           -> NoLExpr {"TryCatchNoLExpr"}
-			"try" NoLExpr "finally" NoLExpr                                         -> NoLExpr {"TryFinallyNoLExpr"}
-			"try" NoLExpr "catch" NoLExpr "finally" NoLExpr                         -> NoLExpr {"TryCatchFinallyNoLExpr"}
-			"do" NoLExpr ";" "while" "(" NoLExpr ")"                                -> NoLExpr {"DoWhileNoLExpr"}
-			"do" NoLExpr "while" "(" NoLExpr ")"                                    -> NoLExpr {"DoWhileNoLExpr"}
-			"for" "(" EnumeratorSemi+ ")" NoLExpr                                   -> NoLExpr {"ForNoLExpr"}
-			"for" "{" EnumeratorSemi+ "}" NoLExpr                                   -> NoLExpr {"ForNoLExpr"}
-			"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr                           -> NoLExpr {"ForYieldNoLExpr"}
-			"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr                           -> NoLExpr {"ForYieldNoLExpr"}
-			"throw" NoLExpr                                                         -> NoLExpr {"ThrowNoLExpr"}
-			"return" NoLExpr?                                                       -> NoLExpr {"ReturnNoLExpr", layout("1.last.line == 2.first.line")}
-			NoLExpr Ascription                                                      -> NoLExpr {"AscriptionNoLExpr", avoid}
-			Id "=" NoLExpr                                                          -> NoLExpr {"AssignmentNoLExpr", non-assoc}
+			Bindings "=>" NoLExpr                                                   -> NoLExpr {"FunExpr", prefer}
+			Id "=>" NoLExpr                                                         -> NoLExpr {"IdFunExpr", prefer}
+			"implicit" Id "=>" NoLExpr                                              -> NoLExpr {"ImplicitFunExpr", prefer}
+			"_" "=>" NoLExpr                                                        -> NoLExpr {"WildcardFunExpr", prefer}
+			"if" "(" NoLExpr ")" NoLExpr                                            -> NoLExpr {"IfExpr", prefer}
+			"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr                             -> NoLExpr {"IfElseExpr"}
+			"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr                         -> NoLExpr {"IfElseExpr"}
+			"while" "(" NoLExpr ")" NoLExpr                                         -> NoLExpr {"WhileExpr"}
+			"try" NoLExpr                                                           -> NoLExpr {"TryExpr"}
+			"try" NoLExpr "catch" NoLExpr                                           -> NoLExpr {"TryCatchExpr"}
+			"try" NoLExpr "finally" NoLExpr                                         -> NoLExpr {"TryFinallyExpr"}
+			"try" NoLExpr "catch" NoLExpr "finally" NoLExpr                         -> NoLExpr {"TryCatchFinallyExpr"}
+			"do" NoLExpr ";" "while" "(" NoLExpr ")"                                -> NoLExpr {"DoWhileExpr"}
+			"do" NoLExpr "while" "(" NoLExpr ")"                                    -> NoLExpr {"DoWhileExpr"}
+			"for" "(" EnumeratorSemi+ ")" NoLExpr                                   -> NoLExpr {"ForExpr"}
+			"for" "{" EnumeratorSemi+ "}" NoLExpr                                   -> NoLExpr {"ForExpr"}
+			"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr                           -> NoLExpr {"ForYieldExpr"}
+			"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr                           -> NoLExpr {"ForYieldExpr"}
+			"throw" NoLExpr                                                         -> NoLExpr {"ThrowExpr"}
+			"return" NoLExpr?                                                       -> NoLExpr {"ReturnExpr", layout("1.last.line == 2.first.line")}
+			NoLExpr Ascription                                                      -> NoLExpr {"AscriptionExpr", avoid}
+			Id "=" NoLExpr                                                          -> NoLExpr {"AssignmentExpr", non-assoc}
 		}
 
 	context-free priorities
-		NoLExpr "." Id        -> NoLExpr {"DesignatorNoLExpr", avoid}
-		> Prefix NoLExpr      -> NoLExpr {"PrefixNoLExpr"}
+		NoLExpr "." Id        -> NoLExpr {"DesignatorExpr", avoid}
+		> Prefix NoLExpr      -> NoLExpr {"PrefixExpr"}
 
 	%%%%% Repeat Priorities in context-free syntax for correct PPTable generation %%%%%
 	context-free syntax
@@ -196,55 +196,55 @@ exports
 		Expr "." Id                                  -> Expr {"DesignatorExpr", avoid}
 		Prefix Expr                                  -> Expr {"PrefixExpr"}
 
-		"_"                                              -> NoLExpr {"WildcardNoLExpr"}
+		"_"                                              -> NoLExpr {"WildcardExpr"}
 		Literal                                          -> NoLExpr {prefer}
-		NoLExpr ArgumentExprs                            -> NoLExpr {"AppNoLExpr"}
-		NoLExpr BlockExpr                                -> NoLExpr {"BlockAppNoLExpr"}
-		"(" {NoLExpr ","}* ")"                           -> NoLExpr {"TupleNoLExpr"}
+		NoLExpr ArgumentExprs                            -> NoLExpr {"AppExpr"}
+		NoLExpr BlockExpr                                -> NoLExpr {"BlockAppExpr"}
+		"(" {NoLExpr ","}* ")"                           -> NoLExpr {"TupleExpr"}
 		NoLExpr TypeArgs                                 -> NoLExpr {"TypeApplication"}
-		"new" ClassTemplate                              -> NoLExpr {"NewClassNoLExpr", prefer}
-		"new" TemplateBody                               -> NoLExpr {"NewTemplateNoLExpr", prefer}
-		NoLExpr "_"                                      -> NoLExpr {"EtaExpansionNoLExpr", left}
-		Prefix NoLExpr                                   -> NoLExpr {"PrefixNoLExpr", prefer}
-		NoLExpr SpecialOp NoLExpr                        -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr MultOp NoLExpr                           -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr SumOp NoLExpr                            -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr ColonOp NoLExpr                          -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr AssignOp NoLExpr                         -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr BracketOp NoLExpr                        -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr AmpersandOp NoLExpr                      -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr CircumflexOp NoLExpr                     -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr BarOp NoLExpr                            -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr LetterOp NoLExpr                         -> NoLExpr {"InfixNoLExpr", left}
-		NoLExpr Id                                       -> NoLExpr {"PostfixNoLExpr", avoid}
-		NoLExpr Id                                       -> NoLExpr {"PostfixNoLExpr", avoid}
-		NoLExpr "match" "{" CaseClause+ "}"              -> NoLExpr {"MatchNoLExpr"}
-		NoLExpr ArgumentExprs "=" NoLExpr                -> NoLExpr {"AccessAssignmentNoLExpr", non-assoc}
-		NoLExpr "." Id "=" NoLExpr                       -> NoLExpr {"DesignatorAssignmentNoLExpr", non-assoc}
-		Bindings "=>" NoLExpr                            -> NoLExpr {"FunNoLExpr", prefer}
-		Id "=>" NoLExpr                                  -> NoLExpr {"IdFunNoLExpr", prefer}
-		"implicit" Id "=>" NoLExpr                       -> NoLExpr {"ImplicitFunNoLExpr", prefer}
-		"_" "=>" NoLExpr                                 -> NoLExpr {"WildcardFunNoLExpr", prefer}
-		"if" "(" NoLExpr ")" NoLExpr                     -> NoLExpr {"IfNoLExpr", prefer}
-		"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr      -> NoLExpr {"IfElseNoLExpr"}
-		"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr  -> NoLExpr {"IfElseNoLExpr"}
-		"while" "(" NoLExpr ")" NoLExpr                  -> NoLExpr {"WhileNoLExpr"}
-		"try" NoLExpr                                    -> NoLExpr {"TryNoLExpr"}
-		"try" NoLExpr "catch" NoLExpr                    -> NoLExpr {"TryCatchNoLExpr"}
-		"try" NoLExpr "finally" NoLExpr                  -> NoLExpr {"TryFinallyNoLExpr"}
-		"try" NoLExpr "catch" NoLExpr "finally" NoLExpr  -> NoLExpr {"TryCatchFinallyNoLExpr"}
-		"do" NoLExpr ";" "while" "(" NoLExpr ")"         -> NoLExpr {"DoWhileNoLExpr"}
-		"do" NoLExpr "while" "(" NoLExpr ")"             -> NoLExpr {"DoWhileNoLExpr"}
-		"for" "(" EnumeratorSemi+ ")" NoLExpr            -> NoLExpr {"ForNoLExpr"}
-		"for" "{" EnumeratorSemi+ "}" NoLExpr            -> NoLExpr {"ForNoLExpr"}
-		"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr    -> NoLExpr {"ForYieldNoLExpr"}
-		"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr    -> NoLExpr {"ForYieldNoLExpr"}
-		"throw" NoLExpr                                  -> NoLExpr {"ThrowNoLExpr"}
-		"return" NoLExpr?                                -> NoLExpr {"ReturnNoLExpr", layout("1.last.line == 2.first.line")}
-		NoLExpr Ascription                               -> NoLExpr {"AscriptionNoLExpr", avoid}
-		Id "=" NoLExpr                                   -> NoLExpr {"AssignmentNoLExpr", non-assoc}
-		NoLExpr "." Id                                   -> NoLExpr {"DesignatorNoLExpr", avoid}
-		Prefix NoLExpr                                   -> NoLExpr {"PrefixNoLExpr"}
+		"new" ClassTemplate                              -> NoLExpr {"NewClassExpr", prefer}
+		"new" TemplateBody                               -> NoLExpr {"NewTemplateExpr", prefer}
+		NoLExpr "_"                                      -> NoLExpr {"EtaExpansionExpr", left}
+		Prefix NoLExpr                                   -> NoLExpr {"PrefixExpr", prefer}
+		NoLExpr SpecialOp NoLExpr                        -> NoLExpr {"InfixExpr", left}
+		NoLExpr MultOp NoLExpr                           -> NoLExpr {"InfixExpr", left}
+		NoLExpr SumOp NoLExpr                            -> NoLExpr {"InfixExpr", left}
+		NoLExpr ColonOp NoLExpr                          -> NoLExpr {"InfixExpr", left}
+		NoLExpr AssignOp NoLExpr                         -> NoLExpr {"InfixExpr", left}
+		NoLExpr BracketOp NoLExpr                        -> NoLExpr {"InfixExpr", left}
+		NoLExpr AmpersandOp NoLExpr                      -> NoLExpr {"InfixExpr", left}
+		NoLExpr CircumflexOp NoLExpr                     -> NoLExpr {"InfixExpr", left}
+		NoLExpr BarOp NoLExpr                            -> NoLExpr {"InfixExpr", left}
+		NoLExpr LetterOp NoLExpr                         -> NoLExpr {"InfixExpr", left}
+		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
+		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
+		NoLExpr "match" "{" CaseClause+ "}"              -> NoLExpr {"MatchExpr"}
+		NoLExpr ArgumentExprs "=" NoLExpr                -> NoLExpr {"AccessAssignmentExpr", non-assoc}
+		NoLExpr "." Id "=" NoLExpr                       -> NoLExpr {"DesignatorAssignmentExpr", non-assoc}
+		Bindings "=>" NoLExpr                            -> NoLExpr {"FunExpr", prefer}
+		Id "=>" NoLExpr                                  -> NoLExpr {"IdFunExpr", prefer}
+		"implicit" Id "=>" NoLExpr                       -> NoLExpr {"ImplicitFunExpr", prefer}
+		"_" "=>" NoLExpr                                 -> NoLExpr {"WildcardFunExpr", prefer}
+		"if" "(" NoLExpr ")" NoLExpr                     -> NoLExpr {"IfExpr", prefer}
+		"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr      -> NoLExpr {"IfElseExpr"}
+		"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr  -> NoLExpr {"IfElseExpr"}
+		"while" "(" NoLExpr ")" NoLExpr                  -> NoLExpr {"WhileExpr"}
+		"try" NoLExpr                                    -> NoLExpr {"TryExpr"}
+		"try" NoLExpr "catch" NoLExpr                    -> NoLExpr {"TryCatchExpr"}
+		"try" NoLExpr "finally" NoLExpr                  -> NoLExpr {"TryFinallyExpr"}
+		"try" NoLExpr "catch" NoLExpr "finally" NoLExpr  -> NoLExpr {"TryCatchFinallyExpr"}
+		"do" NoLExpr ";" "while" "(" NoLExpr ")"         -> NoLExpr {"DoWhileExpr"}
+		"do" NoLExpr "while" "(" NoLExpr ")"             -> NoLExpr {"DoWhileExpr"}
+		"for" "(" EnumeratorSemi+ ")" NoLExpr            -> NoLExpr {"ForExpr"}
+		"for" "{" EnumeratorSemi+ "}" NoLExpr            -> NoLExpr {"ForExpr"}
+		"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr    -> NoLExpr {"ForYieldExpr"}
+		"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr    -> NoLExpr {"ForYieldExpr"}
+		"throw" NoLExpr                                  -> NoLExpr {"ThrowExpr"}
+		"return" NoLExpr?                                -> NoLExpr {"ReturnExpr", layout("1.last.line == 2.first.line")}
+		NoLExpr Ascription                               -> NoLExpr {"AscriptionExpr", avoid}
+		Id "=" NoLExpr                                   -> NoLExpr {"AssignmentExpr", non-assoc}
+		NoLExpr "." Id                                   -> NoLExpr {"DesignatorExpr", avoid}
+		Prefix NoLExpr                                   -> NoLExpr {"PrefixExpr"}
 
 
 	%%%%% Common %%%%%%

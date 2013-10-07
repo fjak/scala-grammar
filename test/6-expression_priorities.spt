@@ -8,7 +8,7 @@ test prefix > application [[
 test infix > postfix [[
 	if (a & a) b
 	else a & a
-]] parse to IfElseExpr(InfixNoLExpr(_, _, _), _, InfixExpr(_, _, _))
+]] parse to IfElseExpr(InfixExpr(_, _, _), _, InfixExpr(_, _, _))
 
 test [[
 	-sin(x)

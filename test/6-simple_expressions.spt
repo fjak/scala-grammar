@@ -41,7 +41,7 @@ test tuple expression [[
 
 test recursive brace expression [[
 	(((42)))
-]] parse to TupleExpr([TupleNoLExpr([TupleNoLExpr(_)])])
+]] parse to TupleExpr([TupleExpr([TupleExpr(_)])])
 
 
 /* Designator */
