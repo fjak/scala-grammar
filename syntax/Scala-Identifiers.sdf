@@ -12,7 +12,7 @@ lexical syntax
 	[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OpChar
 
 	%% Operators by precedence from low to high
-	VarPlainId | TypePlainId     -> LetterOp
+	VarPlainId | ConstPlainId     -> LetterOp
 	[\|] OpChar*                 -> BarOp
 	[\^] OpChar*                 -> CircumflexOp
 	[\&] OpChar*                 -> AmpersandOp
@@ -42,27 +42,27 @@ lexical syntax
 	IVarIdUSS [\_] -> IVarIdUSS
 	IVarIdUSS Op -> IVarIdOp
 	
-	Upper -> ITypeId
-	(ITypeId | ITypeIdUSS) IdRest -> ITypeId
-	(ITypeId | ITypeIdUSS) [\_] -> ITypeIdUSS
-	ITypeIdUSS Op -> ITypeIdOp
+	Upper -> IConstId
+	(IConstId | IConstIdUSS) IdRest -> IConstId
+	(IConstId | IConstIdUSS) [\_] -> IConstIdUSS
+	IConstIdUSS Op -> IConstIdOp
 	
 	IVarId -> VarId
 	IVarIdUSS -> VarIdUSS
 	IVarIdOp -> VarIdOp
-	ITypeId -> TypeId
-	ITypeIdUSS -> TypeIdUSS
-	ITypeIdOp -> TypeIdOp
+	IConstId -> ConstId
+	IConstIdUSS -> ConstIdUSS
+	IConstIdOp -> ConstIdOp
 	
 	(VarId  | VarIdUSS  | VarIdOp)  -> IVarPlainId
-	(TypeId | TypeIdUSS | TypeIdOp) -> ITypePlainId
+	(ConstId | ConstIdUSS | ConstIdOp) -> IConstPlainId
 
 	Op           -> IPlainId
 	IVarPlainId  -> IPlainId
-	ITypePlainId -> IPlainId
+	IConstPlainId -> IPlainId
 
 	IVarPlainId  -> VarPlainId
-	ITypePlainId -> TypePlainId
+	IConstPlainId -> ConstPlainId
 	IPlainId     -> PlainId
 	
 	"abstract"  -> Keyword
@@ -117,7 +117,7 @@ lexical syntax
 	"@"         -> Keyword
 
 	Keyword     -> VarPlainId {reject}
-	Keyword     -> TypePlainId {reject}
+	Keyword     -> ConstPlainId {reject}
 	Keyword     -> PlainId {reject}
 
 	"-" -> MinusPrefix
@@ -144,10 +144,10 @@ lexical restrictions
 	SpecialOp     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 
 	VarId  -/- [A-Za-z0-9\$\_]
-	TypeId -/- [A-Za-z0-9\$\_]
+	ConstId -/- [A-Za-z0-9\$\_]
 	
 	VarIdUSS -/-  [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	TypeIdUSS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+	ConstIdUSS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 
 	"abstract" -/- [a-zA-Z0-9\$\_]
 	"case"     -/- [a-zA-Z0-9\$\_]
