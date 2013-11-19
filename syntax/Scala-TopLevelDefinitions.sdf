@@ -7,7 +7,7 @@ imports
 	Scala-Identifiers
 	Scala-Whitespace
 
-exports	
+exports
 	context-free syntax
 		-> CompilationUnit {"EmptyCompilationUnit"}
 		PackageDeclarationSemi* TopStatSemi+ -> CompilationUnit {"CompilationUnit"}
@@ -30,5 +30,3 @@ exports
 		"package" QualId "{" TopStatSemi+ "}" -> Packaging {"Packaging", layout("3.first.line - 2.last.line < num(2)")}
 		
 		"package" "object" ObjectDef -> PackageObject {"PackageObject"}
-		
-		

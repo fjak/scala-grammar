@@ -5,95 +5,95 @@ imports
 
 exports
 	lexical syntax
-		DecimalNumeral ("L" | "l")? -> IntegerLiteral
-		HexNumeral ("L" | "l")?     -> IntegerLiteral
-		OctalNumeral ("L" | "l")?   -> IntegerLiteral {prefer}
-		"-" IntegerLiteral          -> IntegerLiteral
+		DECIMAL-NUMERAL ("L" | "l")? -> INTEGER
+		HEX-NUMERAL ("L" | "l")?     -> INTEGER
+		OCTAL-NUMERAL ("L" | "l")?   -> INTEGER {prefer}
+		"-" INTEGER                  -> INTEGER
 		
-		[0] | NonZeroDigit Digit* -> DecimalNumeral
-		"0x" HexDigit+ -> HexNumeral
-		[0] OctalDigit+ -> OctalNumeral
-		[0-9]       -> Digit
-		[1-9]       -> NonZeroDigit
-		[0-7]       -> OctalDigit
-		[0-9A-Fa-f] -> HexDigit
+		[0] | NON-ZERO-DIGIT DIGIT* -> DECIMAL-NUMERAL
+		"0x" HEX-DIGIT+             -> HEX-NUMERAL
+		[0] OCTAL-DIGIT+            -> OCTAL-NUMERAL
+		[0-9]       -> DIGIT
+		[1-9]       -> NON-ZERO-DIGIT
+		[0-7]       -> OCTAL-DIGIT
+		[0-9A-Fa-f] -> HEX-DIGIT
 		
-		Digit+ "." Digit+ ExponentPart? FloatType? -> FloatingPointLiteral
-		"." Digit+ ExponentPart? FloatType?        -> FloatingPointLiteral
-		Digit+ ExponentPart                        -> FloatingPointLiteral
-		Digit+ FloatType                           -> FloatingPointLiteral
-		Digit+ ExponentPart FloatType              -> FloatingPointLiteral
-		"-" FloatingPointLiteral                   -> FloatingPointLiteral
+		DIGIT+ "." DIGIT+ EXPONENT-PART? FLOAT-TYPE? -> FLOATING-POINT
+		"." DIGIT+ EXPONENT-PART? FLOAT-TYPE?        -> FLOATING-POINT
+		DIGIT+ EXPONENT-PART                         -> FLOATING-POINT
+		DIGIT+ FLOAT-TYPE                            -> FLOATING-POINT
+		DIGIT+ EXPONENT-PART FLOAT-TYPE              -> FLOATING-POINT
+		"-" FLOATING-POINT                           -> FLOATING-POINT
 		
-		("E" | "e") ("+" | "-")? Digit+ -> ExponentPart
-		"F" | "f" | "D" | "d" -> FloatType
+		("E" | "e") ("+" | "-")? DIGIT+ -> EXPONENT-PART
+		"F" | "f" | "D" | "d"           -> FLOAT-TYPE
 		
-		"'" PrintableChar "'" -> CharacterLiteral
-		"'" CharEscapeSeq "'" -> CharacterLiteral
+		"'" PRINTABLE "'"       -> CHAR
+		"'" CHAR-ESCAPE-SEQ "'" -> CHAR
 
-		[\32-\126]          -> PrintableChar
-		[\0-\127] / [\"]    -> CharNoDoubleQuote
+		[\32-\126]        -> PRINTABLE
+		[\0-\127] / [\"]  -> CHAR-NO-DOUBLE-QUOTE
 
-		"\\b" | "\\t" | "\\n" | "\\f" | "\\r" | "\\\"" | "\\'" | "\\\\" -> CharEscapeSeq
-		"\\" [0-1]? [0-9]? [0-9]                                        -> CharEscapeSeq
-		"\\" Digit? Digit? Digit                                        -> CharEscapeSeq
-		UnicodeEscape                                                   -> CharEscapeSeq
+		"\\b" | "\\t" | "\\n" | "\\f" | "\\r" | "\\\"" | "\\'" | "\\\\" -> CHAR-ESCAPE-SEQ
+		"\\" [0-1]? [0-9]? [0-9]                                        -> CHAR-ESCAPE-SEQ
+		"\\" DIGIT? DIGIT? DIGIT                                        -> CHAR-ESCAPE-SEQ
+		UNICODE-ESCAPE                                                  -> CHAR-ESCAPE-SEQ
 
-		"\\" "u" HexDigit HexDigit HexDigit HexDigit -> UnicodeEscape
+		"\\" "u" HEX-DIGIT HEX-DIGIT HEX-DIGIT HEX-DIGIT -> UNICODE-ESCAPE
 		
-		"\"" StringElement* "\""         -> StringLiteral
-		"\"\"\"" MultiLineChars "\"\"\"" -> StringLiteral
+		"\"" STRING-ELEMENT* "\""          -> STRING
+		"\"\"\"" MULTI-LINE-CHARS "\"\"\"" -> STRING
 
-		[\32-\126] / [\"\\]        -> StringElement
-		CharEscapeSeq              -> StringElement
+		[\32-\126] / [\"\\]   -> STRING-ELEMENT
+		CHAR-ESCAPE-SEQ       -> STRING-ELEMENT
 
-		PlainId "\"" ProcessedStringElement* "\""                  -> ProcessedString
-		PlainId "\"\"\"" MultiLineProcessedStringElement "\"\"\""  -> ProcessedString
+		PLAIN-ID "\"" PROCESSED-STRING-ELEMENT* "\""                   -> PROCESSED-STRING
+		PLAIN-ID "\"\"\"" MULTI-LINE-PROCESSED-STRING-ELEMENT "\"\"\"" -> PROCESSED-STRING
 
 
-		[\32-\126] / [\"\$\\] -> ProcessedStringElement
-		CharEscapeSeq         -> ProcessedStringElement
-		Processing            -> ProcessedStringElement
+		[\32-\126] / [\"\$\\] -> PROCESSED-STRING-ELEMENT
+		CHAR-ESCAPE-SEQ       -> PROCESSED-STRING-ELEMENT
+		PROCESSING            -> PROCESSED-STRING-ELEMENT
 
-		"$$"                        -> Processing
-		"${" ProcessingElement* "}" -> Processing
-		"$" IPlainId                -> Processing
+		"$$"                         -> PROCESSING
+		"${" PROCESSING-ELEMENT* "}" -> PROCESSING
+		"$" IPLAIN-ID                -> PROCESSING
 
-		"{" ProcessingElement* "}" -> ProcessingElement
-		[\0-\127] / [\{\}\"]       -> ProcessingElement
-		ProcessedString            -> ProcessingElement
-		StringLiteral              -> ProcessingElement
+		"{" PROCESSING-ELEMENT* "}" -> PROCESSING-ELEMENT
+		[\0-\127] / [\{\}\"]        -> PROCESSING-ELEMENT
+		PROCESSED-STRING            -> PROCESSING-ELEMENT
+		STRING              -> PROCESSING-ELEMENT
 
-		([\"]? [\"]? CharNoDoubleQuote)* [\"]* -> MultiLineChars
+		([\"]? [\"]? CHAR-NO-DOUBLE-QUOTE)* [\"]* -> MULTI-LINE-CHARS
 
-		([\"]? [\"]? IMultiLineProcessedStringElement)* [\"]* -> MultiLineProcessedStringElement
+		([\"]? [\"]? IMULTI-LINE-PROCESSED-STRING-ELEMENT)* [\"]* -> MULTI-LINE-PROCESSED-STRING-ELEMENT
 
-		Processing         -> IMultiLineProcessedStringElement
-		[\0-\127] / [\"\$] -> IMultiLineProcessedStringElement
+		PROCESSING         -> IMULTI-LINE-PROCESSED-STRING-ELEMENT
+		[\0-\127] / [\"\$] -> IMULTI-LINE-PROCESSED-STRING-ELEMENT
 
-		[\"]      -> DoubleQuote
-		[\"] [\"] -> DoubleDoubleQuote
+		[\"]      -> DOUBLE-QUOTE
+		[\"] [\"] -> DOUBLE-DOUBLE-QUOTE
 
-		"'" IPlainId -> SymbolLiteral
+		"'" IPLAIN-ID -> SYMBOL
 
 	lexical restrictions
-		IntegerLiteral -/- [0-9a-zA-Z]
-		FloatingPointLiteral -/- [0-9a-zA-Z]
-		Literal -/- [0-9a-zA-Z]
-		"true" -/- [a-zA-Z0-9]
-		"false" -/- [a-zA-Z0-9]
-		DoubleQuote -/- [\"]
-		DoubleDoubleQuote -/- [\"]
+		INTEGER        -/- [0-9a-zA-Z]
+		FLOATING-POINT -/- [0-9a-zA-Z]
+		Literal        -/- [0-9a-zA-Z]
+		"true"         -/- [0-9a-zA-Z]
+		"false"        -/- [0-9a-zA-Z]
+		DOUBLE-QUOTE        -/- [\"]
+		DOUBLE-DOUBLE-QUOTE -/- [\"]
 		
 	context-free syntax
-		IntegerLiteral       -> Literal {"Int"}
-		FloatingPointLiteral -> Literal {"Float"}
-		BooleanLiteral       -> Literal
-		CharacterLiteral     -> Literal {"Char"}
-		StringLiteral        -> Literal {"String"}
-		SymbolLiteral        -> Literal {"Symbol"}
-		"null"               -> Literal {"Null"}
-		ProcessedString      -> Literal {"ProcessedString"}
+		INTEGER          -> Literal {"Int"}
+		FLOATING-POINT   -> Literal {"Float"}
+		BooleanLiteral   -> Literal
+		CHAR             -> Literal {"Char"}
+		STRING           -> Literal {"String"}
+		SYMBOL           -> Literal {"Symbol"}
+		"null"           -> Literal {"Null"}
+		PROCESSED-STRING -> Literal {"ProcessedString"}
 
 		"true"  -> BooleanLiteral {"True"}
 		"false" -> BooleanLiteral {"False"}

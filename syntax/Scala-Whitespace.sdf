@@ -7,13 +7,13 @@ exports
 	lexical syntax
 		[\ \t\n\r]       -> LAYOUT
 		"//" ~[\n]* [\n] -> LAYOUT
-		BlockComment     -> LAYOUT
+		BLOCK-COMMENT    -> LAYOUT
 
-		"/*" BlockCommentPart* "*/" -> BlockComment
-		~[\/\*]      -> BlockCommentPart
-		Asterisk     -> BlockCommentPart
-		Slash        -> BlockCommentPart
-		BlockComment -> BlockCommentPart
+		"/*" BLOCK-COMMENT-PART* "*/" -> BLOCK-COMMENT
+		~[\/\*]       -> BLOCK-COMMENT-PART
+		ASTERISK      -> BLOCK-COMMENT-PART
+		SLASH         -> BLOCK-COMMENT-PART
+		BLOCK-COMMENT -> BLOCK-COMMENT-PART
 
 		    -> EOL
 		    -> EOF
@@ -21,14 +21,14 @@ exports
 		    -> EOP
 		";" -> SEMI
 
-		[\n] -> Nl
-		[\*] -> Asterisk
-		[\/] -> Slash
+		[\n] -> NL
+		[\*] -> ASTERISK
+		[\/] -> SLASH
 
 	lexical restrictions
-		Asterisk -/- [\/]
-		Slash    -/- [\*]
-	
+		ASTERISK -/- [\/]
+		SLASH    -/- [\*]
+
 	context-free restrictions
 		LAYOUT? -/- [\ \t\n\r]
 		LAYOUT? -/- [\/].[\*]

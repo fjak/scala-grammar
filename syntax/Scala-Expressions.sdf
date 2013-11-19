@@ -36,17 +36,17 @@ exports
 			Expr "_"            -> Expr {"EtaExpansionExpr", left, layout("1.last.line == 2.first.line")}
 		}
 
-		> Prefix Expr             -> Expr {"PrefixExpr", prefer}
-		> Expr SpecialOp Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr MultOp Expr        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr SumOp Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr ColonOp Expr       -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr AssignOp Expr      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr BracketOp Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr AmpersandOp Expr   -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr CircumflexOp Expr  -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr BarOp Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr LetterOp Expr      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> PREFIX Expr             -> Expr {"PrefixExpr", prefer}
+		> Expr SPECIAL-OP Expr    -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr MULT-OP Expr       -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr SUM-OP Expr        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr COLON-OP Expr      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr ASSIGN-OP Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr BRACKET-OP Expr    -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr AMPERSAND-OP Expr  -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr CIRCUMFLEX-OP Expr -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr BAR-OP Expr        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr LETTER-OP Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr "match" "{" CaseClause+ "}" -> Expr {"MatchExpr"}
@@ -79,7 +79,7 @@ exports
 
 	context-free priorities
 		Expr "." Id        -> Expr {"DesignatorExpr", avoid}
-		> Prefix Expr      -> Expr {"PrefixExpr"}
+		> PREFIX Expr      -> Expr {"PrefixExpr"}
 
 
 	%%%%% NO Layout %%%%%%
@@ -101,19 +101,19 @@ exports
 			NoLExpr "_"         -> NoLExpr {"EtaExpansionExpr", left}
 		}
 
-		> Prefix NoLExpr               -> NoLExpr {"PrefixExpr", prefer}
-		> NoLExpr SpecialOp NoLExpr    -> NoLExpr {"InfixExpr", left}
-		> NoLExpr MultOp NoLExpr       -> NoLExpr {"InfixExpr", left}
-		> NoLExpr SumOp NoLExpr        -> NoLExpr {"InfixExpr", left}
-		> NoLExpr ColonOp NoLExpr      -> NoLExpr {"InfixExpr", left}
-		> NoLExpr AssignOp NoLExpr     -> NoLExpr {"InfixExpr", left}
-		> NoLExpr BracketOp NoLExpr    -> NoLExpr {"InfixExpr", left}
-		> NoLExpr AmpersandOp NoLExpr  -> NoLExpr {"InfixExpr", left}
-		> NoLExpr CircumflexOp NoLExpr -> NoLExpr {"InfixExpr", left}
-		> NoLExpr BarOp NoLExpr        -> NoLExpr {"InfixExpr", left}
-		> NoLExpr LetterOp NoLExpr     -> NoLExpr {"InfixExpr", left}
-		> NoLExpr Id                   -> NoLExpr {"PostfixExpr", avoid}
-		> NoLExpr Id                   -> NoLExpr {"PostfixExpr", avoid}
+		> PREFIX NoLExpr                -> NoLExpr {"PrefixExpr", prefer}
+		> NoLExpr SPECIAL-OP NoLExpr    -> NoLExpr {"InfixExpr", left}
+		> NoLExpr MULT-OP NoLExpr       -> NoLExpr {"InfixExpr", left}
+		> NoLExpr SUM-OP NoLExpr        -> NoLExpr {"InfixExpr", left}
+		> NoLExpr COLON-OP NoLExpr      -> NoLExpr {"InfixExpr", left}
+		> NoLExpr ASSIGN-OP NoLExpr     -> NoLExpr {"InfixExpr", left}
+		> NoLExpr BRACKET-OP NoLExpr    -> NoLExpr {"InfixExpr", left}
+		> NoLExpr AMPERSAND-OP NoLExpr  -> NoLExpr {"InfixExpr", left}
+		> NoLExpr CIRCUMFLEX-OP NoLExpr -> NoLExpr {"InfixExpr", left}
+		> NoLExpr BAR-OP NoLExpr        -> NoLExpr {"InfixExpr", left}
+		> NoLExpr LETTER-OP NoLExpr     -> NoLExpr {"InfixExpr", left}
+		> NoLExpr Id                    -> NoLExpr {"PostfixExpr", avoid}
+		> NoLExpr Id                    -> NoLExpr {"PostfixExpr", avoid}
 		> NoLExpr "match" "{" CaseClause+ "}" -> NoLExpr {"MatchExpr"}
 		> NoLExpr ArgumentExprs "=" NoLExpr   -> NoLExpr {"AccessAssignmentExpr", non-assoc}
 		<0> > NoLExpr "." Id "=" NoLExpr      -> NoLExpr {"DesignatorAssignmentExpr", non-assoc}
@@ -144,7 +144,7 @@ exports
 
 	context-free priorities
 		NoLExpr "." Id        -> NoLExpr {"DesignatorExpr", avoid}
-		> Prefix NoLExpr      -> NoLExpr {"PrefixExpr"}
+		> PREFIX NoLExpr      -> NoLExpr {"PrefixExpr"}
 
 	%%%%% Repeat Priorities in context-free syntax for correct PPTable generation %%%%%
 	context-free syntax
@@ -156,17 +156,17 @@ exports
 		"new" ClassTemplate                          -> Expr {"NewClassExpr", prefer}
 		"new" TemplateBody                           -> Expr {"NewTemplateExpr", prefer}
 		Expr "_"                                     -> Expr {"EtaExpansionExpr", left, layout("1.last.line == 2.first.line")}
-		Prefix Expr                                  -> Expr {"PrefixExpr", prefer}
-		Expr SpecialOp Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr MultOp Expr                             -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr SumOp Expr                              -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr ColonOp Expr                            -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr AssignOp Expr                           -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr BracketOp Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr AmpersandOp Expr                        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr CircumflexOp Expr                       -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr BarOp Expr                              -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr LetterOp Expr                           -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		PREFIX Expr                                  -> Expr {"PrefixExpr", prefer}
+		Expr SPECIAL-OP Expr                         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr MULT-OP Expr                            -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr SUM-OP Expr                             -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr COLON-OP Expr                           -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr ASSIGN-OP Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr BRACKET-OP Expr                         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr AMPERSAND-OP Expr                       -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr CIRCUMFLEX-OP Expr                      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr BAR-OP Expr                             -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr LETTER-OP Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		Expr Id                                      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		Expr "match" "{" CaseClause+ "}"             -> Expr {"MatchExpr"}
 		Expr ArgumentExprs "=" Expr                  -> Expr {"AccessAssignmentExpr", non-assoc}
@@ -194,7 +194,7 @@ exports
 		Id "=" Expr                                  -> Expr {"AssignmentExpr", non-assoc}
 		Expr Ascription                              -> Expr {"AscriptionExpr", avoid}
 		Expr "." Id                                  -> Expr {"DesignatorExpr", avoid}
-		Prefix Expr                                  -> Expr {"PrefixExpr"}
+		PREFIX Expr                                  -> Expr {"PrefixExpr"}
 
 		"_"                                              -> NoLExpr {"WildcardExpr"}
 		Literal                                          -> NoLExpr {prefer}
@@ -205,17 +205,17 @@ exports
 		"new" ClassTemplate                              -> NoLExpr {"NewClassExpr", prefer}
 		"new" TemplateBody                               -> NoLExpr {"NewTemplateExpr", prefer}
 		NoLExpr "_"                                      -> NoLExpr {"EtaExpansionExpr", left}
-		Prefix NoLExpr                                   -> NoLExpr {"PrefixExpr", prefer}
-		NoLExpr SpecialOp NoLExpr                        -> NoLExpr {"InfixExpr", left}
-		NoLExpr MultOp NoLExpr                           -> NoLExpr {"InfixExpr", left}
-		NoLExpr SumOp NoLExpr                            -> NoLExpr {"InfixExpr", left}
-		NoLExpr ColonOp NoLExpr                          -> NoLExpr {"InfixExpr", left}
-		NoLExpr AssignOp NoLExpr                         -> NoLExpr {"InfixExpr", left}
-		NoLExpr BracketOp NoLExpr                        -> NoLExpr {"InfixExpr", left}
-		NoLExpr AmpersandOp NoLExpr                      -> NoLExpr {"InfixExpr", left}
-		NoLExpr CircumflexOp NoLExpr                     -> NoLExpr {"InfixExpr", left}
-		NoLExpr BarOp NoLExpr                            -> NoLExpr {"InfixExpr", left}
-		NoLExpr LetterOp NoLExpr                         -> NoLExpr {"InfixExpr", left}
+		PREFIX NoLExpr                                   -> NoLExpr {"PrefixExpr", prefer}
+		NoLExpr SPECIAL-OP NoLExpr                       -> NoLExpr {"InfixExpr", left}
+		NoLExpr MULT-OP NoLExpr                          -> NoLExpr {"InfixExpr", left}
+		NoLExpr SUM-OP NoLExpr                           -> NoLExpr {"InfixExpr", left}
+		NoLExpr COLON-OP NoLExpr                         -> NoLExpr {"InfixExpr", left}
+		NoLExpr ASSIGN-OP NoLExpr                        -> NoLExpr {"InfixExpr", left}
+		NoLExpr BRACKET-OP NoLExpr                       -> NoLExpr {"InfixExpr", left}
+		NoLExpr AMPERSAND-OP NoLExpr                     -> NoLExpr {"InfixExpr", left}
+		NoLExpr CIRCUMFLEX-OP NoLExpr                    -> NoLExpr {"InfixExpr", left}
+		NoLExpr BAR-OP NoLExpr                           -> NoLExpr {"InfixExpr", left}
+		NoLExpr LETTER-OP NoLExpr                        -> NoLExpr {"InfixExpr", left}
 		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
 		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
 		NoLExpr "match" "{" CaseClause+ "}"              -> NoLExpr {"MatchExpr"}
@@ -244,7 +244,7 @@ exports
 		NoLExpr Ascription                               -> NoLExpr {"AscriptionExpr", avoid}
 		Id "=" NoLExpr                                   -> NoLExpr {"AssignmentExpr", non-assoc}
 		NoLExpr "." Id                                   -> NoLExpr {"DesignatorExpr", avoid}
-		Prefix NoLExpr                                   -> NoLExpr {"PrefixExpr"}
+		PREFIX NoLExpr                                   -> NoLExpr {"PrefixExpr"}
 
 
 	%%%%% Common %%%%%%

@@ -6,34 +6,35 @@ imports
 
 exports
 	lexical syntax
-		PlainId -> InfixPatternOp
-		"|" -> InfixPatternOp {reject}
+		PLAIN-ID -> INFIX-PATTERN-OP
+		"|" -> INFIX-PATTERN-OP {reject}
 
 	context-free priorities
 		{
-			"_"                                                        -> SimplePattern {"WildcardPattern"}
-			%% VarId                                                      -> SimplePattern {"VariablePattern"}
-			Literal                                                    -> SimplePattern {"LiteralPattern"}
-			StableId                                                   -> SimplePattern
-			StableId "(" Patterns ")"                                  -> SimplePattern {"ConstructorPattern"}
-			"(" Patterns ")"                                           -> SimplePattern {"TuplePattern"}
-			StableId "(" (Patterns ",")? (VarPlainId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
+			"_"                        -> SimplePattern {"WildcardPattern"}
+			%% VarId                      -> SimplePattern {"VariablePattern"}
+			Literal                    -> SimplePattern {"LiteralPattern"}
+			StableId                   -> SimplePattern
+			StableId "(" Patterns ")"  -> SimplePattern {"ConstructorPattern"}
+			"(" Patterns ")"           -> SimplePattern {"TuplePattern"}
+			StableId "(" (Patterns ",")? (VAR-PLAIN-ID "@")? "_" "*" ")"
+			                           -> SimplePattern {"PatternSequence"}
 		}
 
 		> {
-			Pattern3 InfixPatternOp Pattern3 -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			SimplePattern                    -> Pattern3
+			Pattern3 INFIX-PATTERN-OP Pattern3 -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			SimplePattern                      -> Pattern3
 		}
 
 		> {
-			VarPlainId "@" Pattern3 -> Pattern2 {"PatternBinder"}
-			Pattern3                -> Pattern2
+			VAR-PLAIN-ID "@" Pattern3 -> Pattern2 {"PatternBinder"}
+			Pattern3                  -> Pattern2
 		}
 
 		> {
-			VarPlainId ":" Type -> Pattern1 {"TypedPattern"}
-			"_" ":" Type        -> Pattern1 {"WildcardTypedPattern"}
-			Pattern2            -> Pattern1
+			VAR-PLAIN-ID ":" Type -> Pattern1 {"TypedPattern"}
+			"_" ":" Type          -> Pattern1 {"WildcardTypedPattern"}
+			Pattern2              -> Pattern1
 		}
 
 		> {
@@ -43,16 +44,16 @@ exports
 
 	%%%%% Repeat priorities in context-free syntax for correct PPTable generation %%%%%
 	context-free syntax
-		"_"                                                        -> SimplePattern {"WildcardPattern"}
-		Literal                                                    -> SimplePattern {"LiteralPattern"}
-		StableId "(" Patterns ")"                                  -> SimplePattern {"ConstructorPattern"}
-		"(" Patterns ")"                                           -> SimplePattern {"TuplePattern"}
-		StableId "(" (Patterns ",")? (VarPlainId "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
-		Pattern3 InfixPatternOp Pattern3                           -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		VarPlainId "@" Pattern3                                    -> Pattern2 {"PatternBinder"}
-		VarPlainId ":" Type                                        -> Pattern1 {"TypedPattern"}
-		"_" ":" Type                                               -> Pattern1 {"WildcardTypedPattern"}
-		Pattern "|" Pattern                                        -> Pattern {"DisjunctPattern", left}
+		"_"                                                          -> SimplePattern {"WildcardPattern"}
+		Literal                                                      -> SimplePattern {"LiteralPattern"}
+		StableId "(" Patterns ")"                                    -> SimplePattern {"ConstructorPattern"}
+		"(" Patterns ")"                                             -> SimplePattern {"TuplePattern"}
+		StableId "(" (Patterns ",")? (VAR-PLAIN-ID "@")? "_" "*" ")" -> SimplePattern {"PatternSequence"}
+		Pattern3 INFIX-PATTERN-OP Pattern3                           -> Pattern3 {"InfixPattern", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		VAR-PLAIN-ID "@" Pattern3                                    -> Pattern2 {"PatternBinder"}
+		VAR-PLAIN-ID ":" Type                                        -> Pattern1 {"TypedPattern"}
+		"_" ":" Type                                                 -> Pattern1 {"WildcardTypedPattern"}
+		Pattern "|" Pattern                                          -> Pattern {"DisjunctPattern", left}
 
 	context-free syntax
 		{Pattern ","}* -> Patterns {"Patterns"}

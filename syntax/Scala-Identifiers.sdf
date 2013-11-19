@@ -1,203 +1,203 @@
 module Scala-Identifiers
 
 exports
+	lexical syntax
+		[A-Z] | [\$]   -> UPPER
+		[a-z]          -> LOWER
+		UPPER | LOWER  -> LETTER
+		[0-9]          -> DIGIT
+		LETTER | DIGIT -> ID-REST
 
-lexical syntax
-	[A-Z] | [\$] -> Upper
-	[a-z] -> Lower
-	Upper | Lower -> Letter
-	[0-9] -> Digit
-	Letter | Digit -> IdRest
-	
-	[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OpChar
+		[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OP-CHAR
 
-	%% Operators by precedence from low to high
-	VarPlainId | ConstPlainId     -> LetterOp
-	[\|] OpChar*                 -> BarOp
-	[\^] OpChar*                 -> CircumflexOp
-	[\&] OpChar*                 -> AmpersandOp
-	([\<] | [\>]) OpChar*        -> BracketOp
-	([\=] | [\!]) OpChar*        -> AssignOp
-	[\:] OpChar*                 -> ColonOp
-	([\+] | [\-]) OpChar*        -> SumOp
-	([\*] | [\/] | [\%]) OpChar* -> MultOp
-	[\#\?\@\\\~] OpChar*         -> SpecialOp
+		%% OPerators by precedence from low to high
+		VAR-PLAIN-ID | CONST-PLAIN-ID -> LETTER-OP
+		[\|] OP-CHAR*                 -> BAR-OP
+		[\^] OP-CHAR*                 -> CIRCUMFLEX-OP
+		[\&] OP-CHAR*                 -> AMPERSAND-OP
+		([\<] | [\>]) OP-CHAR*        -> BRACKET-OP
+		([\=] | [\!]) OP-CHAR*        -> ASSIGN-OP
+		[\:] OP-CHAR*                 -> COLON-OP
+		([\+] | [\-]) OP-CHAR*        -> SUM-OP
+		([\*] | [\/] | [\%]) OP-CHAR* -> MULT-OP
+		[\#\?\@\\\~] OP-CHAR*         -> SPECIAL-OP
 
-	"="  -> AssignOp {reject}
-	"=>" -> AssignOp {reject}
-	":"  -> ColonOp  {reject}
-	"<-" -> BracketOp {reject}
-	"<:" -> BracketOp {reject}
-	"<%" -> BracketOp {reject}
-	">:" -> BracketOp {reject}
-	"#"  -> SpecialOp {reject}
-	"@"  -> SpecialOp {reject}
-	
-	OpChar+ -> Op
-	
-	Lower -> IVarId
-	(IVarId | IVarIdUSS) IdRest -> IVarId
-	(IVarId | IVarIdUSS) [\_] -> IVarIdUSS
-	IVarIdUSS Op -> IVarIdOp
-	
-	[\_] -> IConstId
-	Upper -> IConstId
-	(IConstId | IConstIdUSS) IdRest -> IConstId
-	(IConstId | IConstIdUSS) [\_] -> IConstIdUSS
-	IConstIdUSS [\_] -> IConstIdUSS
-	IConstIdUSS Op -> IConstIdOp
-	
-	IVarId -> VarId
-	IVarIdUSS -> VarIdUSS
-	IVarIdOp -> VarIdOp
-	IConstId -> ConstId
-	IConstIdUSS -> ConstIdUSS
-	IConstIdOp -> ConstIdOp
-	
-	(VarId  | VarIdUSS  | VarIdOp)  -> IVarPlainId
-	(ConstId | ConstIdUSS | ConstIdOp) -> IConstPlainId
+		"="  -> ASSIGN-OP  {reject}
+		"=>" -> ASSIGN-OP  {reject}
+		":"  -> COLON-OP   {reject}
+		"<-" -> BRACKET-OP {reject}
+		"<:" -> BRACKET-OP {reject}
+		"<%" -> BRACKET-OP {reject}
+		">:" -> BRACKET-OP {reject}
+		"#"  -> SPECIAL-OP {reject}
+		"@"  -> SPECIAL-OP {reject}
 
-	Op           -> IPlainId
-	IVarPlainId  -> IPlainId
-	IConstPlainId -> IPlainId
+		OP-CHAR+ -> OP
 
-	IVarPlainId  -> VarPlainId
-	IConstPlainId -> ConstPlainId
-	IPlainId     -> PlainId
-	
-	"abstract"  -> Keyword
-	"case"      -> Keyword
-	"catch"     -> Keyword
-	"class"     -> Keyword
-	"def"       -> Keyword
-	"do"        -> Keyword
-	"else"      -> Keyword
-	"extends"   -> Keyword
-	"false"     -> Keyword
-	"final"     -> Keyword
-	"finally"   -> Keyword
-	"for"       -> Keyword
-	"forSome"   -> Keyword
-	"if"        -> Keyword
-	"implicit"  -> Keyword
-	"import"    -> Keyword
-	"lazy"      -> Keyword
-	"macro"     -> Keyword
-	"match"     -> Keyword
-	"new"       -> Keyword
-	"null"      -> Keyword
-	"object"    -> Keyword
-	"override"  -> Keyword
-	"package"   -> Keyword
-	"private"   -> Keyword
-	"protected" -> Keyword
-	"return"    -> Keyword
-	"sealed"    -> Keyword
-	"super"     -> Keyword
-	"this"      -> Keyword
-	"throw"     -> Keyword
-	"trait"     -> Keyword
-	"try"       -> Keyword
-	"true"      -> Keyword
-	"type"      -> Keyword
-	"val"       -> Keyword
-	"var"       -> Keyword
-	"while"     -> Keyword
-	"with"      -> Keyword
-	"yield"     -> Keyword
-	"_"         -> Keyword
-	":"         -> Keyword
-	"="         -> Keyword
-	"=>"        -> Keyword
-	"<-"        -> Keyword
-	"<:"        -> Keyword
-	"<%"        -> Keyword
-	">:"        -> Keyword
-	"#"         -> Keyword
-	"@"         -> Keyword
+		LOWER                           -> IVAR-ID
+		(IVAR-ID | IVAR-ID-USS) ID-REST -> IVAR-ID
+		(IVAR-ID | IVAR-ID-USS) [\_]    -> IVAR-ID-USS
+		IVAR-ID-USS OP                  -> IVAR-ID-OP
 
-	Keyword     -> VarPlainId {reject}
-	Keyword     -> ConstPlainId {reject}
-	Keyword     -> PlainId {reject}
+		[\_]                                -> ICONST-ID
+		UPPER                               -> ICONST-ID
+		(ICONST-ID | ICONST-ID-USS) ID-REST -> ICONST-ID
+		(ICONST-ID | ICONST-ID-USS) [\_]    -> ICONST-ID-USS
+		ICONST-ID-USS [\_]                  -> ICONST-ID-USS
+		ICONST-ID-USS OP                    -> ICONST-ID-OP
 
-	"-" -> MinusPrefix
-	"+"         -> Prefix
-	MinusPrefix -> Prefix
-	"~"         -> Prefix
-	"!"         -> Prefix
+		IVAR-ID     -> VAR-ID
+		IVAR-ID-USS -> VAR-ID-USS
+		IVAR-ID-OP  -> VAR-ID-OP
 
-	"`" ~[\`]+ "`" -> FancyId
-	FancyId        -> PlainId
+		ICONST-ID     -> CONST-ID
+		ICONST-ID-USS -> CONST-ID-USS
+		ICONST-ID-OP  -> CONST-ID-OP
 
-lexical restrictions
-	Op -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	
-	LetterOp      -/- [a-zA-Z0-9]
-	BarOp         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	CircumflexOp  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	AmpersandOp   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	BracketOp     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	AssignOp      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	ColonOp       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	SumOp         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	MultOp        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	SpecialOp     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		(VAR-ID   | VAR-ID-USS   | VAR-ID-OP)   -> IVAR-PLAIN-ID
+		(CONST-ID | CONST-ID-USS | CONST-ID-OP) -> ICONST-PLAIN-ID
 
-	VarId  -/- [A-Za-z0-9\$\_]
-	ConstId -/- [A-Za-z0-9\$\_]
-	
-	VarIdUSS -/-  [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	ConstIdUSS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		OP              -> IPLAIN-ID
+		IVAR-PLAIN-ID   -> IPLAIN-ID
+		ICONST-PLAIN-ID -> IPLAIN-ID
 
-	"abstract" -/- [a-zA-Z0-9\$\_]
-	"case"     -/- [a-zA-Z0-9\$\_]
-	"catch"    -/- [a-zA-Z0-9\$\_]
-	"class"    -/- [a-zA-Z0-9\$\_]
-	"def"      -/- [a-zA-Z0-9\$\_]
-	"do"       -/- [a-zA-Z0-9\$\_]
-	"else"     -/- [a-zA-Z0-9\$\_]
-	"extends"  -/- [a-zA-Z0-9\$\_]
-	"false"    -/- [a-zA-Z0-9\$\_]
-	"final"    -/- [a-zA-Z0-9\$\_]
-	"finally"  -/- [a-zA-Z0-9\$\_]
-	"for"      -/- [a-zA-Z0-9\$\_]
-	"forSome"  -/- [a-zA-Z0-9\$\_]
-	"if"       -/- [a-zA-Z0-9\$\_]
-	"implicit" -/- [a-zA-Z0-9\$\_]
-	"import"   -/- [a-zA-Z0-9\$\_]
-	"lazy"     -/- [a-zA-Z0-9\$\_]
-	"macro"    -/- [a-zA-Z0-9\$\_]
-	"match"    -/- [a-zA-Z0-9\$\_]
-	"new"      -/- [a-zA-Z0-9\$\_]
-	"null"     -/- [a-zA-Z0-9\$\_]
-	"object"   -/- [a-zA-Z0-9\$\_]
-	"override" -/- [a-zA-Z0-9\$\_]
-	"package"  -/- [a-zA-Z0-9\$\_]
-	"private"  -/- [a-zA-Z0-9\$\_]
-	"protected"-/- [a-zA-Z0-9\$\_]
-	"return"   -/- [a-zA-Z0-9\$\_]
-	"sealed"   -/- [a-zA-Z0-9\$\_]
-	"super"    -/- [a-zA-Z0-9\$\_]
-	"this"     -/- [a-zA-Z0-9\$\_]
-	"throw"    -/- [a-zA-Z0-9\$\_]
-	"trait"    -/- [a-zA-Z0-9\$\_]
-	"try"      -/- [a-zA-Z0-9\$\_]
-	"true"     -/- [a-zA-Z0-9\$\_]
-	"type"     -/- [a-zA-Z0-9\$\_]
-	"val"      -/- [a-zA-Z0-9\$\_]
-	"var"      -/- [a-zA-Z0-9\$\_]
-	"while"    -/- [a-zA-Z0-9\$\_]
-	"with"     -/- [a-zA-Z0-9\$\_]
-	"yield"    -/- [a-zA-Z0-9\$\_]
+		IVAR-PLAIN-ID   -> VAR-PLAIN-ID
+		ICONST-PLAIN-ID -> CONST-PLAIN-ID
+		IPLAIN-ID       -> PLAIN-ID
 
-	"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-	"_" -/- [a-zA-Z0-9\_\$]
+		"abstract"  -> KEYWORD
+		"case"      -> KEYWORD
+		"catch"     -> KEYWORD
+		"class"     -> KEYWORD
+		"def"       -> KEYWORD
+		"do"        -> KEYWORD
+		"else"      -> KEYWORD
+		"extends"   -> KEYWORD
+		"false"     -> KEYWORD
+		"final"     -> KEYWORD
+		"finally"   -> KEYWORD
+		"for"       -> KEYWORD
+		"forSome"   -> KEYWORD
+		"if"        -> KEYWORD
+		"implicit"  -> KEYWORD
+		"import"    -> KEYWORD
+		"lazy"      -> KEYWORD
+		"macro"     -> KEYWORD
+		"match"     -> KEYWORD
+		"new"       -> KEYWORD
+		"null"      -> KEYWORD
+		"object"    -> KEYWORD
+		"override"  -> KEYWORD
+		"package"   -> KEYWORD
+		"private"   -> KEYWORD
+		"protected" -> KEYWORD
+		"return"    -> KEYWORD
+		"sealed"    -> KEYWORD
+		"super"     -> KEYWORD
+		"this"      -> KEYWORD
+		"throw"     -> KEYWORD
+		"trait"     -> KEYWORD
+		"try"       -> KEYWORD
+		"true"      -> KEYWORD
+		"type"      -> KEYWORD
+		"val"       -> KEYWORD
+		"var"       -> KEYWORD
+		"while"     -> KEYWORD
+		"with"      -> KEYWORD
+		"yield"     -> KEYWORD
+		"_"         -> KEYWORD
+		":"         -> KEYWORD
+		"="         -> KEYWORD
+		"=>"        -> KEYWORD
+		"<-"        -> KEYWORD
+		"<:"        -> KEYWORD
+		"<%"        -> KEYWORD
+		">:"        -> KEYWORD
+		"#"         -> KEYWORD
+		"@"         -> KEYWORD
 
-	Prefix -/- [\+\-\~\!]
-	MinusPrefix -/- [0-9]
+		KEYWORD  -> VAR-PLAIN-ID   {reject}
+		KEYWORD  -> CONST-PLAIN-ID {reject}
+		KEYWORD  -> PLAIN-ID       {reject}
 
-	FancyId -/- [a-zA-Z0-9\_\$]
+		"-"          -> MINUS-PREFIX
+		"+"          -> PREFIX
+		MINUS-PREFIX -> PREFIX
+		"~"          -> PREFIX
+		"!"          -> PREFIX
 
-context-free syntax
-	PlainId -> Id {"Id"}
+		"`" ~[\`]+ "`" -> FANCY-ID
+		FANCY-ID       -> PLAIN-ID
+
+	lexical restrictions
+		OP -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+
+		LETTER-OP      -/- [a-zA-Z0-9]
+		BAR-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		CIRCUMFLEX-OP  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		AMPERSAND-OP   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		BRACKET-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		ASSIGN-OP      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		COLON-OP       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		SUM-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		MULT-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		SPECIAL-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+
+		VAR-ID   -/- [A-Za-z0-9\$\_]
+		CONST-ID -/- [A-Za-z0-9\$\_]
+
+		VAR-ID-USS   -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		CONST-ID-USS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+
+		"abstract" -/- [a-zA-Z0-9\$\_]
+		"case"     -/- [a-zA-Z0-9\$\_]
+		"catch"    -/- [a-zA-Z0-9\$\_]
+		"class"    -/- [a-zA-Z0-9\$\_]
+		"def"      -/- [a-zA-Z0-9\$\_]
+		"do"       -/- [a-zA-Z0-9\$\_]
+		"else"     -/- [a-zA-Z0-9\$\_]
+		"extends"  -/- [a-zA-Z0-9\$\_]
+		"false"    -/- [a-zA-Z0-9\$\_]
+		"final"    -/- [a-zA-Z0-9\$\_]
+		"finally"  -/- [a-zA-Z0-9\$\_]
+		"for"      -/- [a-zA-Z0-9\$\_]
+		"forSome"  -/- [a-zA-Z0-9\$\_]
+		"if"       -/- [a-zA-Z0-9\$\_]
+		"implicit" -/- [a-zA-Z0-9\$\_]
+		"import"   -/- [a-zA-Z0-9\$\_]
+		"lazy"     -/- [a-zA-Z0-9\$\_]
+		"macro"    -/- [a-zA-Z0-9\$\_]
+		"match"    -/- [a-zA-Z0-9\$\_]
+		"new"      -/- [a-zA-Z0-9\$\_]
+		"null"     -/- [a-zA-Z0-9\$\_]
+		"object"   -/- [a-zA-Z0-9\$\_]
+		"override" -/- [a-zA-Z0-9\$\_]
+		"package"  -/- [a-zA-Z0-9\$\_]
+		"private"  -/- [a-zA-Z0-9\$\_]
+		"protected"-/- [a-zA-Z0-9\$\_]
+		"return"   -/- [a-zA-Z0-9\$\_]
+		"sealed"   -/- [a-zA-Z0-9\$\_]
+		"super"    -/- [a-zA-Z0-9\$\_]
+		"this"     -/- [a-zA-Z0-9\$\_]
+		"throw"    -/- [a-zA-Z0-9\$\_]
+		"trait"    -/- [a-zA-Z0-9\$\_]
+		"try"      -/- [a-zA-Z0-9\$\_]
+		"true"     -/- [a-zA-Z0-9\$\_]
+		"type"     -/- [a-zA-Z0-9\$\_]
+		"val"      -/- [a-zA-Z0-9\$\_]
+		"var"      -/- [a-zA-Z0-9\$\_]
+		"while"    -/- [a-zA-Z0-9\$\_]
+		"with"     -/- [a-zA-Z0-9\$\_]
+		"yield"    -/- [a-zA-Z0-9\$\_]
+
+		"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		"_" -/- [a-zA-Z0-9\_\$]
+
+		PREFIX -/- [\+\-\~\!]
+		MINUS-PREFIX -/- [0-9]
+
+		FANCY-ID -/- [a-zA-Z0-9\_\$]
+
+	context-free syntax
+		PLAIN-ID -> Id {"Id"}

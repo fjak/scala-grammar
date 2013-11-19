@@ -6,6 +6,5 @@ imports
 	Scala-Types
 
 exports
-	
-context-free syntax
-	FunSig (":" Type)? "=" "macro" StableId TypeArgs? -> FunDef {"MacroDef"}
+	context-free syntax
+		FunSig (":" Type)? "=" "macro" StableId TypeArgs? -> FunDef {"MacroDef"}
