@@ -35,16 +35,16 @@ lexical syntax
 	
 	OpChar+ -> Op
 	
-	[\_] -> IVarId
 	Lower -> IVarId
 	(IVarId | IVarIdUSS) IdRest -> IVarId
 	(IVarId | IVarIdUSS) [\_] -> IVarIdUSS
-	IVarIdUSS [\_] -> IVarIdUSS
 	IVarIdUSS Op -> IVarIdOp
 	
+	[\_] -> IConstId
 	Upper -> IConstId
 	(IConstId | IConstIdUSS) IdRest -> IConstId
 	(IConstId | IConstIdUSS) [\_] -> IConstIdUSS
+	IConstIdUSS [\_] -> IConstIdUSS
 	IConstIdUSS Op -> IConstIdOp
 	
 	IVarId -> VarId
