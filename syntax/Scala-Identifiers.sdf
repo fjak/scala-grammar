@@ -11,6 +11,7 @@ exports
 		[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OP-CHAR
 
 		%% OPerators by precedence from low to high
+		OP-CHAR* [\=]                 -> ASSIGN-OP
 		VAR-PLAIN-ID | CONST-PLAIN-ID -> LETTER-OP
 		[\|] OP-CHAR*                 -> BAR-OP
 		[\^] OP-CHAR*                 -> CIRCUMFLEX-OP
@@ -22,6 +23,11 @@ exports
 		([\*] | [\/] | [\%]) OP-CHAR* -> MULT-OP
 		[\#\?\@\\\~] OP-CHAR*         -> SPECIAL-OP
 
+		[\=] OP-CHAR* [\=] -> ASSIGN-OP {reject}
+		"="  -> ASSIGN-OP  {reject}
+		"<=" -> ASSIGN-OP  {reject}
+		">=" -> ASSIGN-OP  {reject}
+		"!=" -> ASSIGN-OP  {reject}
 		"="  -> CMPR-OP    {reject}
 		"=>" -> CMPR-OP    {reject}
 		":"  -> COLON-OP   {reject}
@@ -31,6 +37,18 @@ exports
 		">:" -> BRACKET-OP {reject}
 		"#"  -> SPECIAL-OP {reject}
 		"@"  -> SPECIAL-OP {reject}
+
+		%% ASSIGN-OP is exception and thus more important than the other ops
+		ASSIGN-OP -> LETTER-OP     {reject}
+		ASSIGN-OP -> BAR-OP        {reject}
+		ASSIGN-OP -> CIRCUMFLEX-OP {reject}
+		ASSIGN-OP -> AMPERSAND-OP  {reject}
+		ASSIGN-OP -> BRACKET-OP    {reject}
+		ASSIGN-OP -> CMPR-OP       {reject}
+		ASSIGN-OP -> COLON-OP      {reject}
+		ASSIGN-OP -> SUM-OP        {reject}
+		ASSIGN-OP -> MULT-OP       {reject}
+		ASSIGN-OP -> SPECIAL-OP    {reject}
 
 		OP-CHAR+ -> OP
 
@@ -132,6 +150,7 @@ exports
 	lexical restrictions
 		OP -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 
+		ASSIGN-OP      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		LETTER-OP      -/- [a-zA-Z0-9]
 		BAR-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		CIRCUMFLEX-OP  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]

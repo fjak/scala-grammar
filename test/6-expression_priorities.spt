@@ -101,3 +101,7 @@ test [[
 test [[
 	1.2e-10f append -2.1e+100d
 ]]
+
+test assign op has lowest precedence [[
+	a ++= foo filter f
+]] parse to InfixExpr(_, "++=", InfixExpr(_, "filter", _))

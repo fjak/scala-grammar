@@ -47,6 +47,7 @@ exports
 		> Expr CIRCUMFLEX-OP Expr -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr BAR-OP Expr        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr LETTER-OP Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> Expr ASSIGN-OP Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr "match" "{" CaseClause+ "}" -> Expr {"MatchExpr"}
@@ -112,6 +113,7 @@ exports
 		> NoLExpr CIRCUMFLEX-OP NoLExpr -> NoLExpr {"InfixExpr", left}
 		> NoLExpr BAR-OP NoLExpr        -> NoLExpr {"InfixExpr", left}
 		> NoLExpr LETTER-OP NoLExpr     -> NoLExpr {"InfixExpr", left}
+		> NoLExpr ASSIGN-OP NoLExpr     -> NoLExpr {"InfixExpr", left}
 		> NoLExpr Id                    -> NoLExpr {"PostfixExpr", avoid}
 		> NoLExpr Id                    -> NoLExpr {"PostfixExpr", avoid}
 		> NoLExpr "match" "{" CaseClause+ "}" -> NoLExpr {"MatchExpr"}
@@ -167,6 +169,7 @@ exports
 		Expr CIRCUMFLEX-OP Expr                      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		Expr BAR-OP Expr                             -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		Expr LETTER-OP Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr ASSIGN-OP Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		Expr Id                                      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		Expr "match" "{" CaseClause+ "}"             -> Expr {"MatchExpr"}
 		Expr ArgumentExprs "=" Expr                  -> Expr {"AccessAssignmentExpr", non-assoc}
@@ -216,6 +219,7 @@ exports
 		NoLExpr CIRCUMFLEX-OP NoLExpr                    -> NoLExpr {"InfixExpr", left}
 		NoLExpr BAR-OP NoLExpr                           -> NoLExpr {"InfixExpr", left}
 		NoLExpr LETTER-OP NoLExpr                        -> NoLExpr {"InfixExpr", left}
+		NoLExpr ASSIGN-OP NoLExpr                        -> NoLExpr {"InfixExpr", left}
 		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
 		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
 		NoLExpr "match" "{" CaseClause+ "}"              -> NoLExpr {"MatchExpr"}
