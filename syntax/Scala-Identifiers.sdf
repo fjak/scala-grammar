@@ -23,6 +23,20 @@ exports
 		([\*] | [\/] | [\%]) OP-CHAR* -> MULT-OP
 		[\#\?\@\\\~] OP-CHAR*         -> SPECIAL-OP
 
+		%% right associative operators
+		%% TODO: Make RASSOC-LETTER-OP actually work
+		%%       Won't do at the current state, as of restrictions on OP
+		(VAR-PLAIN-ID | CONST-PLAIN-ID) [\:] -> RASSOC-LETTER-OP
+		[\|] OP-CHAR* [\:]                   -> RASSOC-BAR-OP
+		[\^] OP-CHAR* [\:]                   -> RASSOC-CIRCUMFLEX-OP
+		[\&] OP-CHAR* [\:]                   -> RASSOC-AMPERSAND-OP
+		([\<] | [\>]) OP-CHAR* [\:]          -> RASSOC-BRACKET-OP
+		([\=] | [\!]) OP-CHAR* [\:]          -> RASSOC-CMPR-OP
+		[\:] OP-CHAR* [\:]                   -> RASSOC-COLON-OP
+		([\+] | [\-]) OP-CHAR* [\:]          -> RASSOC-SUM-OP
+		([\*] | [\/] | [\%]) OP-CHAR* [\:]   -> RASSOC-MULT-OP
+		[\#\?\@\\\~] OP-CHAR* [\:]           -> RASSOC-SPECIAL-OP
+
 		[\=] OP-CHAR* [\=] -> ASSIGN-OP {reject}
 		"="  -> ASSIGN-OP  {reject}
 		"<=" -> ASSIGN-OP  {reject}
@@ -33,8 +47,10 @@ exports
 		":"  -> COLON-OP   {reject}
 		"<-" -> BRACKET-OP {reject}
 		"<:" -> BRACKET-OP {reject}
+		"<:" -> RASSOC-BRACKET-OP {reject}
 		"<%" -> BRACKET-OP {reject}
 		">:" -> BRACKET-OP {reject}
+		">:" -> RASSOC-BRACKET-OP {reject}
 		"#"  -> SPECIAL-OP {reject}
 		"@"  -> SPECIAL-OP {reject}
 
@@ -49,6 +65,19 @@ exports
 		ASSIGN-OP -> SUM-OP        {reject}
 		ASSIGN-OP -> MULT-OP       {reject}
 		ASSIGN-OP -> SPECIAL-OP    {reject}
+
+		%% Right associative identifiers have higher priority than
+		%% their left associative counterparts
+		RASSOC-LETTER-OP     -> LETTER-OP     {reject}
+		RASSOC-BAR-OP        -> BAR-OP        {reject}
+		RASSOC-CIRCUMFLEX-OP -> CIRCUMFLEX-OP {reject}
+		RASSOC-AMPERSAND-OP  -> AMPERSAND-OP  {reject}
+		RASSOC-BRACKET-OP    -> BRACKET-OP    {reject}
+		RASSOC-CMPR-OP       -> CMPR-OP       {reject}
+		RASSOC-COLON-OP      -> COLON-OP      {reject}
+		RASSOC-SUM-OP        -> SUM-OP        {reject}
+		RASSOC-MULT-OP       -> MULT-OP       {reject}
+		RASSOC-SPECIAL-OP    -> SPECIAL-OP    {reject}
 
 		OP-CHAR+ -> OP
 
@@ -161,6 +190,17 @@ exports
 		SUM-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		MULT-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		SPECIAL-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+
+		RASSOC-LETTER-OP      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-BAR-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-CIRCUMFLEX-OP  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-AMPERSAND-OP   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-BRACKET-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-CMPR-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-COLON-OP       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-SUM-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-MULT-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		RASSOC-SPECIAL-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 
 		VAR-ID   -/- [A-Za-z0-9\$\_]
 		CONST-ID -/- [A-Za-z0-9\$\_]

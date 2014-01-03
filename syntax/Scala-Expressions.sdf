@@ -37,16 +37,46 @@ exports
 		}
 
 		> PREFIX Expr             -> Expr {"PrefixExpr", prefer}
-		> Expr SPECIAL-OP Expr    -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr MULT-OP Expr       -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr SUM-OP Expr        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr COLON-OP Expr      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr CMPR-OP Expr       -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr BRACKET-OP Expr    -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr AMPERSAND-OP Expr  -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr CIRCUMFLEX-OP Expr -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr BAR-OP Expr        -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr LETTER-OP Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		> {
+			Expr SPECIAL-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-SPECIAL-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr MULT-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-MULT-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr SUM-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-SUM-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr COLON-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-COLON-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr CMPR-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-CMPR-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr BRACKET-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-BRACKET-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr AMPERSAND-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-AMPERSAND-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr CIRCUMFLEX-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-CIRCUMFLEX-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr BAR-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-BAR-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
+		> {
+			Expr LETTER-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+			Expr RASSOC-LETTER-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		}
 		> Expr ASSIGN-OP Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
@@ -103,16 +133,46 @@ exports
 		}
 
 		> PREFIX NoLExpr                -> NoLExpr {"PrefixExpr", prefer}
-		> NoLExpr SPECIAL-OP NoLExpr    -> NoLExpr {"InfixExpr", left}
-		> NoLExpr MULT-OP NoLExpr       -> NoLExpr {"InfixExpr", left}
-		> NoLExpr SUM-OP NoLExpr        -> NoLExpr {"InfixExpr", left}
-		> NoLExpr COLON-OP NoLExpr      -> NoLExpr {"InfixExpr", left}
-		> NoLExpr CMPR-OP NoLExpr       -> NoLExpr {"InfixExpr", left}
-		> NoLExpr BRACKET-OP NoLExpr    -> NoLExpr {"InfixExpr", left}
-		> NoLExpr AMPERSAND-OP NoLExpr  -> NoLExpr {"InfixExpr", left}
-		> NoLExpr CIRCUMFLEX-OP NoLExpr -> NoLExpr {"InfixExpr", left}
-		> NoLExpr BAR-OP NoLExpr        -> NoLExpr {"InfixExpr", left}
-		> NoLExpr LETTER-OP NoLExpr     -> NoLExpr {"InfixExpr", left}
+		> {
+			NoLExpr SPECIAL-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-SPECIAL-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr MULT-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-MULT-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr SUM-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-SUM-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr COLON-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-COLON-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr CMPR-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-CMPR-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr BRACKET-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-BRACKET-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr AMPERSAND-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-AMPERSAND-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr CIRCUMFLEX-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-CIRCUMFLEX-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr BAR-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-BAR-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
+		> {
+			NoLExpr LETTER-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
+			NoLExpr RASSOC-LETTER-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
+		}
 		> NoLExpr ASSIGN-OP NoLExpr     -> NoLExpr {"InfixExpr", left}
 		> NoLExpr Id                    -> NoLExpr {"PostfixExpr", avoid}
 		> NoLExpr Id                    -> NoLExpr {"PostfixExpr", avoid}
@@ -169,6 +229,16 @@ exports
 		Expr CIRCUMFLEX-OP Expr                      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		Expr BAR-OP Expr                             -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		Expr LETTER-OP Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-SPECIAL-OP Expr                  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-MULT-OP Expr                     -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-SUM-OP Expr                      -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-COLON-OP Expr                    -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-CMPR-OP Expr                     -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-BRACKET-OP Expr                  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-AMPERSAND-OP Expr                -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-CIRCUMFLEX-OP Expr               -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-BAR-OP Expr                      -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+		Expr RASSOC-LETTER-OP Expr                   -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		Expr ASSIGN-OP Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 		Expr Id                                      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
 		Expr "match" "{" CaseClause+ "}"             -> Expr {"MatchExpr"}
@@ -219,6 +289,16 @@ exports
 		NoLExpr CIRCUMFLEX-OP NoLExpr                    -> NoLExpr {"InfixExpr", left}
 		NoLExpr BAR-OP NoLExpr                           -> NoLExpr {"InfixExpr", left}
 		NoLExpr LETTER-OP NoLExpr                        -> NoLExpr {"InfixExpr", left}
+		NoLExpr RASSOC-SPECIAL-OP NoLExpr                -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-MULT-OP NoLExpr                   -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-SUM-OP NoLExpr                    -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-COLON-OP NoLExpr                  -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-CMPR-OP NoLExpr                   -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-BRACKET-OP NoLExpr                -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-AMPERSAND-OP NoLExpr              -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-CIRCUMFLEX-OP NoLExpr             -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-BAR-OP NoLExpr                    -> NoLExpr {"InfixExpr", right}
+		NoLExpr RASSOC-LETTER-OP NoLExpr                 -> NoLExpr {"InfixExpr", right}
 		NoLExpr ASSIGN-OP NoLExpr                        -> NoLExpr {"InfixExpr", left}
 		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
 		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}

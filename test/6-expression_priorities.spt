@@ -105,3 +105,12 @@ test [[
 test assign op has lowest precedence [[
 	a ++= foo filter f
 ]] parse to InfixExpr(_, "++=", InfixExpr(_, "filter", _))
+
+test right assoc operations [[
+	1 :: 2 :: Nil
+]] parse to InfixExpr(Int("1"), "::", InfixExpr(Int("2"), "::", Id("Nil")))
+
+// TODO: Fixme
+test right assoc letterop [[
+	1 colon_:: 2 colon_:: Nil
+]] parse to InfixExpr(Int("1"), "colon_::", InfixExpr(Int("2"), "colon_::", Id("Nil")))
