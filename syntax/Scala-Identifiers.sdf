@@ -16,14 +16,14 @@ exports
 		[\^] OP-CHAR*                 -> CIRCUMFLEX-OP
 		[\&] OP-CHAR*                 -> AMPERSAND-OP
 		([\<] | [\>]) OP-CHAR*        -> BRACKET-OP
-		([\=] | [\!]) OP-CHAR*        -> ASSIGN-OP
+		([\=] | [\!]) OP-CHAR*        -> CMPR-OP
 		[\:] OP-CHAR*                 -> COLON-OP
 		([\+] | [\-]) OP-CHAR*        -> SUM-OP
 		([\*] | [\/] | [\%]) OP-CHAR* -> MULT-OP
 		[\#\?\@\\\~] OP-CHAR*         -> SPECIAL-OP
 
-		"="  -> ASSIGN-OP  {reject}
-		"=>" -> ASSIGN-OP  {reject}
+		"="  -> CMPR-OP    {reject}
+		"=>" -> CMPR-OP    {reject}
 		":"  -> COLON-OP   {reject}
 		"<-" -> BRACKET-OP {reject}
 		"<:" -> BRACKET-OP {reject}
@@ -137,7 +137,7 @@ exports
 		CIRCUMFLEX-OP  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		AMPERSAND-OP   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		BRACKET-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		ASSIGN-OP      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+		CMPR-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		COLON-OP       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		SUM-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 		MULT-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
