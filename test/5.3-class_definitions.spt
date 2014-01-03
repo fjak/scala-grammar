@@ -90,6 +90,8 @@ test extends no layout [[
 	Bar
 ]]
 
+// The following are special layout cases, which hopefully do not have a large
+// impact on "real" code
 test TemplateBody layout fail [[
 	class C
 	
