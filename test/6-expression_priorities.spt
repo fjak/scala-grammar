@@ -110,6 +110,30 @@ test right assoc operations [[
 	1 :: 2 :: Nil
 ]] parse to InfixExpr(Int("1"), "::", InfixExpr(Int("2"), "::", Id("Nil")))
 
+test [[
+	+a + +b + +c
+]] parse to InfixExpr(
+              InfixExpr(
+                PrefixExpr("+", Id("a")),
+                "+",
+                PrefixExpr("+", Id("b"))),
+              "+",
+              PrefixExpr("+", Id("c")))
+
+test [[
+	+a :: -b :: c
+]] parse to InfixExpr(
+              PrefixExpr("+", Id("a")),
+              "::",
+              InfixExpr(
+                PrefixExpr("-", Id("b")),
+                "::",
+                Id("c")))
+
+test [[
+	!!b
+]] parse to PostfixExpr(Id("!!"), Id("b"))
+
 // TODO: Fixme
 test right assoc letterop [[
 	1 colon_:: 2 colon_:: Nil
