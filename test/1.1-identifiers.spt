@@ -24,3 +24,7 @@ test operator suffix id [[
 test fancy id [[
 	`2*^`
 ]] parse to Id(_)
+
+test [[
+	!
+]] parse to Id("!")
