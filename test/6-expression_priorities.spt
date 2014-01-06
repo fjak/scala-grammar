@@ -134,6 +134,23 @@ test [[
 	!!b
 ]] parse to PostfixExpr(Id("!!"), Id("b"))
 
+test [[
+	a !(b)
+]]
+
+test [[
+	! !true
+]] parse fails
+
+test [[
+	! (!true)
+]]
+
+test [[
+	! & !
+]] parse to PostfixExpr(PrefixExpr("!", Id("&")), Id("!"))
+
+
 // TODO: Fixme
 test right assoc letterop [[
 	1 colon_:: 2 colon_:: Nil

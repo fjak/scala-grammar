@@ -37,6 +37,7 @@ exports
 		}
 
 		> PREFIX Expr             -> Expr {"PrefixExpr", prefer}
+		> PREFIX Expr             -> Expr {"PrefixExpr", prefer}
 		> {
 			Expr SPECIAL-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
 			Expr RASSOC-SPECIAL-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
