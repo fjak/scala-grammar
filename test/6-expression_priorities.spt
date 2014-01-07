@@ -150,6 +150,20 @@ test [[
 	! & !
 ]] parse to PostfixExpr(PrefixExpr("!", Id("&")), Id("!"))
 
+test [[
+	!
+	a
+]] parse fails
+
+test [[
+	!(
+	a)
+]]
+
+test [[
+	(!
+	a)
+]]
 
 // TODO: Fixme
 test right assoc letterop [[
