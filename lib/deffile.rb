@@ -2,7 +2,7 @@ module DefFile
   def self.read_productions(deffile)
     prods = Set.new
     File.open(deffile).each do |l|
-      mtch = /->\s*(\w+)/.match(l)
+      mtch = /->\s*([a-zA-Z0-9_-]+)/.match(l)
       unless mtch.nil?
         prods << mtch[1]
       end
