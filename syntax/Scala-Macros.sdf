@@ -1,10 +1,11 @@
 module Scala-Macros
 
 imports
-	Scala-BasicDeclsDefs
-	Scala-Identifiers
-	Scala-Types
+Scala-BasicDeclsDefs
+Scala-Identifiers
+Scala-Types
 
 exports
-	context-free syntax
-		FunSig (":" Type)? "=" "macro" StableId TypeArgs? -> FunDef {"MacroDef"}
+
+context-free syntax
+FunSig (":" Type)? "=" "macro" StableId TypeArgs?         -> FunDef {"MacroDef"}

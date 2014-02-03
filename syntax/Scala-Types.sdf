@@ -1,101 +1,107 @@
 module Scala-Types
 
 imports
-	Scala-Annotations
-	Scala-BasicDeclsDefs
-	Scala-Identifiers
-	Scala-Whitespace
+Scala-Annotations
+Scala-BasicDeclsDefs
+Scala-Identifiers
+Scala-Whitespace
 
 exports
-	%% §3.1 Paths
-	context-free syntax
-		Id              -> Path {prefer}
-		{PathElem "."}+ -> Path {"Path"}
 
-		PLAIN-ID                              -> PathElem
-		"this"                                -> PathElem {"This"}
-		"super" ClassQualifier? "." PLAIN-ID  -> PathElem {"Super"}
+%% §3.1 Paths
+context-free syntax
+Id              -> Path                                                 {prefer}
+{PathElem "."}+ -> Path                                                 {"Path"}
 
-		PLAIN-ID                -> StableIdElem
-		"this"                  -> StableIdElem {"StableThis"}
-		"super" ClassQualifier? -> StableIdElem {"StableSuper"}
+PLAIN-ID                              -> PathElem
+"this"                                -> PathElem                       {"This"}
+"super" ClassQualifier? "." PLAIN-ID  -> PathElem                      {"Super"}
 
-		Id                               -> StableId
-		{StableIdElem "."}+ "." PLAIN-ID -> StableId {"StableId"}
+PLAIN-ID                -> StableIdElem
+"this"                  -> StableIdElem                           {"StableThis"}
+"super" ClassQualifier? -> StableIdElem                          {"StableSuper"}
 
-		"[" PLAIN-ID "]" -> ClassQualifier {"ClassQualifier"}
+Id                               -> StableId
+{StableIdElem "."}+ "." PLAIN-ID -> StableId                        {"StableId"}
 
-		PREFIX -> Path {reject} %% not 100% sure this is correct
+"[" PLAIN-ID "]" -> ClassQualifier                            {"ClassQualifier"}
 
-	context-free restrictions
-		StableId -/- [\.] . [\33-\126] / [\{\,\_]
+PREFIX -> Path {reject} %% not 100% sure this is correct
+
+context-free restrictions
+StableId -/- [\.] . [\33-\126] / [\{\,\_]
 
 
-	%% §3.2 - Value Types
-	context-free syntax
-		%% §3.2.1 - Singleton Types
-		Path "." "type"     -> SimpleType {"SingletonType"}
+%% §3.2 - Value Types
+context-free syntax
+%% §3.2.1 - Singleton Types
+Path "." "type"     -> SimpleType                              {"SingletonType"}
 
-		%% §3.2.2 - Type Projection
-		SimpleType "#" Id   -> SimpleType {"TypeProjection"}
+%% §3.2.2 - Type Projection
+SimpleType "#" Id   -> SimpleType                             {"TypeProjection"}
 
-		%% §3.2.3 - Type Designators
-		StableId            -> SimpleType {"Type"}
+%% §3.2.3 - Type Designators
+StableId            -> SimpleType                                       {"Type"}
 
-		%% §3.2.4 - Parameterized Types
-		SimpleType TypeArgs -> SimpleType {"ParameterizedType"}
-		"[" {Type ","}+ "]" -> TypeArgs {"TypeArgs"}
+%% §3.2.4 - Parameterized Types
+SimpleType TypeArgs -> SimpleType                          {"ParameterizedType"}
+"[" {Type ","}+ "]" -> TypeArgs                                     {"TypeArgs"}
 
-		%% §3.2.5 - Tuple Types
-		"(" {Type ","}+ ")" -> SimpleType {"TupleType"}
+%% §3.2.5 - Tuple Types
+"(" {Type ","}+ ")" -> SimpleType                                  {"TupleType"}
 
-		%% §3.2.6 - Annotated Types
-		SimpleType             -> AnnotType
-		SimpleType Annotation+ -> AnnotType {"AnnotType", layout("1.last.line == 2.first.line")}
+%% §3.2.6 - Annotated Types
+SimpleType             -> AnnotType
+SimpleType Annotation+ -> AnnotType                                {"AnnotType",
+                                          layout("1.last.line == 2.first.line")}
 
-		%% §3.2.7 - Compound Types
-		AnnotType                   -> CompoundType
-		Refinement                  -> CompoundType
-		AnnotType Refinement        -> CompoundType {"RefinedType"}
-		AnnotType With+ Refinement? -> CompoundType {"CompoundType", layout("3.first.line - 2.last.line < num(2)")}
+%% §3.2.7 - Compound Types
+AnnotType                   -> CompoundType
+Refinement                  -> CompoundType
+AnnotType Refinement        -> CompoundType                      {"RefinedType"}
+AnnotType With+ Refinement? -> CompoundType                      {"CompoundType",
+                                  layout("3.first.line - 2.last.line < num(2)")}
 
-		"with" AnnotType -> With {"With"}
+"with" AnnotType -> With                                                {"With"}
 
-		"{" RefineStatSemi* "}" -> Refinement {"Refinement"}
+"{" RefineStatSemi* "}" -> Refinement                             {"Refinement"}
 
-		RefineStat SEMI -> RefineStatSemi {"RefineStatSemi", longest-match}
-		RefineStat EOL  -> RefineStatSemi {"RefineStatSemi", enforce-newline, longest-match, prefer}
-		RefineStat EOB  -> RefineStatSemi {"RefineStatSemi", longest-match, avoid}
+RefineStat EOL  -> RefineStatSemi                             {"RefineStatSemi",
+                                         enforce-newline, longest-match, prefer}
+RefineStat SEMI -> RefineStatSemi              {longest-match, "RefineStatSemi"}
+RefineStat EOB  -> RefineStatSemi       {longest-match, avoid, "RefineStatSemi"}
 
-		Dcl            -> RefineStat
-		"type" TypeDef -> RefineStat {"TypeRefineStat"}
+Dcl            -> RefineStat
+"type" TypeDef -> RefineStat                                  {"TypeRefineStat"}
 
-		%% §3.2.8 - Infix Types
-		InfixType -> Type
+%% §3.2.8 - Infix Types
+InfixType -> Type
 
-		CompoundType                 -> InfixType
-		InfixType PLAIN-ID InfixType -> InfixType {"InfixType", left, layout("3.first.line - 2.last.line < num(2)")}
+CompoundType                 -> InfixType
+InfixType PLAIN-ID InfixType -> InfixType                    {left, "InfixType",
+                                  layout("3.first.line - 2.last.line < num(2)")}
 
-		%% §3.2.9 - Function Types
-		FunctionArgTypes "=>" Type  -> Type {"FunctionType", prefer}
+%% §3.2.9 - Function Types
+FunctionArgTypes "=>" Type  -> Type                     {prefer, "FunctionType"}
 
-		InfixType                -> FunctionArgTypes
-		"(" {ParamType ","}* ")" -> FunctionArgTypes {"FunctionArgType", prefer}
+InfixType                -> FunctionArgTypes
+"(" {ParamType ","}* ")" -> FunctionArgTypes         {prefer, "FunctionArgType"}
 
-		%% §3.2.10 - Existential Types
-		InfixType ExistentialClause -> Type {"ExistentialType"}
+%% §3.2.10 - Existential Types
+InfixType ExistentialClause -> Type {"ExistentialType"}
 
-		"forSome" "{" ExistentialDclSemi+ "}" -> ExistentialClause {"ExistentialClause"}
+"forSome" "{" ExistentialDclSemi+ "}" -> ExistentialClause {"ExistentialClause"}
 
-		ExistentialDcl SEMI -> ExistentialDclSemi {"ExistentialDclSemi", longest-match}
-		ExistentialDcl EOL  -> ExistentialDclSemi {"ExistentialDclSemi", enforce-newline, longest-match, prefer}
-		ExistentialDcl EOB  -> ExistentialDclSemi {"ExistentialDclSemi", longest-match}
+ExistentialDcl SEMI -> ExistentialDclSemi  {longest-match, "ExistentialDclSemi"}
+ExistentialDcl EOL  -> ExistentialDclSemi                 {"ExistentialDclSemi",
+                                         enforce-newline, longest-match, prefer}
+ExistentialDcl EOB  -> ExistentialDclSemi  {longest-match, "ExistentialDclSemi"}
 
-		"type" TypeDcl -> ExistentialDcl {"ExistentialType"}
-		"val"  ValDcl  -> ExistentialDcl {"ExistentialVal"}
+"type" TypeDcl -> ExistentialDcl                             {"ExistentialType"}
+"val"  ValDcl  -> ExistentialDcl                              {"ExistentialVal"}
 
-		"_" TypeBounds?     -> SimpleType {"WildcardType", avoid}
+"_" TypeBounds?     -> SimpleType                        {avoid, "WildcardType"}
 
-		">:" Type           -> TypeBounds {"LowerTypeBound"}
-		"<:" Type           -> TypeBounds {"UpperTypeBound"}
-		">:" Type "<:" Type -> TypeBounds {"LowerAndUpperTypeBound"}
+">:" Type           -> TypeBounds                             {"LowerTypeBound"}
+"<:" Type           -> TypeBounds                             {"UpperTypeBound"}
+">:" Type "<:" Type -> TypeBounds                     {"LowerAndUpperTypeBound"}

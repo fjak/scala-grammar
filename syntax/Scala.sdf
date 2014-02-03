@@ -1,18 +1,35 @@
 module Scala
 
 imports
-	Scala-Annotations
-	Scala-BasicDeclsDefs
-	Scala-ClassesObjects
-	Scala-Expressions
-	Scala-Identifiers
-	Scala-Literals
-	Scala-Macros
-	Scala-PatternMatching
-	Scala-TopLevelDefinitions
-	Scala-Types
-	Scala-Whitespace
+Scala-Annotations
+Scala-BasicDeclsDefs
+Scala-ClassesObjects
+Scala-Expressions
+Scala-Identifiers
+Scala-Literals
+Scala-Macros
+Scala-PatternMatching
+Scala-TopLevelDefinitions
+Scala-Types
+Scala-Whitespace
 
 exports
-	context-free start-symbols
-		Annotation Block CompilationUnit Def Dcl Expr Id Import NoLExpr Path Pattern StableId TemplateBody TemplateStat TmplDef Type TypeParamClause
+
+context-free start-symbols
+Annotation
+Block
+CompilationUnit
+Dcl
+Def
+Expr
+Id
+Import
+NoLExpr
+Path
+Pattern
+StableId
+TemplateBody
+TemplateStat
+TmplDef
+Type
+TypeParamClause

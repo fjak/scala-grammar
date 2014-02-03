@@ -1,262 +1,263 @@
 module Scala-Identifiers
 
 exports
-	lexical syntax
-		[A-Z] | [\$]   -> UPPER
-		[a-z]          -> LOWER
-		UPPER | LOWER  -> LETTER
-		[0-9]          -> DIGIT
-		LETTER | DIGIT -> ID-REST
 
-		[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OP-CHAR
+lexical syntax
+[A-Z] | [\$]   -> UPPER
+[a-z]          -> LOWER
+UPPER | LOWER  -> LETTER
+[0-9]          -> DIGIT
+LETTER | DIGIT -> ID-REST
 
-		%% OPerators by precedence from low to high
-		OP-CHAR* [\=]                 -> ASSIGN-OP
-		VAR-PLAIN-ID | CONST-PLAIN-ID -> LETTER-OP
-		[\|] OP-CHAR*                 -> BAR-OP
-		[\^] OP-CHAR*                 -> CIRCUMFLEX-OP
-		[\&] OP-CHAR*                 -> AMPERSAND-OP
-		([\<] | [\>]) OP-CHAR*        -> BRACKET-OP
-		([\=] | [\!]) OP-CHAR*        -> CMPR-OP
-		[\:] OP-CHAR*                 -> COLON-OP
-		([\+] | [\-]) OP-CHAR*        -> SUM-OP
-		([\*] | [\/] | [\%]) OP-CHAR* -> MULT-OP
-		[\#\?\@\\\~] OP-CHAR*         -> SPECIAL-OP
+[\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~] -> OP-CHAR
 
-		%% right associative operators
-		%% TODO: Make RASSOC-LETTER-OP actually work
-		%%       Won't do at the current state, as of restrictions on OP
-		(VAR-PLAIN-ID | CONST-PLAIN-ID) [\:] -> RASSOC-LETTER-OP
-		[\|] OP-CHAR* [\:]                   -> RASSOC-BAR-OP
-		[\^] OP-CHAR* [\:]                   -> RASSOC-CIRCUMFLEX-OP
-		[\&] OP-CHAR* [\:]                   -> RASSOC-AMPERSAND-OP
-		([\<] | [\>]) OP-CHAR* [\:]          -> RASSOC-BRACKET-OP
-		([\=] | [\!]) OP-CHAR* [\:]          -> RASSOC-CMPR-OP
-		[\:] OP-CHAR* [\:]                   -> RASSOC-COLON-OP
-		([\+] | [\-]) OP-CHAR* [\:]          -> RASSOC-SUM-OP
-		([\*] | [\/] | [\%]) OP-CHAR* [\:]   -> RASSOC-MULT-OP
-		[\#\?\@\\\~] OP-CHAR* [\:]           -> RASSOC-SPECIAL-OP
+%% OPerators by precedence from low to high
+OP-CHAR* [\=]                 -> ASSIGN-OP
+VAR-PLAIN-ID | CONST-PLAIN-ID -> LETTER-OP
+[\|] OP-CHAR*                 -> BAR-OP
+[\^] OP-CHAR*                 -> CIRCUMFLEX-OP
+[\&] OP-CHAR*                 -> AMPERSAND-OP
+([\<] | [\>]) OP-CHAR*        -> BRACKET-OP
+([\=] | [\!]) OP-CHAR*        -> CMPR-OP
+[\:] OP-CHAR*                 -> COLON-OP
+([\+] | [\-]) OP-CHAR*        -> SUM-OP
+([\*] | [\/] | [\%]) OP-CHAR* -> MULT-OP
+[\#\?\@\\\~] OP-CHAR*         -> SPECIAL-OP
 
-		[\=] OP-CHAR* [\=] -> ASSIGN-OP {reject}
-		"="  -> ASSIGN-OP  {reject}
-		"<=" -> ASSIGN-OP  {reject}
-		">=" -> ASSIGN-OP  {reject}
-		"!=" -> ASSIGN-OP  {reject}
-		"="  -> CMPR-OP    {reject}
-		"=>" -> CMPR-OP    {reject}
-		":"  -> COLON-OP   {reject}
-		"<-" -> BRACKET-OP {reject}
-		"<:" -> BRACKET-OP {reject}
-		"<:" -> RASSOC-BRACKET-OP {reject}
-		"<%" -> BRACKET-OP {reject}
-		">:" -> BRACKET-OP {reject}
-		">:" -> RASSOC-BRACKET-OP {reject}
-		"#"  -> SPECIAL-OP {reject}
-		"@"  -> SPECIAL-OP {reject}
+%% right associative operators
+%% TODO: Make RASSOC-LETTER-OP actually work
+%%       Won't do at the current state, as of restrictions on OP
+(VAR-PLAIN-ID | CONST-PLAIN-ID) [\:] -> RASSOC-LETTER-OP
+[\|] OP-CHAR* [\:]                   -> RASSOC-BAR-OP
+[\^] OP-CHAR* [\:]                   -> RASSOC-CIRCUMFLEX-OP
+[\&] OP-CHAR* [\:]                   -> RASSOC-AMPERSAND-OP
+([\<] | [\>]) OP-CHAR* [\:]          -> RASSOC-BRACKET-OP
+([\=] | [\!]) OP-CHAR* [\:]          -> RASSOC-CMPR-OP
+[\:] OP-CHAR* [\:]                   -> RASSOC-COLON-OP
+([\+] | [\-]) OP-CHAR* [\:]          -> RASSOC-SUM-OP
+([\*] | [\/] | [\%]) OP-CHAR* [\:]   -> RASSOC-MULT-OP
+[\#\?\@\\\~] OP-CHAR* [\:]           -> RASSOC-SPECIAL-OP
 
-		%% ASSIGN-OP is exception and thus more important than the other ops
-		ASSIGN-OP -> LETTER-OP     {reject}
-		ASSIGN-OP -> BAR-OP        {reject}
-		ASSIGN-OP -> CIRCUMFLEX-OP {reject}
-		ASSIGN-OP -> AMPERSAND-OP  {reject}
-		ASSIGN-OP -> BRACKET-OP    {reject}
-		ASSIGN-OP -> CMPR-OP       {reject}
-		ASSIGN-OP -> COLON-OP      {reject}
-		ASSIGN-OP -> SUM-OP        {reject}
-		ASSIGN-OP -> MULT-OP       {reject}
-		ASSIGN-OP -> SPECIAL-OP    {reject}
+[\=] OP-CHAR* [\=] -> ASSIGN-OP {reject}
+"="  -> ASSIGN-OP  {reject}
+"<=" -> ASSIGN-OP  {reject}
+">=" -> ASSIGN-OP  {reject}
+"!=" -> ASSIGN-OP  {reject}
+"="  -> CMPR-OP    {reject}
+"=>" -> CMPR-OP    {reject}
+":"  -> COLON-OP   {reject}
+"<-" -> BRACKET-OP {reject}
+"<:" -> BRACKET-OP {reject}
+"<:" -> RASSOC-BRACKET-OP {reject}
+"<%" -> BRACKET-OP {reject}
+">:" -> BRACKET-OP {reject}
+">:" -> RASSOC-BRACKET-OP {reject}
+"#"  -> SPECIAL-OP {reject}
+"@"  -> SPECIAL-OP {reject}
 
-		%% Right associative identifiers have higher priority than
-		%% their left associative counterparts
-		RASSOC-LETTER-OP     -> LETTER-OP     {reject}
-		RASSOC-BAR-OP        -> BAR-OP        {reject}
-		RASSOC-CIRCUMFLEX-OP -> CIRCUMFLEX-OP {reject}
-		RASSOC-AMPERSAND-OP  -> AMPERSAND-OP  {reject}
-		RASSOC-BRACKET-OP    -> BRACKET-OP    {reject}
-		RASSOC-CMPR-OP       -> CMPR-OP       {reject}
-		RASSOC-COLON-OP      -> COLON-OP      {reject}
-		RASSOC-SUM-OP        -> SUM-OP        {reject}
-		RASSOC-MULT-OP       -> MULT-OP       {reject}
-		RASSOC-SPECIAL-OP    -> SPECIAL-OP    {reject}
+%% ASSIGN-OP is exception and thus more important than the other ops
+ASSIGN-OP -> LETTER-OP     {reject}
+ASSIGN-OP -> BAR-OP        {reject}
+ASSIGN-OP -> CIRCUMFLEX-OP {reject}
+ASSIGN-OP -> AMPERSAND-OP  {reject}
+ASSIGN-OP -> BRACKET-OP    {reject}
+ASSIGN-OP -> CMPR-OP       {reject}
+ASSIGN-OP -> COLON-OP      {reject}
+ASSIGN-OP -> SUM-OP        {reject}
+ASSIGN-OP -> MULT-OP       {reject}
+ASSIGN-OP -> SPECIAL-OP    {reject}
 
-		OP-CHAR+ -> OP
+%% Right associative identifiers have higher priority than
+%% their left associative counterparts
+RASSOC-LETTER-OP     -> LETTER-OP     {reject}
+RASSOC-BAR-OP        -> BAR-OP        {reject}
+RASSOC-CIRCUMFLEX-OP -> CIRCUMFLEX-OP {reject}
+RASSOC-AMPERSAND-OP  -> AMPERSAND-OP  {reject}
+RASSOC-BRACKET-OP    -> BRACKET-OP    {reject}
+RASSOC-CMPR-OP       -> CMPR-OP       {reject}
+RASSOC-COLON-OP      -> COLON-OP      {reject}
+RASSOC-SUM-OP        -> SUM-OP        {reject}
+RASSOC-MULT-OP       -> MULT-OP       {reject}
+RASSOC-SPECIAL-OP    -> SPECIAL-OP    {reject}
 
-		LOWER                           -> IVAR-ID
-		(IVAR-ID | IVAR-ID-USS) ID-REST -> IVAR-ID
-		(IVAR-ID | IVAR-ID-USS) [\_]    -> IVAR-ID-USS
-		IVAR-ID-USS OP                  -> IVAR-ID-OP
+OP-CHAR+ -> OP
 
-		[\_]                                -> ICONST-ID
-		UPPER                               -> ICONST-ID
-		(ICONST-ID | ICONST-ID-USS) ID-REST -> ICONST-ID
-		(ICONST-ID | ICONST-ID-USS) [\_]    -> ICONST-ID-USS
-		ICONST-ID-USS [\_]                  -> ICONST-ID-USS
-		ICONST-ID-USS OP                    -> ICONST-ID-OP
+LOWER                           -> IVAR-ID
+(IVAR-ID | IVAR-ID-USS) ID-REST -> IVAR-ID
+(IVAR-ID | IVAR-ID-USS) [\_]    -> IVAR-ID-USS
+IVAR-ID-USS OP                  -> IVAR-ID-OP
 
-		IVAR-ID     -> VAR-ID
-		IVAR-ID-USS -> VAR-ID-USS
-		IVAR-ID-OP  -> VAR-ID-OP
+[\_]                                -> ICONST-ID
+UPPER                               -> ICONST-ID
+(ICONST-ID | ICONST-ID-USS) ID-REST -> ICONST-ID
+(ICONST-ID | ICONST-ID-USS) [\_]    -> ICONST-ID-USS
+ICONST-ID-USS [\_]                  -> ICONST-ID-USS
+ICONST-ID-USS OP                    -> ICONST-ID-OP
 
-		ICONST-ID     -> CONST-ID
-		ICONST-ID-USS -> CONST-ID-USS
-		ICONST-ID-OP  -> CONST-ID-OP
+IVAR-ID     -> VAR-ID
+IVAR-ID-USS -> VAR-ID-USS
+IVAR-ID-OP  -> VAR-ID-OP
 
-		(VAR-ID   | VAR-ID-USS   | VAR-ID-OP)   -> IVAR-PLAIN-ID
-		(CONST-ID | CONST-ID-USS | CONST-ID-OP) -> ICONST-PLAIN-ID
+ICONST-ID     -> CONST-ID
+ICONST-ID-USS -> CONST-ID-USS
+ICONST-ID-OP  -> CONST-ID-OP
 
-		OP              -> IPLAIN-ID
-		IVAR-PLAIN-ID   -> IPLAIN-ID
-		ICONST-PLAIN-ID -> IPLAIN-ID
+(VAR-ID   | VAR-ID-USS   | VAR-ID-OP)   -> IVAR-PLAIN-ID
+(CONST-ID | CONST-ID-USS | CONST-ID-OP) -> ICONST-PLAIN-ID
 
-		IVAR-PLAIN-ID   -> VAR-PLAIN-ID
-		ICONST-PLAIN-ID -> CONST-PLAIN-ID
-		IPLAIN-ID       -> PLAIN-ID
+OP              -> IPLAIN-ID
+IVAR-PLAIN-ID   -> IPLAIN-ID
+ICONST-PLAIN-ID -> IPLAIN-ID
 
-		"abstract"  -> KEYWORD
-		"case"      -> KEYWORD
-		"catch"     -> KEYWORD
-		"class"     -> KEYWORD
-		"def"       -> KEYWORD
-		"do"        -> KEYWORD
-		"else"      -> KEYWORD
-		"extends"   -> KEYWORD
-		"false"     -> KEYWORD
-		"final"     -> KEYWORD
-		"finally"   -> KEYWORD
-		"for"       -> KEYWORD
-		"forSome"   -> KEYWORD
-		"if"        -> KEYWORD
-		"implicit"  -> KEYWORD
-		"import"    -> KEYWORD
-		"lazy"      -> KEYWORD
-		"macro"     -> KEYWORD
-		"match"     -> KEYWORD
-		"new"       -> KEYWORD
-		"null"      -> KEYWORD
-		"object"    -> KEYWORD
-		"override"  -> KEYWORD
-		"package"   -> KEYWORD
-		"private"   -> KEYWORD
-		"protected" -> KEYWORD
-		"return"    -> KEYWORD
-		"sealed"    -> KEYWORD
-		"super"     -> KEYWORD
-		"this"      -> KEYWORD
-		"throw"     -> KEYWORD
-		"trait"     -> KEYWORD
-		"try"       -> KEYWORD
-		"true"      -> KEYWORD
-		"type"      -> KEYWORD
-		"val"       -> KEYWORD
-		"var"       -> KEYWORD
-		"while"     -> KEYWORD
-		"with"      -> KEYWORD
-		"yield"     -> KEYWORD
-		"_"         -> KEYWORD
-		":"         -> KEYWORD
-		"="         -> KEYWORD
-		"=>"        -> KEYWORD
-		"<-"        -> KEYWORD
-		"<:"        -> KEYWORD
-		"<%"        -> KEYWORD
-		">:"        -> KEYWORD
-		"#"         -> KEYWORD
-		"@"         -> KEYWORD
+IVAR-PLAIN-ID   -> VAR-PLAIN-ID
+ICONST-PLAIN-ID -> CONST-PLAIN-ID
+IPLAIN-ID       -> PLAIN-ID
 
-		KEYWORD  -> VAR-PLAIN-ID   {reject}
-		KEYWORD  -> CONST-PLAIN-ID {reject}
-		KEYWORD  -> PLAIN-ID       {reject}
+"abstract"  -> KEYWORD
+"case"      -> KEYWORD
+"catch"     -> KEYWORD
+"class"     -> KEYWORD
+"def"       -> KEYWORD
+"do"        -> KEYWORD
+"else"      -> KEYWORD
+"extends"   -> KEYWORD
+"false"     -> KEYWORD
+"final"     -> KEYWORD
+"finally"   -> KEYWORD
+"for"       -> KEYWORD
+"forSome"   -> KEYWORD
+"if"        -> KEYWORD
+"implicit"  -> KEYWORD
+"import"    -> KEYWORD
+"lazy"      -> KEYWORD
+"macro"     -> KEYWORD
+"match"     -> KEYWORD
+"new"       -> KEYWORD
+"null"      -> KEYWORD
+"object"    -> KEYWORD
+"override"  -> KEYWORD
+"package"   -> KEYWORD
+"private"   -> KEYWORD
+"protected" -> KEYWORD
+"return"    -> KEYWORD
+"sealed"    -> KEYWORD
+"super"     -> KEYWORD
+"this"      -> KEYWORD
+"throw"     -> KEYWORD
+"trait"     -> KEYWORD
+"try"       -> KEYWORD
+"true"      -> KEYWORD
+"type"      -> KEYWORD
+"val"       -> KEYWORD
+"var"       -> KEYWORD
+"while"     -> KEYWORD
+"with"      -> KEYWORD
+"yield"     -> KEYWORD
+"_"         -> KEYWORD
+":"         -> KEYWORD
+"="         -> KEYWORD
+"=>"        -> KEYWORD
+"<-"        -> KEYWORD
+"<:"        -> KEYWORD
+"<%"        -> KEYWORD
+">:"        -> KEYWORD
+"#"         -> KEYWORD
+"@"         -> KEYWORD
 
-		"-"          -> MINUS-PREFIX
-		"+"          -> PREFIX
-		MINUS-PREFIX -> PREFIX
-		"~"          -> PREFIX
-		"!"          -> PREFIX
+KEYWORD  -> VAR-PLAIN-ID   {reject}
+KEYWORD  -> CONST-PLAIN-ID {reject}
+KEYWORD  -> PLAIN-ID       {reject}
 
-		"`" ~[\`]+ "`" -> FANCY-ID
-		FANCY-ID       -> PLAIN-ID
+"-"          -> MINUS-PREFIX
+"+"          -> PREFIX
+MINUS-PREFIX -> PREFIX
+"~"          -> PREFIX
+"!"          -> PREFIX
 
-	lexical restrictions
-		OP -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+"`" ~[\`]+ "`" -> FANCY-ID
+FANCY-ID       -> PLAIN-ID
 
-		ASSIGN-OP      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		LETTER-OP      -/- [a-zA-Z0-9]
-		BAR-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		CIRCUMFLEX-OP  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		AMPERSAND-OP   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		BRACKET-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		CMPR-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		COLON-OP       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		SUM-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		MULT-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		SPECIAL-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+lexical restrictions
+OP -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 
-		RASSOC-LETTER-OP      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-BAR-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-CIRCUMFLEX-OP  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-AMPERSAND-OP   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-BRACKET-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-CMPR-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-COLON-OP       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-SUM-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-MULT-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		RASSOC-SPECIAL-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+ASSIGN-OP      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+LETTER-OP      -/- [a-zA-Z0-9]
+BAR-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+CIRCUMFLEX-OP  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+AMPERSAND-OP   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+BRACKET-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+CMPR-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+COLON-OP       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+SUM-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+MULT-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+SPECIAL-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 
-		VAR-ID   -/- [A-Za-z0-9\$\_]
-		CONST-ID -/- [A-Za-z0-9\$\_]
+RASSOC-LETTER-OP      -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-BAR-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-CIRCUMFLEX-OP  -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-AMPERSAND-OP   -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-BRACKET-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-CMPR-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-COLON-OP       -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-SUM-OP         -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-MULT-OP        -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+RASSOC-SPECIAL-OP     -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 
-		VAR-ID-USS   -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		CONST-ID-USS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+VAR-ID   -/- [A-Za-z0-9\$\_]
+CONST-ID -/- [A-Za-z0-9\$\_]
 
-		"abstract" -/- [a-zA-Z0-9\$\_]
-		"case"     -/- [a-zA-Z0-9\$\_]
-		"catch"    -/- [a-zA-Z0-9\$\_]
-		"class"    -/- [a-zA-Z0-9\$\_]
-		"def"      -/- [a-zA-Z0-9\$\_]
-		"do"       -/- [a-zA-Z0-9\$\_]
-		"else"     -/- [a-zA-Z0-9\$\_]
-		"extends"  -/- [a-zA-Z0-9\$\_]
-		"false"    -/- [a-zA-Z0-9\$\_]
-		"final"    -/- [a-zA-Z0-9\$\_]
-		"finally"  -/- [a-zA-Z0-9\$\_]
-		"for"      -/- [a-zA-Z0-9\$\_]
-		"forSome"  -/- [a-zA-Z0-9\$\_]
-		"if"       -/- [a-zA-Z0-9\$\_]
-		"implicit" -/- [a-zA-Z0-9\$\_]
-		"import"   -/- [a-zA-Z0-9\$\_]
-		"lazy"     -/- [a-zA-Z0-9\$\_]
-		"macro"    -/- [a-zA-Z0-9\$\_]
-		"match"    -/- [a-zA-Z0-9\$\_]
-		"new"      -/- [a-zA-Z0-9\$\_]
-		"null"     -/- [a-zA-Z0-9\$\_]
-		"object"   -/- [a-zA-Z0-9\$\_]
-		"override" -/- [a-zA-Z0-9\$\_]
-		"package"  -/- [a-zA-Z0-9\$\_]
-		"private"  -/- [a-zA-Z0-9\$\_]
-		"protected"-/- [a-zA-Z0-9\$\_]
-		"return"   -/- [a-zA-Z0-9\$\_]
-		"sealed"   -/- [a-zA-Z0-9\$\_]
-		"super"    -/- [a-zA-Z0-9\$\_]
-		"this"     -/- [a-zA-Z0-9\$\_]
-		"throw"    -/- [a-zA-Z0-9\$\_]
-		"trait"    -/- [a-zA-Z0-9\$\_]
-		"try"      -/- [a-zA-Z0-9\$\_]
-		"true"     -/- [a-zA-Z0-9\$\_]
-		"type"     -/- [a-zA-Z0-9\$\_]
-		"val"      -/- [a-zA-Z0-9\$\_]
-		"var"      -/- [a-zA-Z0-9\$\_]
-		"while"    -/- [a-zA-Z0-9\$\_]
-		"with"     -/- [a-zA-Z0-9\$\_]
-		"yield"    -/- [a-zA-Z0-9\$\_]
+VAR-ID-USS   -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+CONST-ID-USS -/- [A-Za-z0-9\$\_] \/ [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
 
-		"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
-		"_" -/- [a-zA-Z0-9\_\$]
+"abstract" -/- [a-zA-Z0-9\$\_]
+"case"     -/- [a-zA-Z0-9\$\_]
+"catch"    -/- [a-zA-Z0-9\$\_]
+"class"    -/- [a-zA-Z0-9\$\_]
+"def"      -/- [a-zA-Z0-9\$\_]
+"do"       -/- [a-zA-Z0-9\$\_]
+"else"     -/- [a-zA-Z0-9\$\_]
+"extends"  -/- [a-zA-Z0-9\$\_]
+"false"    -/- [a-zA-Z0-9\$\_]
+"final"    -/- [a-zA-Z0-9\$\_]
+"finally"  -/- [a-zA-Z0-9\$\_]
+"for"      -/- [a-zA-Z0-9\$\_]
+"forSome"  -/- [a-zA-Z0-9\$\_]
+"if"       -/- [a-zA-Z0-9\$\_]
+"implicit" -/- [a-zA-Z0-9\$\_]
+"import"   -/- [a-zA-Z0-9\$\_]
+"lazy"     -/- [a-zA-Z0-9\$\_]
+"macro"    -/- [a-zA-Z0-9\$\_]
+"match"    -/- [a-zA-Z0-9\$\_]
+"new"      -/- [a-zA-Z0-9\$\_]
+"null"     -/- [a-zA-Z0-9\$\_]
+"object"   -/- [a-zA-Z0-9\$\_]
+"override" -/- [a-zA-Z0-9\$\_]
+"package"  -/- [a-zA-Z0-9\$\_]
+"private"  -/- [a-zA-Z0-9\$\_]
+"protected"-/- [a-zA-Z0-9\$\_]
+"return"   -/- [a-zA-Z0-9\$\_]
+"sealed"   -/- [a-zA-Z0-9\$\_]
+"super"    -/- [a-zA-Z0-9\$\_]
+"this"     -/- [a-zA-Z0-9\$\_]
+"throw"    -/- [a-zA-Z0-9\$\_]
+"trait"    -/- [a-zA-Z0-9\$\_]
+"try"      -/- [a-zA-Z0-9\$\_]
+"true"     -/- [a-zA-Z0-9\$\_]
+"type"     -/- [a-zA-Z0-9\$\_]
+"val"      -/- [a-zA-Z0-9\$\_]
+"var"      -/- [a-zA-Z0-9\$\_]
+"while"    -/- [a-zA-Z0-9\$\_]
+"with"     -/- [a-zA-Z0-9\$\_]
+"yield"    -/- [a-zA-Z0-9\$\_]
 
-		PREFIX -/- [\+\-\~\!]
-		MINUS-PREFIX -/- [0-9]
+"=" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+":" -/- [\!\#\%\&\*\+\-\/\:\<\=\>\?\@\\\^\|\~]
+"_" -/- [a-zA-Z0-9\_\$]
 
-		FANCY-ID -/- [a-zA-Z0-9\_\$]
+PREFIX -/- [\+\-\~\!]
+MINUS-PREFIX -/- [0-9]
 
-	context-free syntax
-		PLAIN-ID -> Id {"Id"}
+FANCY-ID -/- [a-zA-Z0-9\_\$]
+
+context-free syntax
+PLAIN-ID -> Id {"Id"}

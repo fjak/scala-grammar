@@ -1,14 +1,18 @@
 module Scala-Annotations
 
 imports
-	Scala-Expressions
-	Scala-Types
+Scala-Expressions
+Scala-Types
 
 exports
-	context-free syntax
-		"@" SimpleType ArgumentExprsSeq? -> Annotation {"Annotation", layout("2.last.line == 3.first.line")}
 
-		"@" SimpleType ArgumentExprs?    -> ConstrAnnotation {"ConstrAnnotation", layout("2.last.line == 3.first.line")}
-		
-		Annotation               -> AnnotationSeq
-		Annotation AnnotationSeq -> AnnotationSeq {"AnnotationSeq", layout("2.first.line - 1.last.line < num(2)")}
+context-free syntax
+"@" SimpleType ArgumentExprsSeq? -> Annotation                    {"Annotation",
+                                          layout("2.last.line == 3.first.line")}
+
+"@" SimpleType ArgumentExprs? -> ConstrAnnotation           {"ConstrAnnotation",
+                                          layout("2.last.line == 3.first.line")}
+
+Annotation               -> AnnotationSeq
+Annotation AnnotationSeq -> AnnotationSeq                      {"AnnotationSeq",
+                                  layout("2.first.line - 1.last.line < num(2)")}

@@ -1,411 +1,483 @@
 module Scala-Expressions
 
 imports
-	Scala-Annotations
-	Scala-BasicDeclsDefs
-	Scala-ClassesObjects
-	Scala-Literals
-	Scala-PatternMatching
-	Scala-Types
-	Scala-Whitespace
+Scala-Annotations
+Scala-BasicDeclsDefs
+Scala-ClassesObjects
+Scala-Literals
+Scala-PatternMatching
+Scala-Types
+Scala-Whitespace
 
 exports
-	lexical syntax
-		-> EOC
 
-	context-free restrictions
-		EOC -/- ~[c]
+lexical syntax
+-> EOC
 
-
-	%%%%% With Layout %%%%%%
-	context-free priorities
-		{
-			"_"                    -> Expr {"WildcardExpr"}
-			Literal                -> Expr {prefer}
-			Path                   -> Expr
-			Expr ArgumentExprs     -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
-			Expr BlockExpr         -> Expr {"BlockAppExpr", layout("2.first.line - 1.last.line < num(2)")}
-			"(" {NoLExpr ","}* ")" -> Expr {"TupleExpr"}
-			Expr TypeArgs          -> Expr {"TypeApplication"}
-		}
-
-		> {
-			"new" ClassTemplate -> Expr {"NewClassExpr", prefer}
-			"new" TemplateBody  -> Expr {"NewTemplateExpr", prefer}
-			BlockExpr           -> Expr
-			Expr "_"            -> Expr {"EtaExpansionExpr", left, layout("1.last.line == 2.first.line")}
-		}
-
-		> PREFIX Expr             -> Expr {"PrefixExpr", prefer, layout("1.last.line == 2.first.line")}
-		> PREFIX Expr             -> Expr {"PrefixExpr", prefer, layout("1.last.line == 2.first.line")}
-		> {
-			Expr SPECIAL-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-SPECIAL-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr MULT-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-MULT-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr SUM-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-SUM-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr COLON-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-COLON-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr CMPR-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-CMPR-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr BRACKET-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-BRACKET-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr AMPERSAND-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-AMPERSAND-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr CIRCUMFLEX-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-CIRCUMFLEX-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr BAR-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-BAR-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> {
-			Expr LETTER-OP Expr         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-			Expr RASSOC-LETTER-OP Expr  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		}
-		> Expr ASSIGN-OP Expr     -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
-		> Expr Id                 -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
-		> Expr "match" "{" CaseClause+ "}" -> Expr {"MatchExpr"}
-		> Expr ArgumentExprs "=" Expr      -> Expr {"AccessAssignmentExpr", non-assoc}
-		<0> > Expr "." Id "=" Expr         -> Expr {"DesignatorAssignmentExpr", non-assoc}
-		<0> > {
-			Bindings "=>" Expr                                                   -> Expr {"FunExpr", prefer}
-			Id "=>" Expr                                                         -> Expr {"IdFunExpr", prefer}
-			"implicit" Id "=>" Expr                                              -> Expr {"ImplicitFunExpr", prefer}
-			"_" "=>" Expr                                                        -> Expr {"WildcardFunExpr", prefer}
-			"if" "(" NoLExpr ")" Expr                                            -> Expr {"IfExpr", prefer}
-			"if" "(" NoLExpr ")" Expr "else" Expr                                -> Expr {"IfElseExpr"}
-			"if" "(" NoLExpr ")" Expr ";" "else" Expr                            -> Expr {"IfElseExpr"}
-			"while" "(" NoLExpr ")" Expr                                         -> Expr {"WhileExpr"}
-			"try" Expr                                                           -> Expr {"TryExpr", prefer}
-			"try" Expr "catch" Expr                                              -> Expr {"TryCatchExpr"}
-			"try" Expr "finally" Expr                                            -> Expr {"TryFinallyExpr"}
-			"try" Expr "catch" Expr "finally" Expr                               -> Expr {"TryCatchFinallyExpr", avoid}
-			"do" Expr ";" "while" "(" Expr ")"                                   -> Expr {"DoWhileExpr"}
-			"do" Expr "while" "(" Expr ")"                                       -> Expr {"DoWhileExpr"}
-			"for" "(" EnumeratorSemi+ ")" Expr                                   -> Expr {"ForExpr"}
-			"for" "{" EnumeratorSemi+ "}" Expr                                   -> Expr {"ForExpr"}
-			"for" "(" EnumeratorSemi+ ")" "yield" Expr                           -> Expr {"ForYieldExpr"}
-			"for" "{" EnumeratorSemi+ "}" "yield" Expr                           -> Expr {"ForYieldExpr"}
-			"throw" Expr                                                         -> Expr {"ThrowExpr"}
-			"return" Expr?                                                       -> Expr {"ReturnExpr", layout("1.last.line == 2.first.line")}
-			Id "=" Expr                                                          -> Expr {"AssignmentExpr", non-assoc}
-			Expr Ascription                                                      -> Expr {"AscriptionExpr", avoid}
-		}
-
-	context-free priorities
-		Expr "." Id        -> Expr {"DesignatorExpr", avoid}
-		> PREFIX Expr      -> Expr {"PrefixExpr"}
+context-free restrictions
+EOC -/- ~[c]
 
 
-	%%%%% NO Layout %%%%%%
-	context-free priorities
-		{
-			"_"                    -> NoLExpr {"WildcardExpr"}
-			Literal                -> NoLExpr {prefer}
-			Path                   -> NoLExpr
-			NoLExpr ArgumentExprs  -> NoLExpr {"AppExpr"}
-			NoLExpr BlockExpr      -> NoLExpr {"BlockAppExpr"}
-			"(" {NoLExpr ","}* ")" -> NoLExpr {"TupleExpr"}
-			NoLExpr TypeArgs       -> NoLExpr {"TypeApplication"}
-		}
+%%%%% With Layout %%%%%%
+context-free priorities
+{
+  Literal                -> Expr                                        {prefer}
+  "_"                    -> Expr                                {"WildcardExpr"}
+  Expr ArgumentExprs     -> Expr                                     {"AppExpr",
+                                          layout("1.last.line == 2.first.line")}
+  Expr BlockExpr         -> Expr                                {"BlockAppExpr",
+                                  layout("2.first.line - 1.last.line < num(2)")}
+  "(" {NoLExpr ","}* ")" -> Expr                                   {"TupleExpr"}
+  Expr TypeArgs          -> Expr                             {"TypeApplication"}
+  Path                   -> Expr
+}
 
-		> {
-			"new" ClassTemplate -> NoLExpr {"NewClassExpr", prefer}
-			"new" TemplateBody  -> NoLExpr {"NewTemplateExpr", prefer}
-			BlockExpr           -> NoLExpr
-			NoLExpr "_"         -> NoLExpr {"EtaExpansionExpr", left}
-		}
+> {
+  "new" ClassTemplate -> Expr                           {prefer, "NewClassExpr"}
+  "new" TemplateBody  -> Expr                        {prefer, "NewTemplateExpr"}
+  Expr "_"            -> Expr                         {left, "EtaExpansionExpr",
+                                          layout("1.last.line == 2.first.line")}
+  BlockExpr           -> Expr
+}
 
-		> PREFIX NoLExpr                -> NoLExpr {"PrefixExpr", prefer}
-		> PREFIX NoLExpr                -> NoLExpr {"PrefixExpr", prefer}
-		> {
-			NoLExpr SPECIAL-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-SPECIAL-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr MULT-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-MULT-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr SUM-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-SUM-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr COLON-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-COLON-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr CMPR-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-CMPR-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr BRACKET-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-BRACKET-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr AMPERSAND-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-AMPERSAND-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr CIRCUMFLEX-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-CIRCUMFLEX-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr BAR-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-BAR-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> {
-			NoLExpr LETTER-OP NoLExpr         -> NoLExpr {"InfixExpr", left}
-			NoLExpr RASSOC-LETTER-OP NoLExpr  -> NoLExpr {"InfixExpr", right}
-		}
-		> NoLExpr ASSIGN-OP NoLExpr     -> NoLExpr {"InfixExpr", left}
-		> NoLExpr Id                    -> NoLExpr {"PostfixExpr", avoid}
-		> NoLExpr Id                    -> NoLExpr {"PostfixExpr", avoid}
-		> NoLExpr "match" "{" CaseClause+ "}" -> NoLExpr {"MatchExpr"}
-		> NoLExpr ArgumentExprs "=" NoLExpr   -> NoLExpr {"AccessAssignmentExpr", non-assoc}
-		<0> > NoLExpr "." Id "=" NoLExpr      -> NoLExpr {"DesignatorAssignmentExpr", non-assoc}
-		<0> > {
-			Bindings "=>" NoLExpr                                                   -> NoLExpr {"FunExpr", prefer}
-			Id "=>" NoLExpr                                                         -> NoLExpr {"IdFunExpr", prefer}
-			"implicit" Id "=>" NoLExpr                                              -> NoLExpr {"ImplicitFunExpr", prefer}
-			"_" "=>" NoLExpr                                                        -> NoLExpr {"WildcardFunExpr", prefer}
-			"if" "(" NoLExpr ")" NoLExpr                                            -> NoLExpr {"IfExpr", prefer}
-			"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr                             -> NoLExpr {"IfElseExpr"}
-			"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr                         -> NoLExpr {"IfElseExpr"}
-			"while" "(" NoLExpr ")" NoLExpr                                         -> NoLExpr {"WhileExpr"}
-			"try" NoLExpr                                                           -> NoLExpr {"TryExpr"}
-			"try" NoLExpr "catch" NoLExpr                                           -> NoLExpr {"TryCatchExpr"}
-			"try" NoLExpr "finally" NoLExpr                                         -> NoLExpr {"TryFinallyExpr"}
-			"try" NoLExpr "catch" NoLExpr "finally" NoLExpr                         -> NoLExpr {"TryCatchFinallyExpr"}
-			"do" NoLExpr ";" "while" "(" NoLExpr ")"                                -> NoLExpr {"DoWhileExpr"}
-			"do" NoLExpr "while" "(" NoLExpr ")"                                    -> NoLExpr {"DoWhileExpr"}
-			"for" "(" EnumeratorSemi+ ")" NoLExpr                                   -> NoLExpr {"ForExpr"}
-			"for" "{" EnumeratorSemi+ "}" NoLExpr                                   -> NoLExpr {"ForExpr"}
-			"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr                           -> NoLExpr {"ForYieldExpr"}
-			"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr                           -> NoLExpr {"ForYieldExpr"}
-			"throw" NoLExpr                                                         -> NoLExpr {"ThrowExpr"}
-			"return" NoLExpr?                                                       -> NoLExpr {"ReturnExpr", layout("1.last.line == 2.first.line")}
-			NoLExpr Ascription                                                      -> NoLExpr {"AscriptionExpr", avoid}
-			Id "=" NoLExpr                                                          -> NoLExpr {"AssignmentExpr", non-assoc}
-		}
+> PREFIX Expr             -> Expr                                 {"PrefixExpr",
+                                  prefer, layout("1.last.line == 2.first.line")}
+> PREFIX Expr             -> Expr                                 {"PrefixExpr",
+                                  prefer, layout("1.last.line == 2.first.line")}
+> {
+  Expr SPECIAL-OP Expr        -> Expr                        {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-SPECIAL-OP Expr -> Expr                       {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr MULT-OP Expr        -> Expr                           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-MULT-OP Expr -> Expr                          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr SUM-OP Expr        -> Expr                            {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-SUM-OP Expr -> Expr                           {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr COLON-OP Expr        -> Expr                          {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-COLON-OP Expr -> Expr                         {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr CMPR-OP Expr        -> Expr                           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-CMPR-OP Expr -> Expr                          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr BRACKET-OP Expr        -> Expr                        {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-BRACKET-OP Expr -> Expr                       {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr AMPERSAND-OP Expr        -> Expr                      {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-AMPERSAND-OP Expr -> Expr                     {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr CIRCUMFLEX-OP Expr        -> Expr                     {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-CIRCUMFLEX-OP Expr -> Expr                    {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr BAR-OP Expr        -> Expr                            {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-BAR-OP Expr -> Expr                           {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> {
+  Expr LETTER-OP Expr        -> Expr                         {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+  Expr RASSOC-LETTER-OP Expr -> Expr                        {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+}
+> Expr ASSIGN-OP Expr     -> Expr                            {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+> Expr Id -> Expr  {avoid, layout("1.last.line == 2.first.line"), "PostfixExpr"}
+> Expr Id -> Expr  {avoid, layout("1.last.line == 2.first.line"), "PostfixExpr"}
+> Expr "match" "{" CaseClause+ "}" -> Expr                         {"MatchExpr"}
+> Expr ArgumentExprs "=" Expr -> Expr        {non-assoc, "AccessAssignmentExpr"}
+<0> > Expr "." Id "=" Expr    -> Expr    {non-assoc, "DesignatorAssignmentExpr"}
+<0> > {
+  Bindings "=>" Expr                         -> Expr         {prefer, "FunExpr"}
+  Id "=>" Expr                               -> Expr       {prefer, "IdFunExpr"}
+  "implicit" Id "=>" Expr                    -> Expr {prefer, "ImplicitFunExpr"}
+  "_" "=>" Expr                              -> Expr {prefer, "WildcardFunExpr"}
+  "if" "(" NoLExpr ")" Expr                  -> Expr          {prefer, "IfExpr"}
+  "if" "(" NoLExpr ")" Expr "else" Expr      -> Expr              {"IfElseExpr"}
+  "if" "(" NoLExpr ")" Expr ";" "else" Expr  -> Expr              {"IfElseExpr"}
+  "while" "(" NoLExpr ")" Expr               -> Expr               {"WhileExpr"}
+  "try" Expr                                 -> Expr         {prefer, "TryExpr"}
+  "try" Expr "catch" Expr                    -> Expr            {"TryCatchExpr"}
+  "try" Expr "finally" Expr                  -> Expr          {"TryFinallyExpr"}
+  "try" Expr "catch" Expr "finally" Expr     -> Expr     {"TryCatchFinallyExpr",
+                                                                          avoid}
+  "do" Expr ";" "while" "(" Expr ")"         -> Expr             {"DoWhileExpr"}
+  "do" Expr "while" "(" Expr ")"             -> Expr             {"DoWhileExpr"}
+  "for" "(" EnumeratorSemi+ ")" Expr         -> Expr                 {"ForExpr"}
+  "for" "{" EnumeratorSemi+ "}" Expr         -> Expr                 {"ForExpr"}
+  "for" "(" EnumeratorSemi+ ")" "yield" Expr -> Expr            {"ForYieldExpr"}
+  "for" "{" EnumeratorSemi+ "}" "yield" Expr -> Expr            {"ForYieldExpr"}
+  "throw" Expr                               -> Expr               {"ThrowExpr"}
+  "return" Expr?                             -> Expr              {"ReturnExpr",
+                                          layout("1.last.line == 2.first.line")}
+  Id "=" Expr                              -> Expr {non-assoc, "AssignmentExpr"}
+  Expr Ascription                          -> Expr     {avoid, "AscriptionExpr"}
+}
 
-	context-free priorities
-		NoLExpr "." Id        -> NoLExpr {"DesignatorExpr", avoid}
-		> PREFIX NoLExpr      -> NoLExpr {"PrefixExpr"}
-
-	%%%%% Repeat Priorities in context-free syntax for correct PPTable generation %%%%%
-	context-free syntax
-		"_"                                          -> Expr {"WildcardExpr"}
-		Expr ArgumentExprs                           -> Expr {"AppExpr", layout("1.last.line == 2.first.line")}
-		Expr BlockExpr                               -> Expr {"BlockAppExpr", layout("2.first.line - 1.last.line < num(2)")}
-		"(" {NoLExpr ","}* ")"                       -> Expr {"TupleExpr"}
-		Expr TypeArgs                                -> Expr {"TypeApplication"}
-		"new" ClassTemplate                          -> Expr {"NewClassExpr", prefer}
-		"new" TemplateBody                           -> Expr {"NewTemplateExpr", prefer}
-		Expr "_"                                     -> Expr {"EtaExpansionExpr", left, layout("1.last.line == 2.first.line")}
-		PREFIX Expr                                  -> Expr {"PrefixExpr", prefer}
-		Expr SPECIAL-OP Expr                         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr MULT-OP Expr                            -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr SUM-OP Expr                             -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr COLON-OP Expr                           -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr CMPR-OP Expr                            -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr BRACKET-OP Expr                         -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr AMPERSAND-OP Expr                       -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr CIRCUMFLEX-OP Expr                      -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr BAR-OP Expr                             -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr LETTER-OP Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-SPECIAL-OP Expr                  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-MULT-OP Expr                     -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-SUM-OP Expr                      -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-COLON-OP Expr                    -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-CMPR-OP Expr                     -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-BRACKET-OP Expr                  -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-AMPERSAND-OP Expr                -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-CIRCUMFLEX-OP Expr               -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-BAR-OP Expr                      -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr RASSOC-LETTER-OP Expr                   -> Expr {"InfixExpr", right, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr ASSIGN-OP Expr                          -> Expr {"InfixExpr", left, layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
-		Expr Id                                      -> Expr {"PostfixExpr", avoid, layout("1.last.line == 2.first.line")}
-		Expr "match" "{" CaseClause+ "}"             -> Expr {"MatchExpr"}
-		Expr ArgumentExprs "=" Expr                  -> Expr {"AccessAssignmentExpr", non-assoc}
-		Expr "." Id "=" Expr                         -> Expr {"DesignatorAssignmentExpr", non-assoc}
-		Bindings "=>" Expr                           -> Expr {"FunExpr", prefer}
-		Id "=>" Expr                                 -> Expr {"IdFunExpr", prefer}
-		"implicit" Id "=>" Expr                      -> Expr {"ImplicitFunExpr", prefer}
-		"_" "=>" Expr                                -> Expr {"WildcardFunExpr", prefer}
-		"if" "(" NoLExpr ")" Expr                    -> Expr {"IfExpr", prefer}
-		"if" "(" NoLExpr ")" Expr "else" Expr        -> Expr {"IfElseExpr"}
-		"if" "(" NoLExpr ")" Expr ";" "else" Expr    -> Expr {"IfElseExpr"}
-		"while" "(" NoLExpr ")" Expr                 -> Expr {"WhileExpr"}
-		"try" Expr                                   -> Expr {"TryExpr", prefer}
-		"try" Expr "catch" Expr                      -> Expr {"TryCatchExpr"}
-		"try" Expr "finally" Expr                    -> Expr {"TryFinallyExpr"}
-		"try" Expr "catch" Expr "finally" Expr       -> Expr {"TryCatchFinallyExpr", avoid}
-		"do" Expr ";" "while" "(" Expr ")"           -> Expr {"DoWhileExpr"}
-		"do" Expr "while" "(" Expr ")"               -> Expr {"DoWhileExpr"}
-		"for" "(" EnumeratorSemi+ ")" Expr           -> Expr {"ForExpr"}
-		"for" "{" EnumeratorSemi+ "}" Expr           -> Expr {"ForExpr"}
-		"for" "(" EnumeratorSemi+ ")" "yield" Expr   -> Expr {"ForYieldExpr"}
-		"for" "{" EnumeratorSemi+ "}" "yield" Expr   -> Expr {"ForYieldExpr"}
-		"throw" Expr                                 -> Expr {"ThrowExpr"}
-		"return" Expr?                               -> Expr {"ReturnExpr", layout("1.last.line == 2.first.line")}
-		Id "=" Expr                                  -> Expr {"AssignmentExpr", non-assoc}
-		Expr Ascription                              -> Expr {"AscriptionExpr", avoid}
-		Expr "." Id                                  -> Expr {"DesignatorExpr", avoid}
-		PREFIX Expr                                  -> Expr {"PrefixExpr"}
-
-		"_"                                              -> NoLExpr {"WildcardExpr"}
-		Literal                                          -> NoLExpr {prefer}
-		NoLExpr ArgumentExprs                            -> NoLExpr {"AppExpr"}
-		NoLExpr BlockExpr                                -> NoLExpr {"BlockAppExpr"}
-		"(" {NoLExpr ","}* ")"                           -> NoLExpr {"TupleExpr"}
-		NoLExpr TypeArgs                                 -> NoLExpr {"TypeApplication"}
-		"new" ClassTemplate                              -> NoLExpr {"NewClassExpr", prefer}
-		"new" TemplateBody                               -> NoLExpr {"NewTemplateExpr", prefer}
-		NoLExpr "_"                                      -> NoLExpr {"EtaExpansionExpr", left}
-		PREFIX NoLExpr                                   -> NoLExpr {"PrefixExpr", prefer}
-		NoLExpr SPECIAL-OP NoLExpr                       -> NoLExpr {"InfixExpr", left}
-		NoLExpr MULT-OP NoLExpr                          -> NoLExpr {"InfixExpr", left}
-		NoLExpr SUM-OP NoLExpr                           -> NoLExpr {"InfixExpr", left}
-		NoLExpr COLON-OP NoLExpr                         -> NoLExpr {"InfixExpr", left}
-		NoLExpr CMPR-OP NoLExpr                          -> NoLExpr {"InfixExpr", left}
-		NoLExpr BRACKET-OP NoLExpr                       -> NoLExpr {"InfixExpr", left}
-		NoLExpr AMPERSAND-OP NoLExpr                     -> NoLExpr {"InfixExpr", left}
-		NoLExpr CIRCUMFLEX-OP NoLExpr                    -> NoLExpr {"InfixExpr", left}
-		NoLExpr BAR-OP NoLExpr                           -> NoLExpr {"InfixExpr", left}
-		NoLExpr LETTER-OP NoLExpr                        -> NoLExpr {"InfixExpr", left}
-		NoLExpr RASSOC-SPECIAL-OP NoLExpr                -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-MULT-OP NoLExpr                   -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-SUM-OP NoLExpr                    -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-COLON-OP NoLExpr                  -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-CMPR-OP NoLExpr                   -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-BRACKET-OP NoLExpr                -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-AMPERSAND-OP NoLExpr              -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-CIRCUMFLEX-OP NoLExpr             -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-BAR-OP NoLExpr                    -> NoLExpr {"InfixExpr", right}
-		NoLExpr RASSOC-LETTER-OP NoLExpr                 -> NoLExpr {"InfixExpr", right}
-		NoLExpr ASSIGN-OP NoLExpr                        -> NoLExpr {"InfixExpr", left}
-		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
-		NoLExpr Id                                       -> NoLExpr {"PostfixExpr", avoid}
-		NoLExpr "match" "{" CaseClause+ "}"              -> NoLExpr {"MatchExpr"}
-		NoLExpr ArgumentExprs "=" NoLExpr                -> NoLExpr {"AccessAssignmentExpr", non-assoc}
-		NoLExpr "." Id "=" NoLExpr                       -> NoLExpr {"DesignatorAssignmentExpr", non-assoc}
-		Bindings "=>" NoLExpr                            -> NoLExpr {"FunExpr", prefer}
-		Id "=>" NoLExpr                                  -> NoLExpr {"IdFunExpr", prefer}
-		"implicit" Id "=>" NoLExpr                       -> NoLExpr {"ImplicitFunExpr", prefer}
-		"_" "=>" NoLExpr                                 -> NoLExpr {"WildcardFunExpr", prefer}
-		"if" "(" NoLExpr ")" NoLExpr                     -> NoLExpr {"IfExpr", prefer}
-		"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr      -> NoLExpr {"IfElseExpr"}
-		"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr  -> NoLExpr {"IfElseExpr"}
-		"while" "(" NoLExpr ")" NoLExpr                  -> NoLExpr {"WhileExpr"}
-		"try" NoLExpr                                    -> NoLExpr {"TryExpr"}
-		"try" NoLExpr "catch" NoLExpr                    -> NoLExpr {"TryCatchExpr"}
-		"try" NoLExpr "finally" NoLExpr                  -> NoLExpr {"TryFinallyExpr"}
-		"try" NoLExpr "catch" NoLExpr "finally" NoLExpr  -> NoLExpr {"TryCatchFinallyExpr"}
-		"do" NoLExpr ";" "while" "(" NoLExpr ")"         -> NoLExpr {"DoWhileExpr"}
-		"do" NoLExpr "while" "(" NoLExpr ")"             -> NoLExpr {"DoWhileExpr"}
-		"for" "(" EnumeratorSemi+ ")" NoLExpr            -> NoLExpr {"ForExpr"}
-		"for" "{" EnumeratorSemi+ "}" NoLExpr            -> NoLExpr {"ForExpr"}
-		"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr    -> NoLExpr {"ForYieldExpr"}
-		"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr    -> NoLExpr {"ForYieldExpr"}
-		"throw" NoLExpr                                  -> NoLExpr {"ThrowExpr"}
-		"return" NoLExpr?                                -> NoLExpr {"ReturnExpr", layout("1.last.line == 2.first.line")}
-		NoLExpr Ascription                               -> NoLExpr {"AscriptionExpr", avoid}
-		Id "=" NoLExpr                                   -> NoLExpr {"AssignmentExpr", non-assoc}
-		NoLExpr "." Id                                   -> NoLExpr {"DesignatorExpr", avoid}
-		PREFIX NoLExpr                                   -> NoLExpr {"PrefixExpr"}
+context-free priorities
+  Expr "." Id   -> Expr                                {avoid, "DesignatorExpr"}
+  > PREFIX Expr -> Expr                                           {"PrefixExpr"}
 
 
-	%%%%% Common %%%%%%
-	context-free syntax
-		"(" NoLExprs? ")"                               -> ArgumentExprs {"ArgumentExprs"}
-		"(" (NoLExprs ",")? NoLExpr ":" "_" "*" ")"     -> ArgumentExprs {"SequenceArgumentExprs", prefer}
+%%%%% NO Layout %%%%%%
+context-free priorities
+{
+  Literal                   -> NoLExpr                                  {prefer}
+  "_"                       -> NoLExpr                          {"WildcardExpr"}
+  NoLExpr ArgumentExprs     -> NoLExpr                               {"AppExpr"}
+  NoLExpr BlockExpr         -> NoLExpr                          {"BlockAppExpr"}
+  "(" {NoLExpr ","}* ")"    -> NoLExpr                             {"TupleExpr"}
+  NoLExpr TypeArgs          -> NoLExpr                       {"TypeApplication"}
+  Path                      -> NoLExpr
+}
 
-		ArgumentExprs                  -> ArgumentExprsSeq
-		ArgumentExprs ArgumentExprsSeq -> ArgumentExprsSeq {"ArgumentExprsSeq", layout("1.last.line == 2.first.line")}
+> {
+  "new" ClassTemplate -> NoLExpr                        {prefer, "NewClassExpr"}
+  "new" TemplateBody  -> NoLExpr                     {prefer, "NewTemplateExpr"}
+  NoLExpr "_"         -> NoLExpr                      {left, "EtaExpansionExpr"}
+  BlockExpr           -> NoLExpr
+}
 
-		{NoLExpr ","}+ -> NoLExprs {"Exprs"}
+> PREFIX NoLExpr             -> NoLExpr                           {"PrefixExpr"}
+> PREFIX NoLExpr             -> NoLExpr                           {"PrefixExpr"}
+> {
+  NoLExpr SPECIAL-OP NoLExpr        -> NoLExpr               {left, "InfixExpr"}
+  NoLExpr RASSOC-SPECIAL-OP NoLExpr -> NoLExpr              {right, "InfixExpr"}
+}
+> {
+  NoLExpr MULT-OP NoLExpr        -> NoLExpr                  {left, "InfixExpr"}
+  NoLExpr RASSOC-MULT-OP NoLExpr -> NoLExpr                 {right, "InfixExpr"}
+}
+> {
+  NoLExpr SUM-OP NoLExpr        -> NoLExpr                   {left, "InfixExpr"}
+  NoLExpr RASSOC-SUM-OP NoLExpr -> NoLExpr                  {right, "InfixExpr"}
+}
+> {
+  NoLExpr COLON-OP NoLExpr        -> NoLExpr                 {left, "InfixExpr"}
+  NoLExpr RASSOC-COLON-OP NoLExpr -> NoLExpr                {right, "InfixExpr"}
+}
+> {
+  NoLExpr CMPR-OP NoLExpr        -> NoLExpr                  {left, "InfixExpr"}
+  NoLExpr RASSOC-CMPR-OP NoLExpr -> NoLExpr                 {right, "InfixExpr"}
+}
+> {
+  NoLExpr BRACKET-OP NoLExpr        -> NoLExpr               {left, "InfixExpr"}
+  NoLExpr RASSOC-BRACKET-OP NoLExpr -> NoLExpr              {right, "InfixExpr"}
+}
+> {
+  NoLExpr AMPERSAND-OP NoLExpr        -> NoLExpr             {left, "InfixExpr"}
+  NoLExpr RASSOC-AMPERSAND-OP NoLExpr -> NoLExpr            {right, "InfixExpr"}
+}
+> {
+  NoLExpr CIRCUMFLEX-OP NoLExpr        -> NoLExpr            {left, "InfixExpr"}
+  NoLExpr RASSOC-CIRCUMFLEX-OP NoLExpr -> NoLExpr           {right, "InfixExpr"}
+}
+> {
+  NoLExpr BAR-OP NoLExpr        -> NoLExpr                   {left, "InfixExpr"}
+  NoLExpr RASSOC-BAR-OP NoLExpr -> NoLExpr                  {right, "InfixExpr"}
+}
+> {
+  NoLExpr LETTER-OP NoLExpr        -> NoLExpr                {left, "InfixExpr"}
+  NoLExpr RASSOC-LETTER-OP NoLExpr -> NoLExpr               {right, "InfixExpr"}
+}
+> NoLExpr ASSIGN-OP NoLExpr     -> NoLExpr                   {left, "InfixExpr"}
+> NoLExpr Id -> NoLExpr                                   {avoid, "PostfixExpr"}
+> NoLExpr Id -> NoLExpr                                   {avoid, "PostfixExpr"}
+> NoLExpr "match" "{" CaseClause+ "}" -> NoLExpr                   {"MatchExpr"}
+> NoLExpr ArgumentExprs "=" NoLExpr   -> NoLExpr        {"AccessAssignmentExpr",
+                                                                      non-assoc}
+<0> > NoLExpr "." Id "=" NoLExpr    -> NoLExpr      {"DesignatorAssignmentExpr",
+                                                                      non-assoc}
+<0> > {
+  Bindings "=>" NoLExpr              -> NoLExpr              {prefer, "FunExpr"}
+  Id "=>" NoLExpr                    -> NoLExpr            {prefer, "IdFunExpr"}
+  "implicit" Id "=>" NoLExpr         -> NoLExpr      {prefer, "ImplicitFunExpr"}
+  "_" "=>" NoLExpr                   -> NoLExpr      {prefer, "WildcardFunExpr"}
+  "if" "(" NoLExpr ")" NoLExpr       -> NoLExpr               {prefer, "IfExpr"}
+  "if" "(" NoLExpr ")" NoLExpr
+    "else" NoLExpr                   -> NoLExpr                   {"IfElseExpr"}
+  "if" "(" NoLExpr ")" NoLExpr
+    ";" "else" NoLExpr               -> NoLExpr                   {"IfElseExpr"}
+  "while" "(" NoLExpr ")" NoLExpr    -> NoLExpr                    {"WhileExpr"}
+  "try" NoLExpr                      -> NoLExpr              {prefer, "TryExpr"}
+  "try" NoLExpr "catch" NoLExpr      -> NoLExpr                 {"TryCatchExpr"}
+  "try" NoLExpr "finally" NoLExpr    -> NoLExpr               {"TryFinallyExpr"}
+  "try" NoLExpr "catch" NoLExpr
+    "finally" NoLExpr                -> NoLExpr   {avoid, "TryCatchFinallyExpr"}
+  "do" NoLExpr ";" "while" "(" NoLExpr ")"      -> NoLExpr       {"DoWhileExpr"}
+  "do" NoLExpr "while" "(" NoLExpr ")"          -> NoLExpr       {"DoWhileExpr"}
+  "for" "(" EnumeratorSemi+ ")" NoLExpr         -> NoLExpr           {"ForExpr"}
+  "for" "{" EnumeratorSemi+ "}" NoLExpr         -> NoLExpr           {"ForExpr"}
+  "for" "(" EnumeratorSemi+ ")" "yield" NoLExpr -> NoLExpr      {"ForYieldExpr"}
+  "for" "{" EnumeratorSemi+ "}" "yield" NoLExpr -> NoLExpr      {"ForYieldExpr"}
+  "throw" NoLExpr                               -> NoLExpr         {"ThrowExpr"}
+  "return" NoLExpr?                             -> NoLExpr        {"ReturnExpr"}
+  Id "=" NoLExpr                        -> NoLExpr {non-assoc, "AssignmentExpr"}
+  NoLExpr Ascription                    -> NoLExpr     {avoid, "AscriptionExpr"}
+}
 
-		":" InfixType   -> Ascription {"TypeAscription"}
-		":" Annotation+ -> Ascription {"AnnotationAscription"}
-		":" "_" "*"     -> Ascription {"SequenceAscription"}
+context-free priorities
+NoLExpr "." Id   -> NoLExpr                            {avoid, "DesignatorExpr"}
+> PREFIX NoLExpr -> NoLExpr                                       {"PrefixExpr"}
 
-		Pattern1 "<-" Expr Guard?       -> Generator {"Generator"}
-		"val" Pattern1 "<-" Expr Guard? -> Generator {"Generator"}
 
-		"if" NoLExpr -> Guard {"Guard"}
+%%% Repeat Priorities in context-free syntax for correct PPTable generation %%%
+context-free syntax
+"_"                                        -> Expr              {"WildcardExpr"}
+Expr ArgumentExprs                         -> Expr                   {"AppExpr",
+                                          layout("1.last.line == 2.first.line")}
+Expr BlockExpr                             -> Expr              {"BlockAppExpr",
+                                  layout("2.first.line - 1.last.line < num(2)")}
+"(" {NoLExpr ","}* ")"                     -> Expr                 {"TupleExpr"}
+Expr TypeArgs                              -> Expr           {"TypeApplication"}
+"new" ClassTemplate                        -> Expr      {prefer, "NewClassExpr"}
+"new" TemplateBody                         -> Expr   {prefer, "NewTemplateExpr"}
+Expr "_"                                   -> Expr    {left, "EtaExpansionExpr",
+                                          layout("1.last.line == 2.first.line")}
+PREFIX Expr                                -> Expr        {prefer, "PrefixExpr"}
+Expr SPECIAL-OP Expr                       -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr MULT-OP Expr                          -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr SUM-OP Expr                           -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr COLON-OP Expr                         -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr CMPR-OP Expr                          -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr BRACKET-OP Expr                       -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr AMPERSAND-OP Expr                     -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr CIRCUMFLEX-OP Expr                    -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr BAR-OP Expr                           -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr LETTER-OP Expr                        -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-SPECIAL-OP Expr                -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-MULT-OP Expr                   -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-SUM-OP Expr                    -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-COLON-OP Expr                  -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-CMPR-OP Expr                   -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-BRACKET-OP Expr                -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-AMPERSAND-OP Expr              -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-CIRCUMFLEX-OP Expr             -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-BAR-OP Expr                    -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr RASSOC-LETTER-OP Expr                 -> Expr          {right, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr ASSIGN-OP Expr                        -> Expr           {left, "InfixExpr",
+   layout("1.last.line == 2.first.line && 3.first.line - 2.last.line < num(2)")}
+Expr Id                                    -> Expr        {avoid, "PostfixExpr",
+                                          layout("1.last.line == 2.first.line")}
+Expr "match" "{" CaseClause+ "}" -> Expr                           {"MatchExpr"}
+Expr ArgumentExprs "=" Expr      -> Expr     {non-assoc, "AccessAssignmentExpr"}
+Expr "." Id "=" Expr             -> Expr {non-assoc, "DesignatorAssignmentExpr"}
+Bindings "=>" Expr               -> Expr                     {prefer, "FunExpr"}
+Id "=>" Expr                     -> Expr                   {prefer, "IdFunExpr"}
+"implicit" Id "=>" Expr          -> Expr             {prefer, "ImplicitFunExpr"}
+"_" "=>" Expr                    -> Expr             {prefer, "WildcardFunExpr"}
+"if" "(" NoLExpr ")" Expr        -> Expr                      {prefer, "IfExpr"}
+"if" "(" NoLExpr ")" Expr
+  "else" Expr                    -> Expr                          {"IfElseExpr"}
+"if" "(" NoLExpr ")" Expr ";"
+  "else" Expr                    -> Expr                          {"IfElseExpr"}
+"while" "(" NoLExpr ")" Expr            -> Expr                    {"WhileExpr"}
+"try" Expr                              -> Expr              {prefer, "TryExpr"}
+"try" Expr "catch" Expr                 -> Expr                 {"TryCatchExpr"}
+"try" Expr "finally" Expr               -> Expr               {"TryFinallyExpr"}
+"try" Expr "catch" Expr "finally" Expr  -> Expr   {avoid, "TryCatchFinallyExpr"}
+"do" Expr ";" "while" "(" Expr ")"      -> Expr                  {"DoWhileExpr"}
+"do" Expr "while" "(" Expr ")"          -> Expr                  {"DoWhileExpr"}
+"for" "(" EnumeratorSemi+ ")" Expr         -> Expr                   {"ForExpr"}
+"for" "{" EnumeratorSemi+ "}" Expr         -> Expr                   {"ForExpr"}
+"for" "(" EnumeratorSemi+ ")" "yield" Expr -> Expr              {"ForYieldExpr"}
+"for" "{" EnumeratorSemi+ "}" "yield" Expr -> Expr              {"ForYieldExpr"}
+"throw" Expr                               -> Expr                 {"ThrowExpr"}
+"return" Expr?                             -> Expr                {"ReturnExpr",
+                                          layout("1.last.line == 2.first.line")}
+Id "=" Expr                              -> Expr   {non-assoc, "AssignmentExpr"}
+Expr Ascription                          -> Expr       {avoid, "AscriptionExpr"}
+Expr "." Id                              -> Expr       {avoid, "DesignatorExpr"}
+PREFIX Expr                              -> Expr                  {"PrefixExpr"}
 
-		Enumerator SEMI -> EnumeratorSemi {"EnumeratorSemi", longest-match}
-		Enumerator EOL  -> EnumeratorSemi {"EnumeratorSemi", enforce-newline, longest-match, prefer}
-		Enumerator EOP  -> EnumeratorSemi {"EnumeratorSemi", longest-match, avoid}
-		Enumerator EOB  -> EnumeratorSemi {"EnumeratorSemi", longest-match, avoid}
+"_"                                    -> NoLExpr               {"WildcardExpr"}
+Literal                                -> NoLExpr                       {prefer}
+NoLExpr ArgumentExprs                  -> NoLExpr                    {"AppExpr"}
+NoLExpr BlockExpr                      -> NoLExpr               {"BlockAppExpr"}
+"(" {NoLExpr ","}* ")"                 -> NoLExpr                  {"TupleExpr"}
+NoLExpr TypeArgs                       -> NoLExpr            {"TypeApplication"}
+"new" ClassTemplate                    -> NoLExpr       {prefer, "NewClassExpr"}
+"new" TemplateBody                     -> NoLExpr    {prefer, "NewTemplateExpr"}
+NoLExpr "_"                            -> NoLExpr     {left, "EtaExpansionExpr"}
+PREFIX NoLExpr                         -> NoLExpr         {prefer, "PrefixExpr"}
+NoLExpr SPECIAL-OP NoLExpr             -> NoLExpr            {left, "InfixExpr"}
+NoLExpr MULT-OP NoLExpr                -> NoLExpr            {left, "InfixExpr"}
+NoLExpr SUM-OP NoLExpr                 -> NoLExpr            {left, "InfixExpr"}
+NoLExpr COLON-OP NoLExpr               -> NoLExpr            {left, "InfixExpr"}
+NoLExpr CMPR-OP NoLExpr                -> NoLExpr            {left, "InfixExpr"}
+NoLExpr BRACKET-OP NoLExpr             -> NoLExpr            {left, "InfixExpr"}
+NoLExpr AMPERSAND-OP NoLExpr           -> NoLExpr            {left, "InfixExpr"}
+NoLExpr CIRCUMFLEX-OP NoLExpr          -> NoLExpr            {left, "InfixExpr"}
+NoLExpr BAR-OP NoLExpr                 -> NoLExpr            {left, "InfixExpr"}
+NoLExpr LETTER-OP NoLExpr              -> NoLExpr            {left, "InfixExpr"}
+NoLExpr RASSOC-SPECIAL-OP NoLExpr      -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-MULT-OP NoLExpr         -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-SUM-OP NoLExpr          -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-COLON-OP NoLExpr        -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-CMPR-OP NoLExpr         -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-BRACKET-OP NoLExpr      -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-AMPERSAND-OP NoLExpr    -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-CIRCUMFLEX-OP NoLExpr   -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-BAR-OP NoLExpr          -> NoLExpr           {right, "InfixExpr"}
+NoLExpr RASSOC-LETTER-OP NoLExpr       -> NoLExpr           {right, "InfixExpr"}
+NoLExpr ASSIGN-OP NoLExpr              -> NoLExpr            {left, "InfixExpr"}
+NoLExpr Id                             -> NoLExpr         {avoid, "PostfixExpr"}
+NoLExpr Id                             -> NoLExpr         {avoid, "PostfixExpr"}
+NoLExpr "match" "{" CaseClause+ "}"    -> NoLExpr                  {"MatchExpr"}
+NoLExpr ArgumentExprs "=" NoLExpr      -> NoLExpr       {"AccessAssignmentExpr",
+                                                                      non-assoc}
+NoLExpr "." Id "=" NoLExpr             -> NoLExpr   {"DesignatorAssignmentExpr",
+                                                                      non-assoc}
+Bindings "=>" NoLExpr                  -> NoLExpr            {prefer, "FunExpr"}
+Id "=>" NoLExpr                        -> NoLExpr          {prefer, "IdFunExpr"}
+"implicit" Id "=>" NoLExpr             -> NoLExpr    {prefer, "ImplicitFunExpr"}
+"_" "=>" NoLExpr                       -> NoLExpr    {prefer, "WildcardFunExpr"}
+"if" "(" NoLExpr ")" NoLExpr                     -> NoLExpr   {prefer, "IfExpr"}
+"if" "(" NoLExpr ")" NoLExpr "else" NoLExpr      -> NoLExpr       {"IfElseExpr"}
+"if" "(" NoLExpr ")" NoLExpr ";" "else" NoLExpr  -> NoLExpr       {"IfElseExpr"}
+"while" "(" NoLExpr ")" NoLExpr                  -> NoLExpr        {"WhileExpr"}
+"try" NoLExpr                               -> NoLExpr               {"TryExpr"}
+"try" NoLExpr "catch" NoLExpr               -> NoLExpr          {"TryCatchExpr"}
+"try" NoLExpr "finally" NoLExpr             -> NoLExpr        {"TryFinallyExpr"}
+"try" NoLExpr "catch" NoLExpr
+  "finally" NoLExpr                         -> NoLExpr   {"TryCatchFinallyExpr"}
+"do" NoLExpr ";" "while" "(" NoLExpr ")"      -> NoLExpr         {"DoWhileExpr"}
+"do" NoLExpr "while" "(" NoLExpr ")"          -> NoLExpr         {"DoWhileExpr"}
+"for" "(" EnumeratorSemi+ ")" NoLExpr         -> NoLExpr             {"ForExpr"}
+"for" "{" EnumeratorSemi+ "}" NoLExpr         -> NoLExpr             {"ForExpr"}
+"for" "(" EnumeratorSemi+ ")" "yield" NoLExpr -> NoLExpr        {"ForYieldExpr"}
+"for" "{" EnumeratorSemi+ "}" "yield" NoLExpr -> NoLExpr        {"ForYieldExpr"}
+"throw" NoLExpr                               -> NoLExpr           {"ThrowExpr"}
+"return" NoLExpr?                             -> NoLExpr          {"ReturnExpr",
+                                          layout("1.last.line == 2.first.line")}
+NoLExpr Ascription                    -> NoLExpr       {avoid, "AscriptionExpr"}
+Id "=" NoLExpr                        -> NoLExpr   {non-assoc, "AssignmentExpr"}
+NoLExpr "." Id                        -> NoLExpr       {avoid, "DesignatorExpr"}
+PREFIX NoLExpr                        -> NoLExpr                  {"PrefixExpr"}
 
-		Generator                    -> Enumerator
-		Guard                        -> Enumerator
-		Pattern1 "=" Expr            -> Enumerator {"ValDef"}
-		"val" Pattern1 "=" Expr      -> Enumerator {"ValDef"}
 
-		"case" Pattern Guard? "=>" CaseBlock -> CaseClause {"CaseClause"}
+%%%%% Common %%%%%%
+context-free syntax
+"(" NoLExprs? ")"                           -> ArgumentExprs   {"ArgumentExprs"}
+"(" (NoLExprs ",")? NoLExpr ":" "_" "*" ")" -> ArgumentExprs
+                                               {prefer, "SequenceArgumentExprs"}
 
-		"{" CaseClause+ "}" -> BlockExpr {"CaseBlockExpr"}
-		"{" Block "}"       -> BlockExpr {"BlockExpr"}
+ArgumentExprs                  -> ArgumentExprsSeq
+ArgumentExprs ArgumentExprsSeq -> ArgumentExprsSeq          {"ArgumentExprsSeq",
+                                          layout("1.last.line == 2.first.line")}
 
-		Block              -> CaseBlock
-		CaseBlockStatSemi* -> CaseBlock {"CaseBlock", avoid}
+{NoLExpr ","}+ -> NoLExprs                                             {"Exprs"}
 
-		BlockStatSemi      -> CaseBlockStatSemi
-		BlockStat EOC      -> CaseBlockStatSemi {"EOCBlockStatSemi", avoid}
+":" InfixType   -> Ascription                                 {"TypeAscription"}
+":" Annotation+ -> Ascription                           {"AnnotationAscription"}
+":" "_" "*"     -> Ascription                             {"SequenceAscription"}
 
-		BlockStatSemi* ResultExpr -> Block {"Block", prefer}
-		BlockStatSemi*            -> Block {"Block"}
+Pattern1 "<-" Expr Guard?       -> Generator                       {"Generator"}
+"val" Pattern1 "<-" Expr Guard? -> Generator                       {"Generator"}
 
-		Bindings "=>" Block                       -> ResultExpr {"BindingsResultExpr"}
-		"implicit" Id ":" CompoundType "=>" Block -> ResultExpr {"ImplicitResultExpr"}
-		Id (":" CompoundType)? "=>" Block         -> ResultExpr {"SimpleResultExpr"}
-		"_" (":" CompoundType)? "=>" Block        -> ResultExpr {"WildcardResultExpr"}
+"if" NoLExpr -> Guard                                                  {"Guard"}
 
-		BlockStat EOL   -> BlockStatSemi {"BlockStatSemi", enforce-newline, longest-match, prefer}
-		BlockStat EOB   -> BlockStatSemi {"BlockStatSemi", longest-match, avoid}
-		BlockStat SEMI  -> BlockStatSemi {"BlockStatSemi", longest-match}
-		SEMI            -> BlockStatSemi
+Enumerator EOL  -> EnumeratorSemi                             {"EnumeratorSemi",
+                                         enforce-newline, longest-match, prefer}
+Enumerator SEMI -> EnumeratorSemi              {longest-match, "EnumeratorSemi"}
+Enumerator EOP  -> EnumeratorSemi       {longest-match, avoid, "EnumeratorSemi"}
+Enumerator EOB  -> EnumeratorSemi       {longest-match, avoid, "EnumeratorSemi"}
 
-		Import                             -> BlockStat
-		Expr                               -> BlockStat
-		Annotation* LocalModifier* TmplDef -> BlockStat {"TmplDefBlockStat", prefer}
-		Annotation* Def                    -> BlockStat {"DefBlockStat"}
-		Annotation* "implicit" Def         -> BlockStat {"ImplicitDefBlockStat"}
-		Annotation* "lazy" Def             -> BlockStat {"LazyDefBlockStat"}
+Generator                    -> Enumerator
+Guard                        -> Enumerator
+Pattern1 "=" Expr            -> Enumerator                            {"ValDef"}
+"val" Pattern1 "=" Expr      -> Enumerator                            {"ValDef"}
 
-		SEMI              -> TemplateStatSemi
-		TemplateStat SEMI -> TemplateStatSemi {"TemplateStatSemi", longest-match}
-		TemplateStat EOL  -> TemplateStatSemi {"TemplateStatSemi", enforce-newline, longest-match, prefer}
-		TemplateStat EOB  -> TemplateStatSemi {"TemplateStatSemi", longest-match, avoid}
+"case" Pattern Guard? "=>" CaseBlock -> CaseClause                {"CaseClause"}
 
-		AnnotationSeq? Modifier* Def -> TemplateStat {"DefTemplateStat"}
-		AnnotationSeq? Modifier* Dcl -> TemplateStat {"DclTemplateStat"}
-		Import                       -> TemplateStat {"ImportTemplateStat"}
-		Expr                         -> TemplateStat {"ExprTemplateStat"}
+"{" CaseClause+ "}" -> BlockExpr                               {"CaseBlockExpr"}
+"{" Block "}"       -> BlockExpr                                   {"BlockExpr"}
 
-		Id (":" Type)?  -> Binding {"Binding"}
-		"_" (":" Type)? -> Binding {"WildCardBinding"}
+Block              -> CaseBlock
+CaseBlockStatSemi* -> CaseBlock                             {avoid, "CaseBlock"}
 
-		"(" {Binding ","}* ")" -> Bindings {"Bindings"}
+BlockStatSemi      -> CaseBlockStatSemi
+BlockStat EOC      -> CaseBlockStatSemi              {avoid, "EOCBlockStatSemi"}
 
-		"=" Expr -> Assignment {"Assignment"}
+BlockStatSemi* ResultExpr -> Block                             {prefer, "Block"}
+BlockStatSemi*            -> Block                                     {"Block"}
+
+Bindings "=>" Block                       -> ResultExpr   {"BindingsResultExpr"}
+"implicit" Id ":" CompoundType "=>" Block -> ResultExpr   {"ImplicitResultExpr"}
+Id (":" CompoundType)? "=>" Block         -> ResultExpr     {"SimpleResultExpr"}
+"_" (":" CompoundType)? "=>" Block        -> ResultExpr   {"WildcardResultExpr"}
+
+BlockStat EOL   -> BlockStatSemi                               {"BlockStatSemi",
+                                         enforce-newline, longest-match, prefer}
+BlockStat SEMI  -> BlockStatSemi                {longest-match, "BlockStatSemi"}
+BlockStat EOB   -> BlockStatSemi         {longest-match, avoid, "BlockStatSemi"}
+SEMI            -> BlockStatSemi
+
+Import                             -> BlockStat
+Expr                               -> BlockStat
+Annotation* LocalModifier* TmplDef -> BlockStat     {prefer, "TmplDefBlockStat"}
+Annotation* Def                    -> BlockStat                 {"DefBlockStat"}
+Annotation* "implicit" Def         -> BlockStat         {"ImplicitDefBlockStat"}
+Annotation* "lazy" Def             -> BlockStat             {"LazyDefBlockStat"}
+
+TemplateStat SEMI -> TemplateStatSemi        {longest-match, "TemplateStatSemi"}
+TemplateStat EOL  -> TemplateStatSemi                       {"TemplateStatSemi",
+                                         enforce-newline, longest-match, prefer}
+TemplateStat EOB  -> TemplateStatSemi {longest-match, avoid, "TemplateStatSemi"}
+SEMI              -> TemplateStatSemi
+
+AnnotationSeq? Modifier* Def -> TemplateStat                 {"DefTemplateStat"}
+AnnotationSeq? Modifier* Dcl -> TemplateStat                 {"DclTemplateStat"}
+Import                       -> TemplateStat              {"ImportTemplateStat"}
+Expr                         -> TemplateStat                {"ExprTemplateStat"}
+
+Id (":" Type)?  -> Binding                                           {"Binding"}
+"_" (":" Type)? -> Binding                                   {"WildCardBinding"}
+
+"(" {Binding ","}* ")" -> Bindings                                  {"Bindings"}
+
+"=" Expr -> Assignment                                            {"Assignment"}

@@ -1,99 +1,103 @@
 module Scala-Literals
 
 imports
-	Scala-Identifiers
+Scala-Identifiers
 
 exports
-	lexical syntax
-		DECIMAL-NUMERAL ("L" | "l")? -> INTEGER
-		HEX-NUMERAL ("L" | "l")?     -> INTEGER
-		OCTAL-NUMERAL ("L" | "l")?   -> INTEGER {prefer}
-		"-" INTEGER                  -> INTEGER
-		
-		[0] | NON-ZERO-DIGIT DIGIT* -> DECIMAL-NUMERAL
-		"0x" HEX-DIGIT+             -> HEX-NUMERAL
-		[0] OCTAL-DIGIT+            -> OCTAL-NUMERAL
-		[0-9]       -> DIGIT
-		[1-9]       -> NON-ZERO-DIGIT
-		[0-7]       -> OCTAL-DIGIT
-		[0-9A-Fa-f] -> HEX-DIGIT
-		
-		DIGIT+ "." DIGIT+ EXPONENT-PART? FLOAT-TYPE? -> FLOATING-POINT
-		"." DIGIT+ EXPONENT-PART? FLOAT-TYPE?        -> FLOATING-POINT
-		DIGIT+ EXPONENT-PART                         -> FLOATING-POINT
-		DIGIT+ FLOAT-TYPE                            -> FLOATING-POINT
-		DIGIT+ EXPONENT-PART FLOAT-TYPE              -> FLOATING-POINT
-		"-" FLOATING-POINT                           -> FLOATING-POINT
-		
-		("E" | "e") ("+" | "-")? DIGIT+ -> EXPONENT-PART
-		"F" | "f" | "D" | "d"           -> FLOAT-TYPE
-		
-		"'" PRINTABLE "'"       -> CHAR
-		"'" CHAR-ESCAPE-SEQ "'" -> CHAR
 
-		[\32-\126]        -> PRINTABLE
-		[\0-\127] / [\"]  -> CHAR-NO-DOUBLE-QUOTE
+lexical syntax
+DECIMAL-NUMERAL ("L" | "l")? -> INTEGER
+HEX-NUMERAL ("L" | "l")?     -> INTEGER
+OCTAL-NUMERAL ("L" | "l")?   -> INTEGER                                 {prefer}
+"-" INTEGER                  -> INTEGER
 
-		"\\b" | "\\t" | "\\n" | "\\f" | "\\r" | "\\\"" | "\\'" | "\\\\" -> CHAR-ESCAPE-SEQ
-		"\\" [0-1]? [0-9]? [0-9]                                        -> CHAR-ESCAPE-SEQ
-		"\\" DIGIT? DIGIT? DIGIT                                        -> CHAR-ESCAPE-SEQ
-		UNICODE-ESCAPE                                                  -> CHAR-ESCAPE-SEQ
+[0] | NON-ZERO-DIGIT DIGIT* -> DECIMAL-NUMERAL
+"0x" HEX-DIGIT+             -> HEX-NUMERAL
+[0] OCTAL-DIGIT+            -> OCTAL-NUMERAL
+[0-9]       -> DIGIT
+[1-9]       -> NON-ZERO-DIGIT
+[0-7]       -> OCTAL-DIGIT
+[0-9A-Fa-f] -> HEX-DIGIT
 
-		"\\" "u" HEX-DIGIT HEX-DIGIT HEX-DIGIT HEX-DIGIT -> UNICODE-ESCAPE
-		
-		"\"" STRING-ELEMENT* "\""          -> STRING
-		"\"\"\"" MULTI-LINE-CHARS "\"\"\"" -> STRING
+DIGIT+ "." DIGIT+ EXPONENT-PART? FLOAT-TYPE? -> FLOATING-POINT
+"." DIGIT+ EXPONENT-PART? FLOAT-TYPE?        -> FLOATING-POINT
+DIGIT+ EXPONENT-PART                         -> FLOATING-POINT
+DIGIT+ FLOAT-TYPE                            -> FLOATING-POINT
+DIGIT+ EXPONENT-PART FLOAT-TYPE              -> FLOATING-POINT
+"-" FLOATING-POINT                           -> FLOATING-POINT
 
-		[\32-\126] / [\"\\]   -> STRING-ELEMENT
-		CHAR-ESCAPE-SEQ       -> STRING-ELEMENT
+("E" | "e") ("+" | "-")? DIGIT+ -> EXPONENT-PART
+"F" | "f" | "D" | "d"           -> FLOAT-TYPE
 
-		PLAIN-ID "\"" PROCESSED-STRING-ELEMENT* "\""                   -> PROCESSED-STRING
-		PLAIN-ID "\"\"\"" MULTI-LINE-PROCESSED-STRING-ELEMENT "\"\"\"" -> PROCESSED-STRING
+"'" PRINTABLE "'"       -> CHAR
+"'" CHAR-ESCAPE-SEQ "'" -> CHAR
+
+[\32-\126]        -> PRINTABLE
+[\0-\127] / [\"]  -> CHAR-NO-DOUBLE-QUOTE
+
+"\\b" | "\\t" | "\\n" | "\\f" |
+"\\r" | "\\\"" | "\\'" | "\\\\" -> CHAR-ESCAPE-SEQ
+"\\" [0-1]? [0-9]? [0-9]        -> CHAR-ESCAPE-SEQ
+"\\" DIGIT? DIGIT? DIGIT        -> CHAR-ESCAPE-SEQ
+UNICODE-ESCAPE                  -> CHAR-ESCAPE-SEQ
+
+"\\" "u" HEX-DIGIT HEX-DIGIT HEX-DIGIT HEX-DIGIT -> UNICODE-ESCAPE
+
+"\"" STRING-ELEMENT* "\""          -> STRING
+"\"\"\"" MULTI-LINE-CHARS "\"\"\"" -> STRING
+
+[\32-\126] / [\"\\]   -> STRING-ELEMENT
+CHAR-ESCAPE-SEQ       -> STRING-ELEMENT
+
+PLAIN-ID "\"" PROCESSED-STRING-ELEMENT* "\""                 -> PROCESSED-STRING
+PLAIN-ID "\"\"\"" MULTI-LINE-PROCESSED-STRING-ELEMENT "\"\"\""
+                                                             -> PROCESSED-STRING
 
 
-		[\32-\126] / [\"\$\\] -> PROCESSED-STRING-ELEMENT
-		CHAR-ESCAPE-SEQ       -> PROCESSED-STRING-ELEMENT
-		PROCESSING            -> PROCESSED-STRING-ELEMENT
+[\32-\126] / [\"\$\\] -> PROCESSED-STRING-ELEMENT
+CHAR-ESCAPE-SEQ       -> PROCESSED-STRING-ELEMENT
+PROCESSING            -> PROCESSED-STRING-ELEMENT
 
-		"$$"                         -> PROCESSING
-		"${" PROCESSING-ELEMENT* "}" -> PROCESSING
-		"$" IPLAIN-ID                -> PROCESSING
+"$$"                         -> PROCESSING
+"${" PROCESSING-ELEMENT* "}" -> PROCESSING
+"$" IPLAIN-ID                -> PROCESSING
 
-		"{" PROCESSING-ELEMENT* "}" -> PROCESSING-ELEMENT
-		[\0-\127] / [\{\}\"]        -> PROCESSING-ELEMENT
-		PROCESSED-STRING            -> PROCESSING-ELEMENT
-		STRING              -> PROCESSING-ELEMENT
+"{" PROCESSING-ELEMENT* "}" -> PROCESSING-ELEMENT
+[\0-\127] / [\{\}\"]        -> PROCESSING-ELEMENT
+PROCESSED-STRING            -> PROCESSING-ELEMENT
+STRING                      -> PROCESSING-ELEMENT
 
-		([\"]? [\"]? CHAR-NO-DOUBLE-QUOTE)* [\"]* -> MULTI-LINE-CHARS
+([\"]? [\"]? CHAR-NO-DOUBLE-QUOTE)* [\"]* -> MULTI-LINE-CHARS
 
-		([\"]? [\"]? IMULTI-LINE-PROCESSED-STRING-ELEMENT)* [\"]* -> MULTI-LINE-PROCESSED-STRING-ELEMENT
+([\"]? [\"]? IMULTI-LINE-PROCESSED-STRING-ELEMENT)* [\"]*
+                                          -> MULTI-LINE-PROCESSED-STRING-ELEMENT
 
-		PROCESSING         -> IMULTI-LINE-PROCESSED-STRING-ELEMENT
-		[\0-\127] / [\"\$] -> IMULTI-LINE-PROCESSED-STRING-ELEMENT
+PROCESSING         -> IMULTI-LINE-PROCESSED-STRING-ELEMENT
+[\0-\127] / [\"\$] -> IMULTI-LINE-PROCESSED-STRING-ELEMENT
 
-		[\"]      -> DOUBLE-QUOTE
-		[\"] [\"] -> DOUBLE-DOUBLE-QUOTE
+[\"]      -> DOUBLE-QUOTE
+[\"] [\"] -> DOUBLE-DOUBLE-QUOTE
 
-		"'" IPLAIN-ID -> SYMBOL
+"'" IPLAIN-ID -> SYMBOL
 
-	lexical restrictions
-		INTEGER        -/- [0-9a-zA-Z]
-		FLOATING-POINT -/- [0-9a-zA-Z]
-		Literal        -/- [0-9a-zA-Z]
-		"true"         -/- [0-9a-zA-Z]
-		"false"        -/- [0-9a-zA-Z]
-		DOUBLE-QUOTE        -/- [\"]
-		DOUBLE-DOUBLE-QUOTE -/- [\"]
-		
-	context-free syntax
-		INTEGER          -> Literal {"Int"}
-		FLOATING-POINT   -> Literal {"Float"}
-		BooleanLiteral   -> Literal
-		CHAR             -> Literal {"Char"}
-		STRING           -> Literal {"String"}
-		SYMBOL           -> Literal {"Symbol"}
-		"null"           -> Literal {"Null"}
-		PROCESSED-STRING -> Literal {"ProcessedString"}
+lexical restrictions
+INTEGER        -/- [0-9a-zA-Z]
+FLOATING-POINT -/- [0-9a-zA-Z]
+Literal        -/- [0-9a-zA-Z]
+"true"         -/- [0-9a-zA-Z]
+"false"        -/- [0-9a-zA-Z]
+DOUBLE-QUOTE        -/- [\"]
+DOUBLE-DOUBLE-QUOTE -/- [\"]
 
-		"true"  -> BooleanLiteral {"True"}
-		"false" -> BooleanLiteral {"False"}
+context-free syntax
+INTEGER          -> Literal                                              {"Int"}
+FLOATING-POINT   -> Literal                                            {"Float"}
+CHAR             -> Literal                                             {"Char"}
+STRING           -> Literal                                           {"String"}
+SYMBOL           -> Literal                                           {"Symbol"}
+"null"           -> Literal                                             {"Null"}
+PROCESSED-STRING -> Literal                                  {"ProcessedString"}
+BooleanLiteral   -> Literal
+
+"true"  -> BooleanLiteral                                               {"True"}
+"false" -> BooleanLiteral                                              {"False"}

@@ -2,31 +2,35 @@
 module Scala-TopLevelDefinitions
 
 imports
-	Scala-BasicDeclsDefs
-	Scala-ClassesObjects
-	Scala-Identifiers
-	Scala-Whitespace
+Scala-BasicDeclsDefs
+Scala-ClassesObjects
+Scala-Identifiers
+Scala-Whitespace
 
 exports
-	context-free syntax
-		-> CompilationUnit {"EmptyCompilationUnit"}
-		PackageDeclarationSemi* TopStatSemi+ -> CompilationUnit {"CompilationUnit"}
 
-		TopStat SEMI -> TopStatSemi {"TopStatSemi"}
-		TopStat EOL  -> TopStatSemi {"TopStatSemi", enforce-newline, longest-match, prefer}
-		TopStat EOF  -> TopStatSemi {"TopStatSemi", longest-match}
-		TopStat EOB  -> TopStatSemi {"TopStatSemi", longest-match, avoid}
-		
-		AnnotationSeq? Modifier* TmplDef -> TopStat {"TopTmplDef"}
-		Import                           -> TopStat
-		Packaging                        -> TopStat
-		PackageObject                    -> TopStat
-		
-		"package" QualId EOL  -> PackageDeclarationSemi {"PackageDeclaration", enforce-newline}
-		"package" QualId SEMI -> PackageDeclarationSemi {"PackageDeclaration"}
-		
-		{Id "."}+ -> QualId {"QualId"}
-		
-		"package" QualId "{" TopStatSemi+ "}" -> Packaging {"Packaging", layout("3.first.line - 2.last.line < num(2)")}
-		
-		"package" "object" ObjectDef -> PackageObject {"PackageObject"}
+context-free syntax
+-> CompilationUnit                                      {"EmptyCompilationUnit"}
+PackageDeclarationSemi* TopStatSemi+ -> CompilationUnit      {"CompilationUnit"}
+
+TopStat EOL  -> TopStatSemi                                      {"TopStatSemi",
+                                         enforce-newline, longest-match, prefer}
+TopStat SEMI -> TopStatSemi                                      {"TopStatSemi"}
+TopStat EOF  -> TopStatSemi                       {longest-match, "TopStatSemi"}
+TopStat EOB  -> TopStatSemi                {longest-match, avoid, "TopStatSemi"}
+
+AnnotationSeq? Modifier* TmplDef -> TopStat                       {"TopTmplDef"}
+Import                           -> TopStat
+Packaging                        -> TopStat
+PackageObject                    -> TopStat
+
+"package" QualId EOL  -> PackageDeclarationSemi           {"PackageDeclaration",
+                                                                enforce-newline}
+"package" QualId SEMI -> PackageDeclarationSemi           {"PackageDeclaration"}
+
+{Id "."}+ -> QualId                                                   {"QualId"}
+
+"package" QualId "{" TopStatSemi+ "}" -> Packaging                 {"Packaging",
+                                  layout("3.first.line - 2.last.line < num(2)")}
+
+"package" "object" ObjectDef -> PackageObject                  {"PackageObject"}

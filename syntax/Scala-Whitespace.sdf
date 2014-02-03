@@ -1,38 +1,41 @@
-%% Part of the definitions and restrictions are taken from bobd91's JavaScript syntax
-%% (https://github.com/bobd91/sugarjs/blob/master/language-libraries/javascript/src/org/sugarj/languages/JavaScript.def)
+%% Part of the definitions and restrictions are taken from
+%% bobd91's JavaScript syntax
+%% (https://github.com/bobd91/sugarjs/blob/master/
+%%        language-libraries/javascript/src/org/sugarj/languages/JavaScript.def)
 
 module Scala-Whitespace
 
 exports
-	lexical syntax
-		[\ \t\n\r]       -> LAYOUT
-		"//" ~[\n]* [\n] -> LAYOUT
-		BLOCK-COMMENT    -> LAYOUT
 
-		"/*" BLOCK-COMMENT-PART* "*/" -> BLOCK-COMMENT
-		~[\/\*]       -> BLOCK-COMMENT-PART
-		ASTERISK      -> BLOCK-COMMENT-PART
-		SLASH         -> BLOCK-COMMENT-PART
-		BLOCK-COMMENT -> BLOCK-COMMENT-PART
+lexical syntax
+[\ \t\n\r]       -> LAYOUT
+"//" ~[\n]* [\n] -> LAYOUT
+BLOCK-COMMENT    -> LAYOUT
 
-		    -> EOL
-		    -> EOF
-		    -> EOB
-		    -> EOP
-		";" -> SEMI
+"/*" BLOCK-COMMENT-PART* "*/" -> BLOCK-COMMENT
+~[\/\*]       -> BLOCK-COMMENT-PART
+ASTERISK      -> BLOCK-COMMENT-PART
+SLASH         -> BLOCK-COMMENT-PART
+BLOCK-COMMENT -> BLOCK-COMMENT-PART
 
-		[\n] -> NL
-		[\*] -> ASTERISK
-		[\/] -> SLASH
+    -> EOL
+    -> EOF
+    -> EOB
+    -> EOP
+";" -> SEMI
 
-	lexical restrictions
-		ASTERISK -/- [\/]
-		SLASH    -/- [\*]
+[\n] -> NL
+[\*] -> ASTERISK
+[\/] -> SLASH
 
-	context-free restrictions
-		LAYOUT? -/- [\ \t\n\r]
-		LAYOUT? -/- [\/].[\*]
-		LAYOUT? -/- [\/].[\/]
-		EOF -/- ~[]
-		EOB -/- ~[\}]
-		EOP -/- ~[\)]
+lexical restrictions
+ASTERISK -/- [\/]
+SLASH    -/- [\*]
+
+context-free restrictions
+LAYOUT? -/- [\ \t\n\r]
+LAYOUT? -/- [\/].[\*]
+LAYOUT? -/- [\/].[\/]
+EOF -/- ~[]
+EOB -/- ~[\}]
+EOP -/- ~[\)]

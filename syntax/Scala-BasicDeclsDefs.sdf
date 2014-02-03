@@ -1,98 +1,108 @@
 module Scala-BasicDeclsDefs
 
 imports
-	Scala-ClassesObjects
-	Scala-Expressions
-	Scala-Identifiers
-	Scala-Types
+Scala-ClassesObjects
+Scala-Expressions
+Scala-Identifiers
+Scala-Types
 
 exports
-	context-free syntax
-		%% Extracted to avoid optional lexical syntax:
-		%%     (":" Type)?
-		":" Type      -> Typed {"Typed"}
-		":" ParamType -> ParamTyped {"ParamTyped"}
 
-		%% §4 - Basic Declarations and Definitions
-		PatVarDef      -> Def
-		TmplDef        -> Def
+context-free syntax
+%% Extracted to avoid optional lexical syntax:
+%%     (":" Type)?
+":" Type      -> Typed                                                 {"Typed"}
+":" ParamType -> ParamTyped                                       {"ParamTyped"}
 
-
-		%% §4.1 - Value Declarations and Definitions
-		"val" ValDcl                         -> Dcl {"ValDclDcl"}
-		{Id ","}+ ":" Type                   -> ValDcl {"ValDcl"}
-		"val" PatDef                         -> PatVarDef {"ValPatDef"}
-		{Pattern2 ","}+ Typed? "=" Expr      -> PatDef {"PatDef"}
+%% §4 - Basic Declarations and Definitions
+PatVarDef      -> Def
+TmplDef        -> Def
 
 
-		%% §4.2 - Variable Declarations and Definitions
-		"var" VarDcl               -> Dcl {"VarDclDcl"}
-		"var" VarDef               -> PatVarDef {"VarPatDef"}
-		{Id ","}+ ":" Type         -> VarDcl {"VarDcl"}
-		PatDef                     -> VarDef
-		{Id ","}+ ":" Type "=" "_" -> VarDef {"WildcardVarDef", prefer}
+%% §4.1 - Value Declarations and Definitions
+"val" ValDcl                         -> Dcl                        {"ValDclDcl"}
+{Id ","}+ ":" Type                   -> ValDcl                        {"ValDcl"}
+"val" PatDef                         -> PatVarDef                  {"ValPatDef"}
+{Pattern2 ","}+ Typed? "=" Expr      -> PatDef                        {"PatDef"}
 
 
-		%% §4.3 - Type Declarations and Type Aliases
-		"type" TypeDcl                                      -> Dcl {"TypeDclDcl"}
-		Id TypeParamClause? LowerBoundType? UpperBoundType? -> TypeDcl {"TypeDcl"}
-		"type" TypeDef                                      -> Def {"TypeDefDef"}
-		Id TypeParamClause? "=" Type                        -> TypeDef {"TypeDef"}
+%% §4.2 - Variable Declarations and Definitions
+"var" VarDcl               -> Dcl                                  {"VarDclDcl"}
+"var" VarDef               -> PatVarDef                            {"VarPatDef"}
+{Id ","}+ ":" Type         -> VarDcl                                  {"VarDcl"}
+{Id ","}+ ":" Type "=" "_" -> VarDef                  {prefer, "WildcardVarDef"}
+PatDef                     -> VarDef
 
 
-		%% §.4.4 - Type Parameters
-		"[" {VariantTypeParam ","}+ "]" -> TypeParamClause {"TypeParamClause"}
-
-		Annotation* TypeParam     -> VariantTypeParam {"VariantTypeParam"}
-		Annotation* "+" TypeParam -> VariantTypeParam {"PlusVariantTypeParam"}
-		Annotation* "-" TypeParam -> VariantTypeParam {"NegVariantTypeParam"}
-
-		Id  TypeParamClause? LowerBoundType? UpperBoundType? TypeViewBound* TypeContextBound* -> TypeParam {"TypeParam"}
-		"_" TypeParamClause? LowerBoundType? UpperBoundType? TypeViewBound* TypeContextBound* -> TypeParam {"WildcardTypeParam"}
-
-		">:" Type -> LowerBoundType {"LowerBoundType"}
-		"<:" Type -> UpperBoundType {"UpperBoundType"}
-		"<%" Type -> TypeViewBound {"TypeViewBound"}
-		":" Type  -> TypeContextBound {"TypeContextBound"}
+%% §4.3 - Type Declarations and Type Aliases
+"type" TypeDcl                                      -> Dcl        {"TypeDclDcl"}
+Id TypeParamClause? LowerBoundType? UpperBoundType? -> TypeDcl       {"TypeDcl"}
+"type" TypeDef                                      -> Def        {"TypeDefDef"}
+Id TypeParamClause? "=" Type                        -> TypeDef       {"TypeDef"}
 
 
-		%% §4.6 - Function Declarations and Definitions
-		"def" FunDcl                         -> Dcl {"FunDclDcl"}
-		FunSig ":" Type                      -> FunDcl {"FunDcl"}
-		"def" FunDef                         -> Def {"FunDefDef"}
-		FunSig Typed? "=" Expr               -> FunDef {"FunDef"}
-		Id TypeParamClause? ParamClauses?    -> FunSig {"FunSig", layout("3.first.line - 1.last.line < num(2)")}
-		%% Annotations are allowed for function type parameters according to scalac v2.10.0*,
-		%% so TypeParamClause is used here instead of FunTypeParamClause
-		%% "[" {TypeParam ","}+ "]"             -> FunTypeParamClause {"FunTypeParamClause"}
+%% §.4.4 - Type Parameters
+"[" {VariantTypeParam ","}+ "]" -> TypeParamClause           {"TypeParamClause"}
 
-		ParamClause                     -> ParamClauses
-		"(" "implicit" {Param ","}+ ")" -> ParamClauses {"ImplicitParamClause"}
-		ParamClause ParamClauses        -> ParamClauses {"ParamClauses", layout("2.first.line - 1.last.line < num(2)")}
+Annotation* TypeParam     -> VariantTypeParam               {"VariantTypeParam"}
+Annotation* "+" TypeParam -> VariantTypeParam           {"PlusVariantTypeParam"}
+Annotation* "-" TypeParam -> VariantTypeParam            {"NegVariantTypeParam"}
 
-		"(" {Param ","}* ")" -> ParamClause {"ParamClause"}
+Id  TypeParamClause? LowerBoundType?
+  UpperBoundType? TypeViewBound* TypeContextBound* -> TypeParam    {"TypeParam"}
+"_" TypeParamClause? LowerBoundType?
+  UpperBoundType? TypeViewBound* TypeContextBound* -> TypeParam
+                                                           {"WildcardTypeParam"}
 
-		Annotation* Id ParamTyped? Assignment? -> Param {"Param"}
+">:" Type -> LowerBoundType                                   {"LowerBoundType"}
+"<:" Type -> UpperBoundType                                   {"UpperBoundType"}
+"<%" Type -> TypeViewBound                                     {"TypeViewBound"}
+":" Type  -> TypeContextBound                               {"TypeContextBound"}
 
-		Type      -> ParamType
-		"=>" Type -> ParamType {"ByNameParam"}
-		Type "*"  -> ParamType {"RepeatedParam"}
 
-		%% §4.6.3 - Procedures
-		FunSig               -> FunDcl {"ProcDcl"}
-		FunSig "{" Block "}" -> FunDef {"ProcDef", layout("2.first.line - 1.last.line < num(2)")}
+%% §4.6 - Function Declarations and Definitions
+"def" FunDcl                         -> Dcl                        {"FunDclDcl"}
+FunSig ":" Type                      -> FunDcl                        {"FunDcl"}
+"def" FunDef                         -> Def                        {"FunDefDef"}
+FunSig Typed? "=" Expr               -> FunDef                        {"FunDef"}
+Id TypeParamClause? ParamClauses?    -> FunSig                        {"FunSig",
+                                  layout("3.first.line - 1.last.line < num(2)")}
+%% Annotations are allowed for function type parameters according to
+%% scalac v2.10.0*, % so TypeParamClause is used here instead of
+%% FunTypeParamClause
+%% "[" {TypeParam ","}+ "]"         -> FunTypeParamClause {"FunTypeParamClause"}
 
-		%% §4.7 - Import Clauses
-		"import" {ImportExpr ","}+ -> Import{"Import"}
+ParamClause                     -> ParamClauses
+"(" "implicit" {Param ","}+ ")" -> ParamClauses          {"ImplicitParamClause"}
+ParamClause ParamClauses        -> ParamClauses                 {"ParamClauses",
+                                  layout("2.first.line - 1.last.line < num(2)")}
 
-		StableId                     -> ImportExpr {"ImportExpr"}
-		StableId "." "_"             -> ImportExpr {"WildcardImportExpr"}
-		StableId "." ImportSelectors -> ImportExpr {"SelectorsImportExpr"}
+"(" {Param ","}* ")" -> ParamClause                              {"ParamClause"}
 
-		"{" {ImportSelector ","}+ "}"         -> ImportSelectors {"ImportSelectors"}
-		"{" {ImportSelector ","}+ "," "_" "}" -> ImportSelectors {"ImportSelectorsWithWildcard"}
-		"{" "_" "}"                           -> ImportSelectors {"OnlyWildcardImportSelectors"}	
+Annotation* Id ParamTyped? Assignment? -> Param                        {"Param"}
 
-		Id          -> ImportSelector {"ImportSelector"}
-		Id "=>" Id  -> ImportSelector {"MappedImportSelector"}
-		Id "=>" "_" -> ImportSelector {"WildcardImportSelector"}
+Type      -> ParamType
+"=>" Type -> ParamType                                           {"ByNameParam"}
+Type "*"  -> ParamType                                         {"RepeatedParam"}
+
+%% §4.6.3 - Procedures
+FunSig               -> FunDcl                                       {"ProcDcl"}
+FunSig "{" Block "}" -> FunDef                                       {"ProcDef",
+                                  layout("2.first.line - 1.last.line < num(2)")}
+
+%% §4.7 - Import Clauses
+"import" {ImportExpr ","}+ -> Import                                  {"Import"}
+
+StableId                     -> ImportExpr                        {"ImportExpr"}
+StableId "." "_"             -> ImportExpr                {"WildcardImportExpr"}
+StableId "." ImportSelectors -> ImportExpr               {"SelectorsImportExpr"}
+
+"{" {ImportSelector ","}+ "}"         -> ImportSelectors     {"ImportSelectors"}
+"{" {ImportSelector ","}+ "," "_" "}" -> ImportSelectors
+                                                 {"ImportSelectorsWithWildcard"}
+"{" "_" "}"                           -> ImportSelectors
+                                                 {"OnlyWildcardImportSelectors"}
+
+Id          -> ImportSelector                                 {"ImportSelector"}
+Id "=>" Id  -> ImportSelector                           {"MappedImportSelector"}
+Id "=>" "_" -> ImportSelector                         {"WildcardImportSelector"}
