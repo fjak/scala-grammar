@@ -11,7 +11,13 @@ module DefFile
   end
 
   def self.sprint_sugdef(productions, lang)
-    langified_prods = productions.map {|p| "#{lang}#{p}"}
+    langified_prods = productions.map do |p|
+      if lexical? p
+        "#{lang.upcase}-#{p}"
+      else
+        "#{lang}#{p}"
+      end
+    end
     prod_mappings = []
     productions.each_index do |i|
       prod_mappings << sprintf("%-37s => %s", productions[i], langified_prods[i])
@@ -22,5 +28,11 @@ module DefFile
     sugdef << prod_mappings.join("\n\t  ")
     sugdef << " ]\n"
     sugdef
+  end
+
+  private
+
+  def self.lexical?(s)
+    (/[a-z]/ =~ s).nil?
   end
 end
