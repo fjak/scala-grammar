@@ -204,3 +204,7 @@ test DesignatorExpr on Int [[
 test DesignatorExpr on Float [[
 	10000.000.toInt
 ]] parse to DesignatorExpr(Float(_), _)
+
+test nested tuples [[
+	(3 + (2))
+]]
